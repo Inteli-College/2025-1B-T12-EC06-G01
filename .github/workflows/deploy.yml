@@ -18,12 +18,15 @@ jobs:
 
       - name: Instalar dependências
         run: npm install
+        working-directory: docs
 
       - name: Build do site
         run: npm run build
+        working-directory: docs
 
-      - name: Deploy para o GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
+      - name: Deploy to GitHub Pages
+        run: npm run deploy
+        working-directory: docs
+        env:
+          GIT_USER: github-actions
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
