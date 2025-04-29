@@ -35,9 +35,11 @@ A rotina de Carlos exige atenção a detalhes e agilidade, especialmente diante 
 
 ### Expectativas e Preocupações
 
-Carlos deseja uma ferramenta confiável, que agilize a consulta e interpretação dos dados técnicos, permitindo a classificação clara e precisa das fissuras. Idealmente, o sistema deve oferecer acesso rápido as classificação feita pela AI e permitir a navegação organizada por edifícios e inspeções.
+Carlos deseja uma ferramenta confiável, que agilize a consulta e a interpretação dos dados técnicos, permitindo a classificação clara e precisa das fissuras. Idealmente, o sistema deve oferecer acesso rápido às classificações feitas pela IA e permitir a navegação organizada por edifícios e inspeções.
 
-Apesar de estar aberto ao uso de tecnologia, Carlos se preocupa com a transparência e a rastreabilidade dos resultados. Para ele, é essencial que o sistema permita revisão manual e integração com os processos técnicos já consolidados dentro do IPT além do AI ter uma acurácia alta.
+Apesar de estar aberto ao uso de tecnologia, Carlos se preocupa com a transparência e a rastreabilidade dos resultados. Para ele, é essencial que o sistema permita a revisão manual e a integração com os processos técnicos já consolidados dentro do IPT, além de garantir alta acurácia da inteligência artificial.
+
+As dificuldades enfrentadas por Carlos afetam diretamente o ambiente de trabalho, gerando pressão por resultados rápidos com poucos recursos. A incerteza nas classificações técnicas aumenta a tensão dos projetos. A falta de organização e agilidade no acesso às informações causa frustração, interrompe o fluxo das análises e reduz a eficiência do time, impactando o tempo de entrega do projeto além da qualidade do serviço.
 
 ### Relevância da Persona para o Projeto
 
