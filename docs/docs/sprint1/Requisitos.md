@@ -26,7 +26,18 @@ Requisitos funcionais:
 
 ### Requisitos Não Funcionais
 
----
+Os Requisitos Não Funcionais (RNFs) definem critérios de qualidade que o sistema deve atender, mesmo que não estejam diretamente ligados ao comportamento funcional ou às funcionalidades principais. Eles abrangem aspectos como desempenho, segurança, confiabilidade, usabilidade e integridade de dados.
+
+Em um projeto como este — que envolve captura e análise de imagens por drones, uso de modelos de Machine Learning para detecção de fissuras e integração entre diferentes módulos do sistema — os RNFs são fundamentais para garantir:
+
+- **Precisão e eficiência do modelo de IA**, assegurando que as detecções sejam confiáveis;
+- **Desempenho adequado**, especialmente em relação ao tempo de inferência e resposta do sistema;
+- **Segurança na comunicação entre componentes**, protegendo dados sensíveis e operacionais;
+- **Confiabilidade no armazenamento das imagens capturadas**, evitando perdas críticas;
+- **Tratamento robusto de erros e consistência no processamento**, garantindo a padronização das análises.
+
+O cumprimento dos requisitos não funcionais é essencial para a qualidade global do sistema, a confiança dos usuários e a viabilidade do uso da solução em ambientes reais de inspeção e monitoramento.
+
 
 #### RNF 01 - Precisão na detecção do modelo  
 O módulo de Machine Learning deve atingir uma precisão mínima de 90% na classificação das imagens de fissuras nos dois tipos definidos, considerando uma base de dados de teste não vista durante o treinamento.
