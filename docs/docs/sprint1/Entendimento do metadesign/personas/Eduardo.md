@@ -12,7 +12,7 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 &emsp;Eduardo é um engenheiro civil de 51 anos, com especialização em materiais de construção. Sua atuação se concentra no Laboratório de Materiais para Produtos de Construção (LMPC) do Instituto de Pesquisas Tecnológicas (IPT), localizado em São Paulo – SP. Reconhecido por sua precisão técnica e rigor metodológico na condução de ensaios e diagnósticos, Eduardo é responsável por laudos que exercem impacto direto em decisões técnicas e legais referentes à manutenção predial. Com mais de duas décadas de experiência no IPT, ele se destaca pela expertise e pela confiança que deposita no uso de dados como fundamento para suas recomendações.
 
 <div style={{textAlign:'center'}}>
-    <p><strong>Figura X - Persona Eduardo Moreira </strong></p>
+    <p><strong>Figura 1 - Persona Eduardo Moreira </strong></p>
         <img
         src={useBaseUrl('/img/persona1.png')}
         alt="Persona Eduardo Moreira"

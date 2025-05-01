@@ -14,14 +14,14 @@ Carlos é um engenheiro de 35 anos com sólida experiência em projetos tecnoló
 
 
 <div style={{ textAlign: 'center' }}>
-  <p><strong>Figura X - Persona Carlos</strong></p>
+  <p><strong>Figura 1 - Persona Carlos</strong></p>
   <img
     src={useBaseUrl('/img/persona2.png')}
     alt="Persona Carlos Mendes"
     title="Persona Carlos Mendes"
     style={{ maxWidth: '80%', height: 'auto' }}
   />
-  <p>Fonte: Elaborado pelo grupo xxxxx (2025)</p>
+  <p>Fonte: Elaborado pelo grupo Rooster (2025)</p>
 </div>
 
 
