@@ -17,14 +17,77 @@ sidebar_position: 2
 &nbsp;Portanto, pode-se perceber que definição consciente de requisitos é o que torna possível elaborar escopos de projetos bem fundamentados e construir soluções relevantes e eficientes, alinhadas às necessidades e desejos do usuário. Para uma elaboração completa e compreensível, os requisitos são divididos em duas categorias: requisitos funcionais e requisitos não funcionais.
 
 
-### Requisitos Funcionais:
+### Requisitos Funcionais (RFs):
 
+Os Requisitos Funcionais (RFs) representam as funcionalidades do sistema, ou seja, o que ele deve fazer e como deve reagir em determinadas situações. Esses requisitos definem o comportamento esperado diante de entradas específicas, com base nas necessidades dos usuários e regras que precisam ser atendidas. É importante entender o que o sistema deve fazer, sem a preocupação, nesse momento, de detalhar como isso deve ser feito, pois esses requisitos servem de base para o entendimento entre clientes e desenvolvedores acerca do que o sistema deve oferecer.
 
+No contexto deste projeto, voltado à classificação de fissuras em fachadas por meio de imagens obtidas por drones e processadas com técnicas de machine learning, os requisitos funcionais são responsáveis por garantir que:
 
-Requisitos funcionais:
+- O sistema execute as atividades técnicas essenciais, como classificação automática de fissuras, armazenamento estruturado de dados e ordenação por geolocalização;
+- Os usuários especialistas possam visualizar, editar e validar os resultados gerados, garantindo padronização técnica;
+- A integração entre captura (drone), processamento (IA) e visualização (interface) ocorra de forma fluida e coerente.
 
+Os requisitos, em sua maioria, foram definidos com base direta nas user stories das personas Eduardo e Carlos, refletindo suas dores, desejos e necessidades reais. Essas funcionalidades dizem respeito à classificação automática, à consulta ao histórico e à possibilidade de validar os resultados manualmente.
 
-### Requisitos Não Funcionais
+No entanto, outros requisitos funcionais foram definidos a partir de discussões internas da equipe de projeto e interações com o parceiro, mesmo que não tenham sido explicitamente verbalizados por eles. Isso porque, muitas vezes, os usuários não têm clareza técnica sobre o que realmente precisam ou querem. Portanto, para tornar esses desejos concretos e viáveis, o grupo identificou funcionalidades que são fundamentais para que o sistema funcione de acordo com as expectativas do usuário e que seja de fato útil e eficiente para o contexto real do projeto.
+
+---
+#### RF 01 - Upload de Imagens  
+
+O sistema deve permitir o upload de imagens capturadas por drones ou câmeras manuais.
+
+---
+#### RF 02 - Classificação Automática  
+
+O sistema deve realizar a classificação automática das fissuras detectadas nas imagens em pelo menos dois tipos distintos.
+
+---
+#### RF 03 - Visualização de Imagens
+
+O sistema deve permitir a visualização da imagem original (sem tratamento).
+
+---
+#### RF 04 - Correção Manual da Classificação
+
+O sistema deve permitir que o usuário edite ou corrija a classificação técnica realizada automaticamente.
+
+---
+#### RF 05 - Processamento de imagem
+
+O sistema deve processar as imagens seguindo a ordem de captura baseada em um plano de voo predefinido (foto geral da fachada seguida das fissuras específicas dessa fachada).
+
+---
+#### RF 06 - Armazenamento de geolocalização 
+
+O sistema deve armazenar a geolocalização (coordenadas GPS) associada a cada imagem.
+
+---
+#### RF 07 - Ordenação por geolocalização
+
+O sistema deve permitir ordenar as imagens com base na geolocalização.
+
+---
+#### RF 08 - Agrupamento por Sequências de Captura
+
+O sistema deve identificar sequências de captura (foto geral + fachada detalhada) e agrupá-las logicamente para visualização e análise.
+
+---
+#### RF 09 - Histórico de Análises
+
+O sistema deve disponibilizar um histórico de classificações e análises por fachada, acessível por data e localização.
+
+---
+#### RF 10 - Armazenamento Estruturado 
+
+O sistema deve armazenar as imagens de forma estruturada em um banco de dados.
+
+---
+#### RF 11 - Visualização via Frontend
+
+O sistema deve disponibilizar os resultados da classificação em um frontend acessível que roda localmente no notebook.
+
+---
+### Requisitos Não Funcionais (RNFs):
 
 Os Requisitos Não Funcionais (RNFs) definem critérios de qualidade que o sistema deve atender, mesmo que não estejam diretamente ligados ao comportamento funcional ou às funcionalidades principais. Eles abrangem aspectos como desempenho, segurança, confiabilidade, usabilidade e integridade de dados.
 
