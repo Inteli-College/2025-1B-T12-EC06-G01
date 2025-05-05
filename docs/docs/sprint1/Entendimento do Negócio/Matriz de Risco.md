@@ -7,9 +7,9 @@ sidebar_position: 1
 
 ### Introdução
 
-A matriz de riscos e oportunidades é uma ferramenta essencial para a gestão estratégica de projetos, permitindo identificar, classificar e priorizar ameaças e oportunidades com base em sua probabilidade de ocorrência e impacto. 
+&emsp; A matriz de riscos e oportunidades é uma ferramenta essencial para a gestão estratégica de projetos, permitindo identificar, classificar e priorizar ameaças e oportunidades com base em sua probabilidade de ocorrência e impacto. 
 
-No contexto deste projeto – que visa o desenvolvimento de um algoritmo para detecção e monitoramento automatizado de fissuras em fachadas por meio de imagens capturadas por drones – essa análise vai nos auxíliar a previnir possíveis erros que possam afetar a solução, além de trazer alguns pontos positivos de oportunidades que podem vir junto com a solução, garantindo a viabilidade técnica e a qualidade do produto.
+&emsp; No contexto deste projeto – que visa o desenvolvimento de um algoritmo para detecção e monitoramento automatizado de fissuras em fachadas por meio de imagens capturadas por drones – essa análise vai nos auxíliar a previnir possíveis erros que possam afetar a solução, além de trazer alguns pontos positivos de oportunidades que podem vir junto com a solução, garantindo a viabilidade técnica e a qualidade do produto.
 
 A seguir, apresentamos a matriz de riscos e oportunidades elaborada para este projeto.
 
@@ -21,7 +21,7 @@ A seguir, apresentamos a matriz de riscos e oportunidades elaborada para este pr
 
 _Fonte: Os autores (2025)_
 
-A matriz acima posiciona cada item identificado de acordo com a **probabilidade** de ocorrência e o **impacto** que ele pode causar. Os quadrantes em vermelho destacam situações críticas que exigem atenção imediata, enquanto os quadrantes em verde representam pontos de baixa prioridade. Esse mapeamento orienta as ações de mitigação e aproveitamento de oportunidades ao longo do ciclo de vida do projeto.
+&emsp; A matriz acima posiciona cada item identificado de acordo com a **probabilidade** de ocorrência e o **impacto** que ele pode causar. Os quadrantes em vermelho destacam situações críticas que exigem atenção imediata, enquanto os quadrantes em verde representam pontos de baixa prioridade. Esse mapeamento orienta as ações de mitigação e aproveitamento de oportunidades ao longo do ciclo de vida do projeto.
 
 ---
 
@@ -62,6 +62,86 @@ A matriz acima posiciona cada item identificado de acordo com a **probabilidade*
 - **Impacto:** Baixo  
 - **Probabilidade:** Média (50%)
 
+## Plano de Mitigação de Riscos
+
+&emsp; Para garantir uma prevenção eficaz, vamos apresentar estratégias que podem ser utilizadas para evitar ou mitigar as ameaças descritas acima. Cada estratégia inclui ações específicas, sua forma de implementação e propostas de acompanhamento.
+
+### 1. Inconsistência nos dados de treinamento (rotulagem incorreta das fissuras)
+**Estratégia: Implementar um processo rigoroso de validação dos dados rotulados.**
+
+**Implementação:**
+- Estabelecer um protocolo de "rotulação" com diretrizes claras;
+- Envolver os especialistas na rotulgem estruturação do banco de dados, além de aplicar uma análise de concordância;
+
+**Acompanhamento:**
+- Verificações periódicas das respostas (verificar se ainda fazem sentido);
+- Verificar a atualização dos dados do banco de dados.
+
+### 2. Limitações do modelo ao generalizar fissuras em diferentes tipos de revestimento
+**Estratégia: Diversificar o conjunto de dados de treinamento**
+
+**Implementação:**
+- Coleta de imagens em diferentes tipos de revestimento e condições de iluminação;
+- Aplicação de técnicas como rotação, contraste e ruído para simular variações;
+- Avaliação de desempenho por categoria "situação".
+
+**Acompanhamento:**
+- Métricas específicas por tipo de superfície que mostram se o modelo está dentro de uma area aceitável de acertos;
+- Inclusão em um relatório feito pelos especíalistas.
+
+### 3. Erro de classificação na análise de imagem (fissura confundida com sombra, sujeira ou textura)
+**Estratégia: Refinar o modelo com foco em robustez contra ruído visual + opção de remoção de imagens ruins.**
+
+**Implementação:**
+- Adcionar opção no software de reavalição e remoção de imagens problemáticas;
+- Inclusão de imagens com sombras, sujeiras e texturas no treinamento.
+
+**Acompanhamento:**
+- Inclusão em um relatório feito pelos especíalistas.
+
+### 4. Dificuldade de padronizar critérios de gravidade das fissuras entre especialistas
+**Estratégia: Construir uma "guideline" consensual entre os técnicos.**
+
+**Implementação:**
+- Envolver os especialistas na criação dos critérios de gravidade do banco de dados;
+- Estabelecer um protocolo de "rotulação" com diretrizes claras.
+
+**Acompanhamento:**
+- Inclusão em um relatório feito pelos especíalistas;
+- Atualização dos critérios se necessário.
+
+### 5. Restrição de uso e distribuição por acordos de confidencialidade e controle governamental
+**Estratégia: Mapear as restrições legais desde o início e aplicar políticas de compliance.**
+
+ **Implementação:**
+- Seguir a LGPD de maneira metódica;
+- Consultar leis e pesquisar tudo que pode se encaixar no projeto.
+
+**Acompanhamento:**
+- Rever regras que podem ser afetadas a cada nova versão da solução.
+
+### 6. Interface gráfica confusa ou pouco intuitiva para os usuários finais
+**Estratégia: Aplicar princípios de UX/UI desde as primeiras etapas de design.**
+
+**Implementação:**
+- Realização de testes de usabilidade com técnicos (os usuários reais);
+- Planejar tudo com protótipos navegáveis (ex: Figma);
+
+**Acompanhamento:**
+- Coleta de métricas de uso (cliques, tempo de tarefa);
+- Formulários de satisfação e sugestões dentro da aplicação.
+
+### 7. Demora na resposta do site relacionado ao upload/envio de imagens
+**Estratégia: Otimizar processos de upload e uso de processamento.**
+
+**Implementação:**
+- Compressão de imagens no front-end sem perda crítica de qualidade;
+- Exibir barra de progresso ou notificações enquanto o processamento ocorre.
+
+**Acompanhamento:**
+- Monitoramento de tempo de resposta;
+- Alertas de desempenho quando os tempos excederem limites definidos.
+
 ---
 
 ## Oportunidades
@@ -90,8 +170,8 @@ A matriz acima posiciona cada item identificado de acordo com a **probabilidade*
 
 ### Considerações Finais
 
-A matriz de riscos e oportunidades nos permitiu antecipar desafios críticos, como limitações técnicas do modelo e a dependência de dados de qualidade, ao mesmo tempo em que revelou possibilidades de evolução contínua e uso estratégico da base de dados do IPT. Além disso, em outra nota, trouxe a nós uma nova atenção a detalhes que exigiram pesquisa e preparo, relacionados desde partes da solução a possíveis burocracias governamentais que talvez tivéssemos que acatar.
+&emsp; A matriz de riscos e oportunidades nos permitiu antecipar desafios críticos, como limitações técnicas do modelo e a dependência de dados de qualidade, ao mesmo tempo em que revelou possibilidades de evolução contínua e uso estratégico da base de dados do IPT. Além disso, em outra nota, trouxe a nós uma nova atenção a detalhes que exigiram pesquisa e preparo, relacionados desde partes da solução a possíveis burocracias governamentais que talvez tivéssemos que acatar.
 
-Com essa visão estruturada, é possível orientar decisões mais assertivas, desde o desenvolvimento até a aplicação prática da solução.
+&emsp; Com essa visão estruturada, é possível orientar decisões mais assertivas, desde o desenvolvimento até a aplicação prática da solução.
 
-A adoção de estratégias de mitigação para os riscos mais críticos e o investimento em oportunidades de melhoria contínua serão essenciais para garantir que o produto final atenda as nessecidades nosso cliente.
+&emsp; A adoção de estratégias de mitigação para os riscos mais críticos e o investimento em oportunidades de melhoria contínua serão essenciais para garantir que o produto final atenda as nessecidades nosso cliente.
