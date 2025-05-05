@@ -1,10 +1,10 @@
 ---
 sidebar_position: 6
-title: Arquitetura da informação
+title: Arquitetura da Informação
 id: arquitetura-da-informacao
 ---
 
-# Arquitetura da informação
+# Arquitetura da Informação
 
 A arquitetura da informação é uma disciplina fundamental na engenharia de software, responsável por estruturar e organizar os componentes de um sistema de forma lógica e eficiente. Entre as diversas ferramentas utilizadas para essa finalidade, destacam-se os diagramas de sequência e os diagramas de contexto, que auxiliam na visualização e compreensão das interações e estruturas do sistema.
 
