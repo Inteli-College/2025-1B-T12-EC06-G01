@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "dxX1KWem3mgVB6gnOVzpEBEVgMl+feNkPR+V3AdktE0=",
+  "Source": "localApi",
+  "BasePath": "_content/localApi",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
