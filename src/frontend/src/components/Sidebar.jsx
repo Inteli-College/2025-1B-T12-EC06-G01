@@ -47,8 +47,15 @@ const Recente = styled.div`
     color: #8F8F8F;
   }
 
-  p {
+  a {
     margin: 0.3rem ;
+    text-decoration: none;
+    color: #000;
+    cursor: pointer;
+  }
+
+  a:hover {
+    text-decoration: underline;
   }
 `
 
@@ -111,17 +118,17 @@ export default function Sidebar() {
       <section>
         <Recente>
           <IoMdDocument />
-          <p>Lorem ipsum dolor sit amet</p>
+          <a href='/'>Lorem ipsum dolor sit amet</a>
         </Recente>
 
         <Recente>
           <IoMdDocument />
-          <p>Lorem ipsum dolor sit amet</p>
+          <a href='/'>Lorem ipsum dolor sit amet</a>
         </Recente>
 
         <Recente>
           <IoMdDocument />
-          <p>Lorem ipsum dolor sit amet</p>
+          <a href='/'>Lorem ipsum dolor sit amet</a>
         </Recente>
       </section>
 
