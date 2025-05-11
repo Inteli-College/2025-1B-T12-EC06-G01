@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/inteli/Documentos/2025-1B-T12-EC06-G01/src/localApi/localApi.csproj": {}
+    "/home/inteli/Inteli/projetos02/ipt/2025-1B-T12-EC06-G01/src/localApi/localApi.csproj": {}
   },
   "projects": {
-    "/home/inteli/Documentos/2025-1B-T12-EC06-G01/src/localApi/localApi.csproj": {
+    "/home/inteli/Inteli/projetos02/ipt/2025-1B-T12-EC06-G01/src/localApi/localApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/inteli/Documentos/2025-1B-T12-EC06-G01/src/localApi/localApi.csproj",
+        "projectUniqueName": "/home/inteli/Inteli/projetos02/ipt/2025-1B-T12-EC06-G01/src/localApi/localApi.csproj",
         "projectName": "localApi",
-        "projectPath": "/home/inteli/Documentos/2025-1B-T12-EC06-G01/src/localApi/localApi.csproj",
+        "projectPath": "/home/inteli/Inteli/projetos02/ipt/2025-1B-T12-EC06-G01/src/localApi/localApi.csproj",
         "packagesPath": "/home/inteli/.nuget/packages/",
-        "outputPath": "/home/inteli/Documentos/2025-1B-T12-EC06-G01/src/localApi/obj/",
+        "outputPath": "/home/inteli/Inteli/projetos02/ipt/2025-1B-T12-EC06-G01/src/localApi/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/inteli/.nuget/NuGet/NuGet.Config"

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "YvLu+P/R0LxAZXbiXp/Hbc0BMV8+r/TYO2q3Pp+22enKSQEUbUB68d757sYTGXteq+AxabeSC+wvEq+s71NRPg==",
+  "dgSpecHash": "f9kz/biW6vm3MF+V2pTb7ic4I5l9xbHtyq6ngTbv281U8DUrvQusgrkRvUzgOPaE4W786v8I8l4sVoQQ5Tkx5g==",
   "success": true,
-  "projectFilePath": "/home/inteli/Documentos/2025-1B-T12-EC06-G01/src/localApi/localApi.csproj",
+  "projectFilePath": "/home/inteli/Inteli/projetos02/ipt/2025-1B-T12-EC06-G01/src/localApi/localApi.csproj",
   "expectedPackageFiles": [
     "/home/inteli/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/home/inteli/.nuget/packages/microsoft.bcl.asyncinterfaces/7.0.0/microsoft.bcl.asyncinterfaces.7.0.0.nupkg.sha512",
