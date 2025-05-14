@@ -1,10 +1,13 @@
-from flask import Blueprint, jsonify, request
-from app.Controllers import 
+from flask import Blueprint, request
+from app.Controllers.ClassifyController import ClassifyController
 
-classify_route_bp = Blueprint("classify", __name__, url_prefix="/classify")
+classify_inst = ClassifyController()
 
-@classify_route_bp("/", methods=["POST"])
+classify_bp = Blueprint("classify", __name__, url_prefix="/classify")
+
+@classify_bp.route("/", methods=["POST"])
 def classify_route():
     data = request.json
+    return classify_inst.postClassify(data)
     
 
