@@ -62,21 +62,21 @@ const CheckboxWrapper = styled.label`
 
 const ImagemCard = styled.div`
   width: 100%;
-  height: 70%;
+  margin-top: .8rem;
+  height: 80%;
   backgroung-color: #fff;
 `
 
-export default function CardImg() {
+export default function CardImg({ img_name, url }) {
   const [checked, setChecked] = useState(false);
 
   return (
     <Card>
       <div className='topo-card-img'>
-        <p width="80%">Título da imagem</p>
+        <p width="80%">{img_name}</p>
         <CheckboxWrapper>
           <input
             type="checkbox"
-            id="myCheckbox"
             checked={checked}
             onChange={() => setChecked(!checked)}
           />
@@ -84,7 +84,9 @@ export default function CardImg() {
         </CheckboxWrapper>
       </div>
 
-      <div style={{ width: '100%', height: '87%', backgroundColor: '#fff' }} />
+      <ImagemCard>
+        <img src={url} alt="sim" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+      </ImagemCard>
     </Card>
-  )
+  );
 }
