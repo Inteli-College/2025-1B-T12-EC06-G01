@@ -3,13 +3,13 @@ import styled from 'styled-components'
 import CardImg from './CardImg'
 
 const Container = styled.div`
-    width: 82vw;
+    width: 77vw;
     margin-left: 18vw;
     padding: 2.5rem;
 
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    gap: 2.5rem;
+    gap: 2rem;
 `
 
 export default function ImgSection() {
