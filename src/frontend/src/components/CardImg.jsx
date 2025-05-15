@@ -3,22 +3,24 @@ import styled from 'styled-components'
 import { useState } from 'react'
 
 const Card = styled.div`
-    width: 90%;
+    position: relative;
+    width: 80%;
     height: 245px;
-    background-color: #8F8F8F;
+    background-color: #D0D4DC;
     padding: 1rem;
     border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 
     .topo-card-img {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-end;
       text-align: center;
-    }
-
-    p {
-      margin: 0;
-      margin-bottom: .5rem;
+      z-index: 3;
+      position: relative;
     }
 
     input[type=checkbox] {
@@ -34,7 +36,10 @@ const CheckboxWrapper = styled.label`
     cursor: pointer;
     gap: 8px;
     margin-bottom: .5rem;
-    z-index: 1;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 3;
 
     input[type="checkbox"] {
       display: none;
@@ -42,11 +47,16 @@ const CheckboxWrapper = styled.label`
     .custom-checkbox {
       width: 20px;
       height: 20px;
-      border: 2px solid #555;
+      border: 3px solid #3D4451;
       border-radius: 4px;
       background-color: white;
       position: relative;
-      background-color:rgb(112, 112, 112);
+      background-color: #69758C;
+      position: relative;
+    }
+
+    input[type="checkbox"]:checked + .custom-checkbox {
+      background-color: #BDE0EE;
     }
 
     input[type="checkbox"]:checked + .custom-checkbox::after {
@@ -56,24 +66,23 @@ const CheckboxWrapper = styled.label`
       top: -1px;
       font-size: 18px;
       color: white;
-      background-color: #545454;
     }
 `
 
 const ImagemCard = styled.div`
   width: 100%;
-  margin-top: .8rem;
-  height: 80%;
+  height: 95%;
   backgroung-color: #fff;
+  object-fit: cover;
+  z-index: 1;
 `
 
-export default function CardImg({ img_name, url }) {
+export default function CardImg({ url }) {
   const [checked, setChecked] = useState(false);
 
   return (
     <Card>
       <div className='topo-card-img'>
-        <p width="80%">{img_name}</p>
         <CheckboxWrapper>
           <input
             type="checkbox"
