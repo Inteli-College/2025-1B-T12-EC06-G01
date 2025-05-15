@@ -5,19 +5,20 @@ class ImageRepository:
     @staticmethod
     def delete_images_by_ids(image_ids):
         try:
-            # First check if any of the images exist
+            # Find the images
             existing_images = Image.query.filter(Image.id.in_(image_ids)).all()
             if not existing_images:
                 return 0  # Return 0 if no images found
             
-            # Get the IDs of existing images
-            existing_ids = [img.id for img in existing_images]
+            count = len(existing_images)
             
-            # Delete only the existing images
-            result = Image.query.filter(Image.id.in_(existing_ids)).delete(synchronize_session=False)
+            # Delete each image using session.delete() which will trigger cascade
+            for image in existing_images:
+                db.session.delete(image)
+                
             db.session.commit()
             
-            return result  # Return the number of deleted images
+            return count  # Return the number of deleted images
         except Exception as e:
             db.session.rollback()
-            raise e 
+            raise e
