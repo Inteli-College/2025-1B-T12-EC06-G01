@@ -20,8 +20,10 @@ def create_app():
     # Import blueprints here to avoid circular imports
     from app.Routes.ClassifyRoute import classify_bp
     from app.Routes.ImageRoute import image_bp
-    
+    from app.Routes.ProjectRoutes import project_blueprint
+
     app.register_blueprint(classify_bp)
     app.register_blueprint(image_bp)
-    
+    app.register_blueprint(project_blueprint)
+
     return app
