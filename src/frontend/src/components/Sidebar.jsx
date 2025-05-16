@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
 import { IoIosAdd } from "react-icons/io"
 import { FaRegUserCircle, FaUpload, FaFolder } from "react-icons/fa"
+import { IoExitOutline } from "react-icons/io5"
 import logo from '../logo.svg'
 
 const Container = styled.div`
@@ -41,7 +42,6 @@ const BntMaior = styled.button`
   span, svg {
     font-size: 32px;
     color: #fff;
-    text-transform: uppercase;
     text-align: center;
   }
 
@@ -83,7 +83,6 @@ const BtnMenor = styled.button`
   border: 5px solid #145E7A;
   color: #fff;
   font-size: 28px;
-  text-transform: uppercase;
   
   transition: background-color 0.3s ease; 
 
@@ -125,8 +124,8 @@ const Perfil = styled.div`
     cursor: pointer; 
   }
 
-  p {
-    text-transform: uppercase;
+  svg {
+    color: #fff;
   }
 `
 
@@ -180,7 +179,7 @@ const Popup = styled.div`
   }
 `
 
-export default function Sidebar() {
+export default function Sidebar(props) {
 
   const [showPopup, setShowPopup] = useState(false);
 
@@ -188,11 +187,20 @@ export default function Sidebar() {
     setShowPopup(!showPopup)
   }
 
-  const project = {
-    name: '',
-    contractor: '',
-    date: ''
-  }
+  const nameRef = useRef();
+  const contractorRef = useRef();
+  const dateRef = useRef();
+
+  const { project, setProject } = props
+
+  const handleConclude = () => {
+    setProject({
+      name: nameRef.current.value,
+      contractor: contractorRef.current.value,
+      date: dateRef.current.value
+    });
+    togglePopup();
+  };
 
   return (
     <Container>
@@ -206,18 +214,18 @@ export default function Sidebar() {
         <Popup>
           <div>
             <h3>Nome do projeto</h3>
-            <input type='text' placeholder='Nome do projeto' onChange={(e) => (project.name = e.target.value)} />
+            <input type='text' placeholder='Nome do projeto' ref={nameRef} />
 
             <h3>Nome do contratante</h3>
-            <input type='text' placeholder='Nome do contratante' onChange={(e) => (project.contractor = e.target.value)} />
+            <input type='text' placeholder='Nome do contratante' ref={contractorRef} />
 
             <h3> Data</h3>
-            <input type='date' onChange={(e) => (project.date = e.target.value)} />
+            <input type='date' ref={dateRef} />
 
             <div>
               <FaUpload />
             </div>
-            <button onClick={togglePopup}>concluir</button>
+            <button onClick={handleConclude}>concluir</button>
           </div>
         </Popup>
       )}
@@ -253,7 +261,7 @@ export default function Sidebar() {
           <br />
           ID:12345
         </p>
-        <button>bnt</button>
+        <button><IoExitOutline /></button>
       </Perfil>
 
     </Container>

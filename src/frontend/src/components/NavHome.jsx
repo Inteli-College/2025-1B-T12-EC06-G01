@@ -25,18 +25,15 @@ const Infos = styled.div`
     }
 
     .filtros input, select {
-        color: #fff;
-        background-color: #8F8F8F;
-        border: none;
-        padding: .8rem .5rem;
+        border: 1px solid lightgray;
+        padding: .5rem;
         border-radius: 12px;
     }
 
     h3 {
-        color: #fff;
-        background-color: #6F6F6F;
         width: 80%;
         padding: .5rem;
+        font-size: 40px;
     }
 `
 
@@ -49,25 +46,36 @@ const Botoes = styled.div`
     button {
         height: 70%;
         width: 5rem;
-        border: none;
+        border: 3px solid #0A3B4E;
         border-radius: 15px;
-        background-color: #8F8F8F;
+        background-color: #629EBC;
         color: #fff;
     }
 
     button:hover {
-        background-color: #6f6f6f;
+        background-color: #3D80A3;
         cursor: pointer;
     }
 
     svg {
         font-size: 1.5rem;
     }
+
+    .send-button {
+        width: 12rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        padding: 1rem;
+    }
+
+    .send-button span {
+        font-size: 36px;
+    }
 `
 
-export default function NavHome() {
+export default function NavHome({ projectName }) {
 
-    const [projectName, setProjectName] = useState('Nome do projeto')
     const [dateFilter, setDateFilter] = useState(null)
     const [optionFilter, setOptionFilter] = useState('')
     const [latitudeFilter, setLatitudeFilter] = useState('')
@@ -76,7 +84,8 @@ export default function NavHome() {
     return (
         <Nav>
             <Infos>
-                <h3>{projectName}</h3>
+                {projectName === '' ? <h3>Adicione um projeto</h3> : <h3>{projectName}</h3>}
+
                 <div className='filtros'>
                     <input type='date' onChange={(e) => setDateFilter(e.target.value)} />
                     <select onChange={(e) => setOptionFilter(e.target.value)} >
@@ -91,7 +100,7 @@ export default function NavHome() {
             <Botoes>
                 <button> <FaTrash /> </button>
                 <button> <FaPaintBrush /> </button>
-                <button> <IoSend /> </button>
+                <button className='send-button'> <span>Enviar</span> <IoSend /> </button>
             </Botoes>
         </Nav>
     )

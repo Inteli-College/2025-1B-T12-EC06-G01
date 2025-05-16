@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Sidebar from '../components/Sidebar'
 import ImgSection from '../components/ImgSection'
 import NavHome from '../components/NavHome'
@@ -15,11 +15,17 @@ const Body = styled.div`
 `
 
 export default function Home() {
+  const [project, setProject] = useState({
+    name: '',
+    contractor: '',
+    date: ''
+  })
+
   return (
     <Homepage>
-      <Sidebar />
+      <Sidebar project={project} setProject={setProject} />
       <Body>
-        <NavHome />
+        <NavHome projectName={project.name} />
         <ImgSection />
       </Body>
 
