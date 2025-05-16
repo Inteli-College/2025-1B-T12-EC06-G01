@@ -6,5 +6,5 @@ class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     contractor = db.Column(db.String, nullable=False)
-    date = db.Column(db.DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+    date = db.Column(db.String, nullable=False, default=lambda : datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     images = db.relationship('Image', back_populates='project', cascade='all, delete-orphan')
