@@ -27,10 +27,12 @@ def create_app():
     from app.Models.log import Log
     from app.Models.project import Project
     from app.Models.user import User
+    from app.Routes.ImageCleanRoutes import image_clean_blueprint
 
 
     from app.Routes.ClassifyRoute import classify_bp
     app.register_blueprint(classify_bp)
+    app.register_blueprint(image_clean_blueprint)
 
 
     return app
