@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { IoMdDocument } from "react-icons/io"
-import { FaRegUserCircle } from "react-icons/fa"
+import { FaRegUserCircle, FaUpload } from "react-icons/fa"
 
 const Container = styled.div`
   width: 18vw;
@@ -108,12 +108,94 @@ const Perfil = styled.div`
   }
 `
 
+const Popup = styled.div`
+  background-color: #8F8F8F;
+  padding: 2rem;
+  border-radius: 20px;
+  color: #fff;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  z-index: 1000;
+  position: fixed;
+  top: 21%;
+
+  h3 {
+    margin: .5rem 0;
+  }
+
+  input {
+    background-color: #D7D7D7;
+    border: none;
+  }
+
+  input:hover {
+    border: 2px solid #6f6f6f;
+  }
+
+  button {
+    border: none;
+    border-radius: 10px;
+    padding: .3rem;
+  }
+
+  button:hover {
+    background-color: #6f6f6f; 
+    cursor: pointer; 
+    color: #fff;
+  }
+
+  svg {
+    margin: 1rem 0;
+    font-size: 1rem;
+  }
+
+  svg:hover {
+    font-size: 2rem;
+  }
+`
+
 export default function Sidebar() {
+
+  const [showPopup, setShowPopup] = useState(false);
+
+  const togglePopup = () => {
+    setShowPopup(!showPopup)
+  }
+
+  const project = {
+    name: '',
+    contractor: '',
+    date: ''
+  }
+
   return (
     <Container>
       <div style={{ width: '80%', height: 100, backgroundColor: '#fff' }} />
 
-      <BntMaior>Botão</BntMaior>
+      <BntMaior onClick={togglePopup}>Adicionar Projeto</BntMaior>
+      {showPopup && (
+        <Popup>
+          <div>
+            <h3>Nome do projeto</h3>
+            <input type='text' placeholder='Nome do projeto' onChange={(e) => (project.name = e.target.value)} />
+
+            <h3>Nome do contratante</h3>
+            <input type='text' placeholder='Nome do contratante' onChange={(e) => (project.contractor = e.target.value)} />
+
+            <h3> Data</h3>
+            <input type='date' onChange={(e) => (project.date = e.target.value)} />
+
+            <div>
+              <FaUpload />
+            </div>
+            <button onClick={togglePopup}>concluir</button>
+          </div>
+        </Popup>        
+      )}
 
       <section>
         <Recente>
