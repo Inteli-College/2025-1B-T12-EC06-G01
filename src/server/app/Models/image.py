@@ -16,3 +16,6 @@ class Image(db.Model):
 
     project = db.relationship('Project', back_populates='images')
     logs = db.relationship('Log', back_populates='image', cascade='all, delete-orphan')
+
+    def __repr__(self):
+        return f'<Image {self.id}>'
