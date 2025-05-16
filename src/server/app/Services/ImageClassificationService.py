@@ -1,37 +1,28 @@
-import os
-import requests
-import tempfile
+# app/Services/ImageClassificationService.py
+from typing import Dict
 from app.Services.ImageFilterService import ImageFilterService
-# from app.classifier import ModelClassifier   # classe do modelo para importar
+from app.Repositories.ClassificationRepository import ClassificationRepository
 
 class ImageClassificationService:
+    """
+    Orquestra pegar as URLs filtradas e chamar o repositório de classificação.
+    """
     def __init__(self):
         self.filter_svc     = ImageFilterService()
-        # self.classifier     = ModelClassifier()
+        self.classify_repo  = ClassificationRepository()
 
     def classify_project_images(
         self,
         project_id: int,
         start_date: str = None,
         end_date:   str = None
-    ) -> dict:
-        # 1) pega a lista filtrada
+    ) -> Dict[str, dict]:
+        # 1) pega lista de imagens já serializadas pelo filter service
         images = self.filter_svc.filter_images(project_id, start_date, end_date)
 
-        # 2) cria pasta temporária e baixa tudo lá
-        with tempfile.TemporaryDirectory() as tmpdir:
-            files = []
-            for img in images:
-                url      = img["raw_image"]
-                out_path = os.path.join(tmpdir, f"{img['id']}.jpg")
-                resp     = requests.get(url)
-                resp.raise_for_status()
-                with open(out_path, "wb") as f:
-                    f.write(resp.content)
-                files.append(out_path)
+        # 2) extrai só as URLs
+        urls = [img["raw_image"] for img in images]
 
-            # 3) chama o modelo passando o diretório
-            # result = self.classifier.classify_folder(tmpdir)
-
-        # 4) pasta é deletada ao sair do with
-        # return result
+        # 3) chama o repositório de classificação
+        result = self.classify_repo.classify_urls(urls)
+        return result

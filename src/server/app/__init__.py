@@ -18,8 +18,8 @@ def create_app():
 
     # registra rotas só depois do init
     from app.Routes.ClassifyRoute import classify_bp
-    from app.Routes.FilterRoute import filter_images_route
+    from app.Routes.FilterRoute import filter_bp
     app.register_blueprint(classify_bp)
-    app.register_blueprint(filter_images_route)
+    app.register_blueprint(filter_bp)
 
     return app
