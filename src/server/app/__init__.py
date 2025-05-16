@@ -1,17 +1,31 @@
 from flask import Flask
 from dotenv import load_dotenv
-from flask_sqlalchemy import SQLAlchemy
+load_dotenv()
 import os
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from app.config import Cloudinary
 
-# Cria o db global, que será importado pelos models
 db = SQLAlchemy()
+migrate = Migrate()
+cloud = Cloudinary()
 
 def create_app():
-    load_dotenv()
+    # Configuração do app
     app = Flask(__name__)
-
-    # carrega Config (inclui DATABASE_URL)
+    
+    
+    # Configuração com o banco
     app.config.from_object('app.config.Config')
+    db.init_app(app)
+    migrate.init_app(app, db)
+    cloud.init_app(app)
+
+    # Carregando os Models
+    from app.Models.image import Image
+    from app.Models.log import Log
+    from app.Models.project import Project
+    from app.Models.user import User
 
     # associa o db ao app
     db.init_app(app)
