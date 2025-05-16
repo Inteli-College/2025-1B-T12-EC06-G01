@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, current_app
 from app.Controllers.ImageCleanController import ImageCleanController
 
 # Cria um Blueprint para as rotas de limpeza de imagem
@@ -11,6 +11,7 @@ image_clean_controller = ImageCleanController()
 def clean_image(image_id):
     """
     Limpa os dados de imagem (raw_image e fresh_img) para uma imagem específica
+    e deleta as imagens correspondentes do Cloudinary
     ---
     parameters:
       - name: image_id
@@ -20,7 +21,7 @@ def clean_image(image_id):
         description: ID da imagem a ser limpa
     responses:
       200:
-        description: Imagem limpa com sucesso
+        description: Imagem limpa com sucesso e removida do Cloudinary
       404:
         description: Imagem não encontrada
       500:
@@ -30,8 +31,13 @@ def clean_image(image_id):
         # Chama o controller para limpar a imagem
         response, status_code = image_clean_controller.clean_image(image_id)
         
+        # Registrar resultado da operação nos logs
+        if status_code == 200:
+            current_app.logger.info(f"Imagem {image_id} limpa com sucesso e removida do Cloudinary")
+        
         return jsonify(response), status_code
     except Exception as e:
+        current_app.logger.error(f"Erro ao processar limpeza da imagem {image_id}: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
 # Para registrar este blueprint no seu app:

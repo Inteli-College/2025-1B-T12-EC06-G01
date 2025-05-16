@@ -7,6 +7,7 @@ class ImageCleanController:
     def clean_image(self, image_id):
         """
         Controller para limpar os dados de imagem (raw_image e fresh_img)
+        e deletar as imagens correspondentes do Cloudinary
         
         Args:
             image_id (int): ID da imagem a ser limpa
@@ -19,7 +20,7 @@ class ImageCleanController:
                 return {"error": "ID da imagem é obrigatório"}, 400
             
             # Chama o repositório para limpar a imagem
-            cleaned_image = self.image_clean_repository.clean_image_by_id(image_id)
+            cleaned_image, cloudinary_results = self.image_clean_repository.clean_image_by_id(image_id)
             
             if not cleaned_image:
                 return {"error": f"Imagem com ID {image_id} não encontrada"}, 404
@@ -35,7 +36,8 @@ class ImageCleanController:
                     "longitude": str(cleaned_image.longitude) if cleaned_image.longitude else None,
                     "fissure_type": cleaned_image.fissure_type,
                     "veredict": cleaned_image.veredict
-                }
+                },
+                "cloudinary_operations": cloudinary_results
             }, 200
         except Exception as e:
             return {"error": str(e)}, 500
