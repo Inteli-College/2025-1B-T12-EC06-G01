@@ -12,7 +12,8 @@ const Container = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  background-color: #D9D9D9;
+  background-color: #DCDFE5;
+  box-shadow: 2px 0px 12px 2px rgba(0, 0, 0, 0.25);
 
   display: flex;
   flex-direction: column;
@@ -130,19 +131,19 @@ const Perfil = styled.div`
 `
 
 const Popup = styled.div`
-  background-color: #8F8F8F;
+  background-color: #3D80A3;
+  width: 15vw;
   padding: 2rem;
+  border: 5px solid #2E2E2E;
   border-radius: 20px;
   color: #fff;
 
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
 
-  z-index: 1000;
   position: fixed;
   top: 21%;
+  left: 1%;
 
   h3 {
     margin: .5rem 0;
@@ -151,31 +152,55 @@ const Popup = styled.div`
   input {
     background-color: #D7D7D7;
     border: none;
+    width: 90%;
   }
 
-  input:hover {
-    border: 2px solid #6f6f6f;
+  #nome-projeto {
+    background-color: #BDE0EE;
+    height: 2rem;
+    border-radius: 15px;
+  }
+
+  #nome-contratante, #data {
+    background-color: #97C6D9;
+    height: 1.5rem;
+    border-radius: 15px;
+  }
+
+  .upload {
+    height: 10rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin: 1rem 0;
+    color: #BDE0EE;
+
+    background-color: #0A3B4E;
+    border: 5px solid #BDE0EE;
+    border-radius: 15px;
+  }
+
+  .upload svg {
+    margin: 1rem 0;
+    font-size: 3rem;
   }
 
   button {
-    border: none;
+    border: 5px solid #629EBC;
     border-radius: 10px;
     padding: .3rem;
+    background-color: #BDE0EE;
+    width: 70%;
+
+    font-size: 28px;
+    color: 0A3B4E;
   }
 
   button:hover {
-    background-color: #6f6f6f; 
+    background-color: #97C6D9; 
     cursor: pointer; 
-    color: #fff;
-  }
-
-  svg {
-    margin: 1rem 0;
-    font-size: 1rem;
-  }
-
-  svg:hover {
-    font-size: 2rem;
   }
 `
 
@@ -214,18 +239,22 @@ export default function Sidebar(props) {
         <Popup>
           <div>
             <h3>Nome do projeto</h3>
-            <input type='text' placeholder='Nome do projeto' ref={nameRef} />
+            <input type='text' ref={nameRef} id='nome-projeto' />
 
             <h3>Nome do contratante</h3>
-            <input type='text' placeholder='Nome do contratante' ref={contractorRef} />
+            <input type='text' ref={contractorRef} id='nome-contratante' />
 
             <h3> Data</h3>
-            <input type='date' ref={dateRef} />
+            <input type='date' ref={dateRef} id='data' />
 
-            <div>
+            <div className='upload'>
               <FaUpload />
+              Importar
             </div>
-            <button onClick={handleConclude}>concluir</button>
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <button onClick={handleConclude}>Enviar</button>
+            </div>
+
           </div>
         </Popup>
       )}
