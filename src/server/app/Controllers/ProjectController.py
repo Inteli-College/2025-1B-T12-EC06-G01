@@ -3,19 +3,22 @@ from datetime import datetime
 from app import db
 from app.Models.project import Project
 from app.Models.log import Log
-from flask import jsonify
 
 
 class ProjectController:
-    def __init__(self):
+    def __init__(self, data, images):
+        self.data = data
+        self.images = images
         pass
 
-    def post_project(self, data, images):
+    def post_project(self):
 
         try:
-            nome = data['name']
-            contratante = data['contractor']
-            date = data['date'] if data['date'] else str(datetime.now())
+            nome = self.data['name']
+            contratante = self.data['contractor']
+            date = self.data['date'] if self.data['date'] else str(datetime.now())
+
+            
 
         except Exception as e:
             print("[ProjectController] Erro ao receber requisição! 400")
@@ -25,6 +28,8 @@ class ProjectController:
             new = Project(nome=nome, contractor=contratante, date=date)
             db.session.add(new)
             db.session.commit()
+
+
             return {
                 "id": new.id,
                 "nome": new.nome,

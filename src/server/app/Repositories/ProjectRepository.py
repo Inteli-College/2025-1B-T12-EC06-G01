@@ -3,6 +3,7 @@
 class ProjectRepository:
     def __init__(self):
         pass
-
-    def create_project(self):
+    
+    @staticmethod
+    def create_project():
         pass

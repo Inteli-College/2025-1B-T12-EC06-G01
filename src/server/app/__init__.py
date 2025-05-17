@@ -23,14 +23,12 @@ def create_app():
     cloud.init_app(app)
 
     # Carregando os Models
+    from app.Models.project import Project
+    from app.Models.building import Building
     from app.Models.image import Image
     from app.Models.log import Log
-    from app.Models.project import Project
     from app.Models.user import User
-
-
-    from app.Routes.ClassifyRoute import classify_bp
-    app.register_blueprint(classify_bp)
+    
 
 
     return app
