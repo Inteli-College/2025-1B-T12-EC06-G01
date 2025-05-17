@@ -1,44 +1,37 @@
 from app.Repositories.ProjectRepository import ProjectRepository
 from datetime import datetime
-from app import db
-from app.Models.project import Project
-from app.Models.log import Log
+from app.Services.LogService import log_service
 
 
 class ProjectController:
-    def __init__(self, data, images):
-        self.data = data
-        self.images = images
+    def __init__(self):
+        self.project_repo = ProjectRepository()
         pass
 
-    def post_project(self):
+    def post_project(self, data):
 
         try:
-            nome = self.data['name']
-            contratante = self.data['contractor']
-            date = self.data['date'] if self.data['date'] else str(datetime.now())
-
-            
+            nome = data['name']
+            contratante = data['contractor']
+            date = data['date'] if data['date'] else str(datetime.now())           
 
         except Exception as e:
             print("[ProjectController] Erro ao receber requisição! 400")
             return {"code": 400, "message": e}, 400
-        
-        try:
-            new = Project(nome=nome, contractor=contratante, date=date)
-            db.session.add(new)
-            db.session.commit()
 
+        new, code = self.project_repo.create_project(nome=nome, contratante=contratante, date=date)
 
+        if code != 500:
             return {
                 "id": new.id,
-                "nome": new.nome,
+                "nome": new.name,
                 "contractor": new.contractor,
                 "date": new.date
-            }, 201
+            }, code
         
-        except Exception as e:
-            print("[ProjectController] Erro ao criar novo registro! 500")
-            return {"code": 500, "message": e}, 500
+        else:
+            print("AQUI MEU BENZINHO", new)
+            return {"code": code, "message": new}, code
+            
 
 

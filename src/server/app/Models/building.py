@@ -9,3 +9,4 @@ class Building(db.Model):
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
 
     project = db.relationship('Project', back_populates='building')
+    images = db.relationship('Image', back_populates='building')

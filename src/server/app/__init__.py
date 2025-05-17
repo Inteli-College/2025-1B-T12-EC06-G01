@@ -29,6 +29,8 @@ def create_app():
     from app.Models.log import Log
     from app.Models.user import User
     
-
+    #Registrando Blueprints
+    from app.Routes.ProjectRoute import project_bp
+    app.register_blueprint(project_bp)
 
     return app
