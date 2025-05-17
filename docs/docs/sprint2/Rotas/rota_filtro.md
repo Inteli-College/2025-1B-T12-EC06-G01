@@ -8,7 +8,7 @@ sidebar_position: 1
 Essa rota foi pensada com base nas user stories e wireframes elaborados, possuindo como objetivo ser possível o usuário filtrar as imagens que ele adicionou por data e em ordem crescente ou decrescente. Nesse sentido, segue abaixo o wireframe relacionado ao desenvolvimento dessa rota:
 
 
-![Wireframe da tela de x](../../../static/img/BMC_IPT.png)
+![Wireframe da tela revisão de imagens](../../../static/img/wireframe_tela_review.png)
 
 
 

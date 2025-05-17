@@ -7,7 +7,7 @@ sidebar_position: 2
 
 Essa rota foi pensada com base nas user stories e wireframes elaborados, possuindo como objetivo desenvolver a lógica de negócios necessárias para a plena ativação do modelo, sendo acionado quando o usuário selecionar o botão de "Enviar". Nesse sentido, segue abaixo o wireframe relacionado ao desenvolvimento dessa rota:
 
-![Wireframe da tela x](../../../static/img/BMC_IPT.png)
+![Wireframe da tela de revisão de imagens](../../../static/img/wireframe_tela_review.png)
 
 ## **Endpoint:** `/projects/<int:project_id>/classify/images`
 
