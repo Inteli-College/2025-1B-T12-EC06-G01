@@ -2,7 +2,7 @@ from ultralytics import YOLO
 import os
 
 # Caminho para o seu modelo treinado
-model = YOLO("C:/Users/pietr/Documents/modulo6/2025-1B-T12-EC06-G01/runs/classify/train4/weights/best.pt")
+model = YOLO("C:/Users/pietr/Documents/modulo6/2025-1B-T12-EC06-G01/runs/classify/train5/weights/best.pt")
 
 # Caminho para as imagens modificadas
 test_folder = "C:/Users/pietr/Documents/modulo6/generalizacao"
