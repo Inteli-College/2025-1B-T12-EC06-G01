@@ -187,6 +187,10 @@ const Popup = styled.div`
     font-size: 3rem;
   }
 
+  .upload:hover {
+    cursor: pointer;
+  }
+
   button {
     border: 5px solid #629EBC;
     border-radius: 10px;
@@ -205,18 +209,18 @@ const Popup = styled.div`
 `
 
 export default function Sidebar(props) {
-
   const [showPopup, setShowPopup] = useState(false);
+  const [tempImages, setTempImages] = useState([]); 
 
   const togglePopup = () => {
-    setShowPopup(!showPopup)
-  }
+    setShowPopup(!showPopup);
+  };
 
   const nameRef = useRef();
   const contractorRef = useRef();
   const dateRef = useRef();
 
-  const { project, setProject } = props
+  const { project, setProject, setUploadedImages } = props;
 
   const handleConclude = () => {
     setProject({
@@ -224,17 +228,24 @@ export default function Sidebar(props) {
       contractor: contractorRef.current.value,
       date: dateRef.current.value
     });
+
+    if (tempImages.length > 0) {
+      setUploadedImages(prev => [...prev, ...tempImages]);
+      setTempImages([]);
+    }
+
     togglePopup();
   };
 
   return (
     <Container>
-      <img src={logo} width='45%' alt='ovo com rachadura' />
+      <img src={logo} width='30%' alt='ovo com rachadura' />
 
       <BntMaior onClick={togglePopup}>
         <span>Novo Projeto</span>
         <IoIosAdd />
       </BntMaior>
+
       {showPopup && (
         <Popup>
           <div>
@@ -247,14 +258,46 @@ export default function Sidebar(props) {
             <h3> Data</h3>
             <input type='date' ref={dateRef} id='data' />
 
-            <div className='upload'>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              style={{ display: 'none' }}
+              id="upload-image"
+              onChange={(e) => {
+                const files = Array.from(e.target.files);
+                const readers = files.map(file => {
+                  return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                      resolve({
+                        img_name: file.name,
+                        raw_img: reader.result,
+                        project: nameRef.current?.value || 'Sem nome'
+                      });
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                  });
+                });
+
+                Promise.all(readers).then(results => {
+                  setTempImages(results);
+                });
+              }}
+            />
+
+            <div
+              className="upload"
+              onClick={() => document.getElementById('upload-image').click()}
+            >
               <FaUpload />
               Importar
             </div>
+
             <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <button onClick={handleConclude}>Enviar</button>
             </div>
-
           </div>
         </Popup>
       )}
@@ -292,7 +335,7 @@ export default function Sidebar(props) {
         </p>
         <button><IoExitOutline /></button>
       </Perfil>
-
     </Container>
-  )
+  );
 }
+

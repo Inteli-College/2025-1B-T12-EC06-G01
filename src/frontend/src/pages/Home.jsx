@@ -21,12 +21,20 @@ export default function Home() {
     date: ''
   })
 
+  const [uploadedImages, setUploadedImages] = useState([])
+
   return (
     <Homepage>
-      <Sidebar project={project} setProject={setProject} />
+      <Sidebar
+        project={project}
+        setProject={setProject}
+        setUploadedImages={setUploadedImages}
+      />
+
+      
       <Body>
         <NavHome projectName={project.name} />
-        <ImgSection />
+        <ImgSection uploadedImages={uploadedImages} />
       </Body>
 
     </Homepage>
