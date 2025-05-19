@@ -16,43 +16,62 @@ const Container = styled.div`
         color: #969FB0;
     }
 
-    zsvg:hover {
+    svg:hover {
         font-size: 6rem;
         color: #69758C;
+    }
+
+    button {
+        height: 70%;
+        border: 3px solid #0A3B4E;
+        border-radius: 15px;
+        background-color: #629EBC;
+        color: #fff;
+        font-size: 1.5rem;
+    }
+
+    button:hover {
+        background-color: #3D80A3;
+        cursor: pointer;
     }
 `
 
 export default function ProjectSection({ projectName }) {
-      // ---- LÓGICA PARA PUXAR IMAGENS COM A ROTA DO BACK ----
-  // const [listOfBuildings, setListOfBuildings] = useState([]);
-  // let navigate = useNavigate();
+    // ---- LÓGICA PARA PUXAR IMAGENS COM A ROTA DO BACK ----
+    // const [listOfBuildings, setListOfBuildings] = useState([]);
+    // let navigate = useNavigate();
 
-  //   useEffect(() => {
-  //       axios.get('http://localhost:3001/predios').then((response) => {
-  //           setListOfBuildings(response.data)
-  //       })
-  //   }, [])
+    //   useEffect(() => {
+    //       axios.get('http://localhost:3001/predios').then((response) => {
+    //           setListOfBuildings(response.data)
+    //       })
+    //   }, [])
 
 
-  //lista de fachadas criada provisóriamente para teste
+    //lista de fachadas criada provisóriamente para teste
     const fachadas = [
         "Fachada Leste",
         "Fachada Oeste",
         "Fachada Norte",
         "Fachada Sul"
-      ]
-      
+    ]
 
-  return (
-    <Container>
-        {projectName === '' ? <h2>Escolha um projeto para acessar</h2> : fachadas.map((value) => {
-            return(
-                <div style={{textAlign: 'center'}}>
-                    <FaFolder />
-                    <p>{value}</p>
-                </div>
-            )
-        })}
-    </Container>
-  )
+
+    return (
+        <Container>
+            {projectName === '' ? (
+                <h2>Escolha um projeto para acessar</h2>
+            ) : (
+                <>
+                    {fachadas.map((value, index) => (
+                        <div key={index} style={{ textAlign: 'center' }}>
+                            <FaFolder />
+                            <p>{value}</p>
+                        </div>
+                    ))}
+                    <button>+ Adicionar Pasta</button>
+                </>
+            )}
+        </Container>
+    )
 }
