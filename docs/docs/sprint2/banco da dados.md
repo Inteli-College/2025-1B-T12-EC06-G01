@@ -21,7 +21,7 @@ Cloudinary é um serviço especializado em gerenciamento de mídia, oferecendo o
 
 Abaixo, é possível visualizar a modelagem relacional do banco de dados:
 
-![Banco de dados](../../../static/img/banco_de_dados.png)
+![Banco de dados](../../static/img/banco_de_dados.png)
 
 ---
 

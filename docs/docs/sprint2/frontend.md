@@ -1,5 +1,5 @@
 ---
-title: frontend
+title: Front-end
 sidebar_position: 7
 ---
 
