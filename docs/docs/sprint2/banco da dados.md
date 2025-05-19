@@ -21,7 +21,7 @@ Cloudinary é um serviço especializado em gerenciamento de mídia, oferecendo o
 
 Abaixo, é possível visualizar a modelagem relacional do banco de dados:
 
-![Banco de dados](../../../static/img/banco_de_dados.png)
+![Banco de dados](../../static/img/banco_de_dados.png)
 
 ---
 
@@ -44,11 +44,24 @@ A tabela `users` representa os usuários do sistema. Cada usuário possui um ide
 | `contractor`  | String    | Nome do contratante                       |
 | `date`        | String    | Data de criação do projeto                |
 
-A tabela `project` armazena os projetos cadastrados no sistema. Cada projeto está relacionado com várias imagens (relação 1:N).
+A tabela `project` armazena os projetos cadastrados no sistema. Cada projeto está relacionado com vários prédios (relação 1:N).
 
 ---
 
-### 3.3 Tabela: **images**
+### 3.3 Tabela: **building**
+| Atributo   | Tipo       | Descrição                                 |
+|-------------|------------|------------------------------------------|
+| `id`            | Integer   | Identificador único do prédio         |
+| `predio`        | String    | Nome do prédio                        |
+| `latitude`      | Integer    | Latitude do prédio                    |
+| `longitude`     | Integer    | Longitude do prédio                            |
+| `project_id`    | Integer   | Chave estrangeira para o projeto relacionado |
+
+A tabela `building` armazena os prédios cadastrados no sistema. Cada prédio está relacionado com várias imagens (relação 1:N).
+
+---
+
+### 3.4 Tabela: **images**
 | Atributo      | Tipo       | Descrição                                    |
 |----------------|------------|--------------------------------------------|
 | `id`            | Integer    | Identificador único da imagem               |
@@ -59,13 +72,14 @@ A tabela `project` armazena os projetos cadastrados no sistema. Cada projeto est
 | `longitude`     | Numeric    | Longitude de onde a imagem foi capturada    |
 | `fissure_type`  | String     | Tipo de fissura identificado                |
 | `veredict`      | String     | Veredito gerado pelo modelo                 |
-| `project_id`    | Integer    | Chave estrangeira para o projeto relacionado |
+| `fachada`       | String     | Fachada onde a imagem foi capturada Ex.: Norte, Sudoeste, etc.. |
+| `building_id`   | Integer    | Chave estrangeira para o prédio relacionado |
 
 A tabela `images` contém os dados das imagens capturadas e processadas, armazenando tanto a URL da imagem original quanto a da imagem processada.
 
 ---
 
-### 3.4 Tabela: **logs**
+### 3.5 Tabela: **logs**
 | Atributo   | Tipo       | Descrição                                       |
 |-------------|------------|----------------------------------------------|
 | `id`          | Integer   | Identificador único do log                     |
@@ -80,7 +94,8 @@ A tabela `logs` é responsável por armazenar eventos importantes relacionados a
 
 ## 4. Relacionamentos
 - `User` possui um relacionamento **1:N** com `Log`, onde cada usuário pode estar vinculado a múltiplos logs.
-- `Project` possui um relacionamento **1:N** com `Image`, onde cada projeto pode conter múltiplas imagens.
-- `Image` possui um relacionamento **1:N** com `Log`, onde cada imagem pode gerar múltiplos registros de log.
+- `Project` possui um relacionamento **1:N** com `Building`, onde cada projeto pode conter múltiplos prédios.
+- `Building` possui um relacionamento **1:N** com `Images`, onde cada prédio pode possuir múltiplas imagens.
+- `Images` possui um relacionamento **1:N** com `Log`, onde cada imagem pode gerar múltiplos registros de log.
 
 ---

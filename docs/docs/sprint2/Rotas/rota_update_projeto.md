@@ -1,6 +1,6 @@
 ---
 title: Rota de Atualização de Nome de Projeto
-sidebar_position: 4
+sidebar_position: 6
 ---
 
 # Rota de Atualização de Nome de Projeto

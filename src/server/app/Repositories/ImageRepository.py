@@ -1,4 +1,4 @@
-from app.Models.Image import Image
+from app.Models import Image
 from app import db
 
 class ImageRepository:

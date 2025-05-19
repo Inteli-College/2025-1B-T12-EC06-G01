@@ -1,5 +1,5 @@
 from typing import List, Dict
-from app.classifier import ModelClassifier
+# from app.classifier import ModelClassifier
 
 class ClassificationRepository:
     """
@@ -7,7 +7,8 @@ class ClassificationRepository:
     """
     def __init__(self):
         # instancia seu wrapper do YOLO
-        self.classifier = ModelClassifier()
+        # self.classifier = ModelClassifier()
+        pass
 
     def classify_urls(self, urls: List[str]) -> Dict[str, dict]:
         """
@@ -17,5 +18,6 @@ class ClassificationRepository:
         results = {}
         for url in urls:
             # use a API do seu modelo aqui; ex: .predict ou .classify
-            results[url] = self.classifier.classify_url(url)
+            # results[url] = self.classifier.classify_url(url)
+            continue
         return results
