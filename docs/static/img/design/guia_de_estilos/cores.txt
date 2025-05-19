@@ -1,0 +1,21 @@
+cor clara/neutra -> #F5F5F7
+
+cor base1 -> #629EBC
+
+cor base2 -> #3D80A3
+
+cor base3 -> 3D80A3
+
+cor escura/neutra -> #2E2E2E
+
+cor detalhes/destaques -> #E07A5F
+
+Paleta cinzas:
+
+cinza1 -> #DCDFE5
+
+cinza2 -> #969FB0
+
+cinza3 -> #707C91
+
+cinza4 -> #3D4451
