@@ -3,7 +3,7 @@ from datetime import datetime
 
 class Image(db.Model):
     __tablename__ = 'images'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     raw_image = db.Column(db.String, nullable=True)  # agora URL em vez de inteiro
     fresh_img = db.Column(db.String, nullable=False)
     datetime = db.Column(db.String, nullable=False, default=lambda : datetime.now().strftime("%Y-%m-%d %H:%M:%S"))

@@ -16,8 +16,8 @@ class ProjectController:
             date = data['date'] if data['date'] else str(datetime.now())           
 
         except Exception as e:
-            print("[ProjectController] Erro ao receber requisição! 400")
-            return {"code": 400, "message": e}, 400
+            print("[ProjectController] Os conteúdos json não são suficientes...")
+            return {"code": 400, "message": f"{e}"}, 400
 
         new, code = self.project_repo.create_project(nome=nome, contratante=contratante, date=date)
 
@@ -30,7 +30,6 @@ class ProjectController:
             }, code
         
         else:
-            print("AQUI MEU BENZINHO", new)
             return {"code": code, "message": new}, code
             
 

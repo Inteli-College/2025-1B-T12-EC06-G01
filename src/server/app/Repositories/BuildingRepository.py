@@ -1,14 +1,14 @@
+from app.Models.building import Building
 from app import db
-from app.Models.project import Project
 
-class ProjectRepository:
+class BuildingRepository:
     def __init__(self):
         pass
     
     @staticmethod
-    def create_project(nome, contratante, date):
+    def create_building(project_id: int, predio: str, latitude, longitude):
         try:
-            new = Project(name=nome, contractor=contratante, date=date)
+            new = Building(predio=predio, latitude=latitude, longitude=longitude, project_id=project_id)
             db.session.add(new)
             db.session.commit()
             return new, 201

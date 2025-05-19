@@ -2,11 +2,10 @@ from flask import Flask
 from dotenv import load_dotenv
 load_dotenv()
 import os
-
-
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from app.config import Cloudinary
+
 db = SQLAlchemy()
 migrate = Migrate()
 cloud = Cloudinary()
@@ -28,9 +27,22 @@ def create_app():
     from app.Models.image import Image
     from app.Models.log import Log
     from app.Models.user import User
-    
-    #Registrando Blueprints
+
+
+    # Registro de Blueprints
+    # Rota Classify
+    from app.Routes.ClassifyRoute import classify_bp
+    app.register_blueprint(classify_bp)
+
+    # Rota Filter
+    from app.Routes.FilterRoute import filter_bp
+    app.register_blueprint(filter_bp)
+
+    # Rota Project
     from app.Routes.ProjectRoute import project_bp
     app.register_blueprint(project_bp)
+
+    from app.Routes.BuildingRoute import building_bp
+    app.register_blueprint(building_bp)
 
     return app
