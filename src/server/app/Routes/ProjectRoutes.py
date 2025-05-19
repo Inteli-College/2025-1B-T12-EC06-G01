@@ -50,6 +50,12 @@ def update_project_name(project_id):
     except Exception as e:
         print(f"[ProjectRoutes] Erro ao receber requisição! 500 - {str(e)}")
         return jsonify({"code": 500, "message": str(e)}), 500
+  
+@project_blueprint.route("/", methods=["POST"])
+def project_route():
+    data = request.json
+    result, code = project_controller.post_project(data)
+    return jsonify(result), code
 
 # Registre este blueprint no seu app:
 # from app.Routes.ProjectRoutes import project_blueprint
