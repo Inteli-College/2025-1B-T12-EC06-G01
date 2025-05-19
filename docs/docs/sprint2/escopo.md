@@ -29,7 +29,7 @@ A seguir, destacamos os principais entregáveis definidos para esta sprint:
 - [x] Criação do protótipo de alta fidelidade da primeira tela + menu de criação do projeto
 - [x] Criação do front-end da primeira tela + menu de criação do projeto
 - [x] Implementação e desenolvimento do primeiro modelo de classificação
-- [x] Criar a primeira versão para *upload* de imagens e criação de projetos
+- [x] Criar a primeira versão para *upload* de imagens e criação de projetos (um pequeno guia de como fazer isso, está presente na documentação do frontend)
 
 ---
 
