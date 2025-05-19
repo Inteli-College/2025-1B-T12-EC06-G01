@@ -17,9 +17,19 @@ def create_app():
     
     # Configuração com o banco
     app.config.from_object('app.config.Config')
+
+    
+    # Initialize db with app
     db.init_app(app)
+    
     migrate.init_app(app, db)
     cloud.init_app(app)
+    
+    # Import blueprints here to avoid circular imports
+    from app.Routes.ClassifyRoute import classify_bp
+    from app.Routes.ImageRoute import image_bp
+    from app.Routes.ProjectRoutes import project_blueprint
+    from app.Routes.BuildingRoute import building_bp
 
     # Carregando os Models
     from app.Models.project import Project
@@ -27,16 +37,23 @@ def create_app():
     from app.Models.image import Image
     from app.Models.log import Log
     from app.Models.user import User
+    
 
+    # associa o db ao app
+    db.init_app(app)
 
-    # Registro de Blueprints
-    # Rota Classify
-    from app.Routes.ClassifyRoute import classify_bp
+    # registra rotas só depois do init
     app.register_blueprint(classify_bp)
-
-    # Rota Filter
+    
     from app.Routes.FilterRoute import filter_bp
     app.register_blueprint(filter_bp)
+
+    app.register_blueprint(image_bp)
+    app.register_blueprint(project_blueprint)
+    
+    
+    from app.Routes.ImageCleanRoutes import image_clean_blueprint
+    app.register_blueprint(image_clean_blueprint)
 
     # Rota Project
     from app.Routes.ProjectRoute import project_bp
@@ -44,5 +61,7 @@ def create_app():
 
     from app.Routes.BuildingRoute import building_bp
     app.register_blueprint(building_bp)
+    
+
 
     return app
