@@ -112,5 +112,14 @@ O uso do modelo `YOLO11n-cls` para classificação de fissuras mostrou-se promis
 As próximas sprints se concentrarão na robustez do modelo, validação prática, e incremento dos dados, com objetivo de garantir que os resultados reflitam a realidade e não apenas a memória do modelo sobre os exemplos de treino.
 
 
+#### Para inicar o treinamento:
+
+1. Ative o ambiente virtual;
+2. Instale as dependências: `pip install -r requirements.txt`
+3. Execute o script de treinamento: `python train.py`
+4. Execute o script de avaliação: `python avaliacao_modelo.py`
+5. (Opcional) Testar com imagens externas: `python generalizacao.py`
+
+
 
 
