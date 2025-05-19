@@ -3,6 +3,7 @@ import Sidebar from '../components/Sidebar'
 import ImgSection from '../components/ImgSection'
 import NavHome from '../components/NavHome'
 import styled from 'styled-components'
+import ProjectSection from '../components/ProjectSection'
 
 const Homepage = styled.div`
   display: flex;
@@ -34,7 +35,7 @@ export default function Home() {
       
       <Body>
         <NavHome projectName={project.name} />
-        <ImgSection uploadedImages={uploadedImages} />
+        <ProjectSection projectName={project.name} />
       </Body>
 
     </Homepage>
