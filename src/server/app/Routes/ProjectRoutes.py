@@ -43,15 +43,13 @@ def update_project_name(project_id):
         # Obter os dados da requisição
         data = request.get_json()
         
-        if not data or 'name' not in data:
-            return jsonify({"error": "New project name is required"}), 400
-        
         # Chamar o controller para atualizar o nome do projeto
-        response, status_code = project_controller.update_project_name(project_id, data['name'])
+        response, status_code = project_controller.update_project_name(project_id, data)
         
         return jsonify(response), status_code
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        print(f"[ProjectRoutes] Erro ao receber requisição! 500 - {str(e)}")
+        return jsonify({"code": 500, "message": str(e)}), 500
 
 # Registre este blueprint no seu app:
 # from app.Routes.ProjectRoutes import project_blueprint
