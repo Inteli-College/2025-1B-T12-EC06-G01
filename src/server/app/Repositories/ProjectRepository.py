@@ -25,3 +25,6 @@ class ProjectRepository:
             return Project.query.get(project_id)
         except Exception as e:
             raise e
+
+    def create_project(self):
+        pass

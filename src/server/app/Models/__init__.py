@@ -1,4 +1,3 @@
-from app import db
 from .user import User
 from .project import Project
 from .Image import Image
