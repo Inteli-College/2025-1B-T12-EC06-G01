@@ -1,4 +1,4 @@
-from app.Models.image import Image
+from app.Models import Image
 from app import db
 import cloudinary
 import cloudinary.uploader

@@ -37,10 +37,6 @@ def create_app():
     from app.Models.image import Image
     from app.Models.log import Log
     from app.Models.user import User
-    
-
-    # associa o db ao app
-    db.init_app(app)
 
     # registra rotas só depois do init
     app.register_blueprint(classify_bp)
@@ -54,10 +50,6 @@ def create_app():
     
     from app.Routes.ImageCleanRoutes import image_clean_blueprint
     app.register_blueprint(image_clean_blueprint)
-
-    # Rota Project
-    from app.Routes.ProjectRoute import project_bp
-    app.register_blueprint(project_bp)
 
     from app.Routes.BuildingRoute import building_bp
     app.register_blueprint(building_bp)

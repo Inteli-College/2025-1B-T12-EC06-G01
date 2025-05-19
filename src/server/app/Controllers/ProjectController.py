@@ -54,7 +54,7 @@ class ProjectController:
             print("[ProjectController] Os conteúdos json não são suficientes...")
             return {"code": 400, "message": f"{e}"}, 400
 
-        new, code = self.project_repo.create_project(nome=nome, contratante=contratante, date=date)
+        new, code = self.project_repository.create_project(nome=nome, contratante=contratante, date=date)
 
         if code != 500:
             return {
