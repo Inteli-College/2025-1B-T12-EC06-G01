@@ -1,6 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import { FaFolder } from "react-icons/fa6"
+import { useProject } from '../contexts/ProjectContext'
+import { useNavigate } from 'react-router-dom'
 
 const Container = styled.div`
     width: 77vw;
@@ -36,7 +38,7 @@ const Container = styled.div`
     }
 `
 
-export default function ProjectSection({ projectName }) {
+export default function FoldersSection({ folders, path }) {
     // ---- LÓGICA PARA PUXAR IMAGENS COM A ROTA DO BACK ----
     // const [listOfBuildings, setListOfBuildings] = useState([]);
     // let navigate = useNavigate();
@@ -49,29 +51,27 @@ export default function ProjectSection({ projectName }) {
 
 
     //lista de fachadas criada provisóriamente para teste
-    const fachadas = [
-        "Fachada Leste",
-        "Fachada Oeste",
-        "Fachada Norte",
-        "Fachada Sul"
-    ]
+
+    const { project } = useProject();
+    let navigate = useNavigate();
 
 
     return (
-        <Container>
-            {projectName === '' ? (
-                <h2>Escolha um projeto para acessar</h2>
-            ) : (
-                <>
-                    {fachadas.map((value, index) => (
-                        <div key={index} style={{ textAlign: 'center' }}>
-                            <FaFolder />
-                            <p>{value}</p>
-                        </div>
-                    ))}
-                    <button>+ Adicionar Pasta</button>
-                </>
-            )}
-        </Container>
+            <Container>
+                {project.name === '' ? (
+                    <h2>Escolha um projeto para acessar</h2>
+                ) : (
+                    <>
+                        {folders.map((value, index) => (
+                            <div key={index} style={{ textAlign: 'center' }}>
+                                <FaFolder onClick={() => navigate(`${path}/${encodeURIComponent(value)}`)} />
+                                <p>{value}</p>
+                            </div>
+                        ))}
+                        <button>+ Adicionar Pasta</button>
+                    </>
+                )}
+            </Container>
+
     )
 }

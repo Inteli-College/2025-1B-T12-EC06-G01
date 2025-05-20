@@ -3,8 +3,9 @@ import Sidebar from '../components/Sidebar'
 import NavHome from '../components/NavHome'
 import styled from 'styled-components'
 import FoldersSection from '../components/FoldersSection'
+import { useParams } from 'react-router-dom'
 
-const Homepage = styled.div`
+const PredioPage = styled.div`
   display: flex;
   flex-direction: row;
 `
@@ -12,24 +13,26 @@ const Homepage = styled.div`
 const Body = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
 `
 
-export default function Home() {
-  const buildings = [
-    "Prédio 1",
-    "Prédio 2",
-    "Prédio 3",
-    "Prédio 4",
-    "Prédio 5"
+export default function Predio() {
+  const { predioNome } = useParams()
+
+  const fachadas = [
+    "Fachada Leste",
+    "Fachada Oeste",
+    "Fachada Norte",
+    "Fachada Sul"
   ]
 
   return (
-    <Homepage>
+    <PredioPage>
       <Sidebar />
       <Body>
         <NavHome />
-        <FoldersSection folders={buildings} path="/predio" />
+        <FoldersSection folders={fachadas} path={`/predio/${encodeURIComponent(predioNome)}`} />
       </Body>
-    </Homepage>
+    </PredioPage>
   )
 }
