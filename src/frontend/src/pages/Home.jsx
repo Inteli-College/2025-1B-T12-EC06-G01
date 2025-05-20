@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Sidebar from '../components/Sidebar'
-import ImgSection from '../components/ImgSection'
 import NavHome from '../components/NavHome'
 import styled from 'styled-components'
 import ProjectSection from '../components/ProjectSection'
@@ -17,11 +16,6 @@ const Body = styled.div`
 `
 
 export default function Home() {
-  const [project, setProject] = useState({
-    name: '',
-    contractor: '',
-    date: ''
-  })
 
   return (
     <ProjectProvider>

@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { FaFolder } from "react-icons/fa6"
 import { useProject } from '../contexts/ProjectContext'
+import { useNavigate } from 'react-router-dom'
 
 const Container = styled.div`
     width: 77vw;
@@ -58,6 +59,7 @@ export default function ProjectSection() {
     ]
 
     const { project } = useProject();
+    let navigate = useNavigate();
 
 
     return (
@@ -68,7 +70,7 @@ export default function ProjectSection() {
                 <>
                     {fachadas.map((value, index) => (
                         <div key={index} style={{ textAlign: 'center' }}>
-                            <FaFolder />
+                            <FaFolder onClick={() => {navigate(`/projeto/${value}`)}} />
                             <p>{value}</p>
                         </div>
                     ))}
