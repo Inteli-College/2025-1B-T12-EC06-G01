@@ -4,6 +4,7 @@ import { IoIosAdd } from "react-icons/io"
 import { FaRegUserCircle, FaFolder } from "react-icons/fa"
 import { IoExitOutline } from "react-icons/io5"
 import logo from '../logo.svg'
+import { useProject } from '../contexts/ProjectContext'
 
 const Container = styled.div`
   width: 18vw;
@@ -186,6 +187,7 @@ const Popup = styled.div`
 
 export default function Sidebar(props) {
   const [showPopup, setShowPopup] = useState(false);
+  const { project, setProject } = useProject();
 
   const togglePopup = () => {
     setShowPopup(!showPopup);
@@ -195,7 +197,6 @@ export default function Sidebar(props) {
   const contractorRef = useRef();
   const dateRef = useRef();
 
-  const { project, setProject } = props;
 
   const handleConclude = () => {
     setProject({

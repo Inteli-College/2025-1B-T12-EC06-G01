@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { FaFolder } from "react-icons/fa6"
+import { useProject } from '../contexts/ProjectContext'
 
 const Container = styled.div`
     width: 77vw;
@@ -36,7 +37,7 @@ const Container = styled.div`
     }
 `
 
-export default function ProjectSection({ projectName }) {
+export default function ProjectSection() {
     // ---- LÓGICA PARA PUXAR IMAGENS COM A ROTA DO BACK ----
     // const [listOfBuildings, setListOfBuildings] = useState([]);
     // let navigate = useNavigate();
@@ -56,10 +57,12 @@ export default function ProjectSection({ projectName }) {
         "Fachada Sul"
     ]
 
+    const { project } = useProject();
+
 
     return (
         <Container>
-            {projectName === '' ? (
+            {project.name === '' ? (
                 <h2>Escolha um projeto para acessar</h2>
             ) : (
                 <>

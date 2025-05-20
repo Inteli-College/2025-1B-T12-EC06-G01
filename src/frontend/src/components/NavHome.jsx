@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { FaTrash, FaPaintBrush } from 'react-icons/fa'
 import { IoSend } from 'react-icons/io5'
+import { useProject } from '../contexts/ProjectContext';
 
 
 const Nav = styled.div`
@@ -74,7 +75,8 @@ const Botoes = styled.div`
     }
 `
 
-export default function NavHome({ projectName }) {
+export default function NavHome() {
+    const { project } = useProject();
 
     const [dateFilter, setDateFilter] = useState(null)
     const [optionFilter, setOptionFilter] = useState('')
@@ -84,7 +86,7 @@ export default function NavHome({ projectName }) {
     return (
         <Nav>
             <Infos>
-                {projectName === '' ? <h3>Adicione um projeto</h3> : <h3>{projectName}</h3>}
+                {project.name === '' ? <h3>Adicione um projeto</h3> : <h3>{project.name}</h3>}
 
                 <div className='filtros'>
                     <input type='date' onChange={(e) => setDateFilter(e.target.value)} />

@@ -4,6 +4,7 @@ import ImgSection from '../components/ImgSection'
 import NavHome from '../components/NavHome'
 import styled from 'styled-components'
 import ProjectSection from '../components/ProjectSection'
+import { ProjectProvider } from '../contexts/ProjectContext'
 
 const Homepage = styled.div`
   display: flex;
@@ -22,22 +23,18 @@ export default function Home() {
     date: ''
   })
 
-  const [uploadedImages, setUploadedImages] = useState([])
-
   return (
-    <Homepage>
-      <Sidebar
-        project={project}
-        setProject={setProject}
-        setUploadedImages={setUploadedImages}
-      />
+    <ProjectProvider>
+      <Homepage>
+        <Sidebar />
 
-      
-      <Body>
-        <NavHome projectName={project.name} />
-        <ProjectSection projectName={project.name} />
-      </Body>
 
-    </Homepage>
+        <Body>
+          <NavHome />
+          <ProjectSection />
+        </Body>
+
+      </Homepage>
+    </ProjectProvider>
   )
 }
