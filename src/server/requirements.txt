@@ -6,4 +6,4 @@ greenlet==3.2.1
 SQLAlchemy==2.0.40
 cloudinary==1.36.0
 python-dotenv==1.0.0  # Opcional: se estiver usando variáveis de ambiente
-
+Flask-Migrate==4.1.0

@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.Controllers.ImageController import ImageController
 
+
 image_bp = Blueprint('image', __name__)
 image_controller = ImageController()
 
@@ -11,3 +12,4 @@ def delete_images():
     
     response, status_code = image_controller.delete_images(image_ids)
     return jsonify(response), status_code 
+

@@ -1,4 +1,4 @@
-from app.Models import Image
+from app.Models.image import Image
 from app import db
 
 class ImageRepository:
@@ -21,4 +21,4 @@ class ImageRepository:
             return count  # Return the number of deleted images
         except Exception as e:
             db.session.rollback()
-            raise e
+            raise
