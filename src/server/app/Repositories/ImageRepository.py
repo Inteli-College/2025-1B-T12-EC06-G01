@@ -22,5 +22,3 @@ class ImageRepository:
         except Exception as e:
             db.session.rollback()
             raise
-    def find_by_building_id(self, building_id):
-        return Image.query.filter_by(building_id=building_id).all()
