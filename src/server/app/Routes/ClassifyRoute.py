@@ -13,4 +13,5 @@ def classify_route():
       ImageClassificationService -> ClassificationRepository: recebe lista de URLs; retorna resultados de inferência
       (futuro) ImageClassificationService grava resultado no banco e cria um log
     """
-    return classify_ctrl.postClassify(request.json)
+    payload = request.get_json(force=True)
+    return classify_ctrl.postClassify(payload)

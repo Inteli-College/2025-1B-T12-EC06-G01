@@ -1,13 +1,13 @@
-from typing import Dict
+from typing import Dict, List
 from app.Services.ImageFilterService import ImageFilterService
 from app.Repositories.ClassificationRepository import ClassificationRepository
 from app import db
-from app.Models.Image import Image
+from app.Models.image import Image
 
 class ImageClassificationService:
     def __init__(self):
-        self.filter_svc     = ImageFilterService()
-        self.classify_repo  = ClassificationRepository()
+        self.filter_svc    = ImageFilterService()
+        self.classify_repo = ClassificationRepository()
 
     def classify_project_images(
         self,
@@ -15,21 +15,25 @@ class ImageClassificationService:
         start_date: str = None,
         end_date:   str = None
     ) -> Dict[str, dict]:
-        # 1) busca só as imagens com URL válida
+        # 1) filtra e carrega URLs
         images = self.filter_svc.filter_images(project_id, start_date, end_date)
-        urls   = [img.url for img in images]
+        urls   = [img["raw_image"] for img in images]
 
-        # 2) executa o modelo de classificação
+        # 2) chama o modelo
         results = self.classify_repo.classify_urls(urls)
 
-        # 3) persiste cada predição no próprio registro da Image
-        for img in images:
-            outcome = results.get(img.url)
-            if not outcome:
+        # 3) grava resultados em cada Image do banco
+        for serialized in images:
+            outcome = results.get(serialized["raw_image"], {})
+            if "error" in outcome:
                 continue
-            img.fissure_type = outcome.get("type")
-            img.verdict      = outcome.get("verdict")
-            db.session.add(img)
+            img_obj = Image.query.filter_by(raw_image=serialized["raw_image"]).first()
+            if not img_obj:
+                continue
+
+            img_obj.fissure_type = outcome["class"]
+            img_obj.veredict     = outcome["class"]
+            db.session.add(img_obj)
 
         db.session.commit()
         return results
