@@ -1,5 +1,5 @@
 from app.Models import Image
-from app import db
+from app import db, cloud
 
 class ImageRepository:
     @staticmethod
@@ -22,3 +22,32 @@ class ImageRepository:
         except Exception as e:
             db.session.rollback()
             raise e
+        
+    @staticmethod
+    def update_image(image):
+        update = cloud.uploader.upload(image, folder='raw-images')
+        url = update.get("secure_url")
+
+        if url:
+            return url
+        else:
+            return None
+
+
+    @staticmethod
+    def create_image(raw_image: str, fachada: str, predio_id: int, date):
+        try:
+            new = Image(raw_image=raw_image, fachada=fachada, building_id=predio_id)
+            db.session.add(new)
+            db.session.commit()
+            return new, 201
+        except Exception as e:
+            print("[ImageController] Erro ao criar novo registro! 500")
+            return f"{e}", 500
+    
+    @staticmethod
+    def read_image():
+        try:
+            
+
+    
