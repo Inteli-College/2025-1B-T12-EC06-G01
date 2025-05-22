@@ -42,7 +42,7 @@ class ProjectRepository:
         try:
             projetos = Project.query.all()
             return {
-                projeto.name: projeto.contractor
+                projeto.id: f"{projeto.name, projeto.contractor}"
                 for projeto in projetos
             }, 200
         

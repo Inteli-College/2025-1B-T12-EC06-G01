@@ -62,7 +62,7 @@ class ImageController:
 
         return {"id_sucess": id_sucess, "id_error": id_error}, 200
     
-    def get_images(self, data):
+    def get_images_per_fachada(self, data):
 
         try:
             id_predio = data['building_id']
@@ -72,7 +72,7 @@ class ImageController:
             print("[ImageController] Os conteúdos json não são suficientes...")
             return {"code": 400, "message": f"{e}"}, 400
 
-        result, code = self.image_repository.read_images(id_predio=id_predio, fachada=fachada)
+        result, code = self.image_repository.read_images_per_fachada(id_predio=id_predio, fachada=fachada)
         return result, code
     
     def get_fachadas(self, data):

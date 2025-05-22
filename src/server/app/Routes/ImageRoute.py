@@ -26,7 +26,7 @@ def post_images():
 @image_bp.route('/', methods=['GET'])
 def get_images():
     data = request.json
-    result, code = image_controller.get_images(data)
+    result, code = image_controller.get_images_per_fachada(data)
     return jsonify(result), code
 
 @image_bp.route('/fachadas', methods=['GET'])

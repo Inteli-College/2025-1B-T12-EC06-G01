@@ -46,7 +46,7 @@ class ImageRepository:
             return f"{e}", 500
     
     @staticmethod
-    def read_images(id_predio: int, fachada: str):
+    def read_images_per_fachada(id_predio: int, fachada: str):
         try:
             images = Image.query.filter_by(building_id=id_predio, fachada=fachada).all()
             return {
