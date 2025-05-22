@@ -15,3 +15,15 @@ class BuildingRepository:
         except Exception as e:
             print("[ProjectController] Erro ao criar novo registro! 500")
             return f"{e}", 500
+
+    @staticmethod
+    def get_all_buildings():
+        """
+        Retorna todos os registros da tabela Building.
+        """
+        try:
+            buildings = Building.query.all()
+            return buildings, 200
+        except Exception as e:
+            print(f"[BuildingRepository] Erro ao buscar todos os prédios: {e}")
+            return [], 500
