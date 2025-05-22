@@ -34,5 +34,18 @@ class ProjectRepository:
             db.session.commit()
             return new, 201
         except Exception as e:
-            print("[ProjectController] Erro ao criar novo registro! 500")
+            print("[ProjectController] Erro ao criar novo registro na tabela project... 500")
             return f"{e}", 500
+        
+    @staticmethod
+    def read_projects():
+        try:
+            projetos = Project.query.all()
+            return {
+                projeto.name: projeto.contractor
+                for projeto in projetos
+            }, 200
+        
+        except Exception as e:
+            print("[ProjectController] Nenhum projeto encontrado... 404")
+            return f"{e}", 404            

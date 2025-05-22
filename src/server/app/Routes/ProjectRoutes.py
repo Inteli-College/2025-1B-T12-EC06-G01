@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from app.Controllers.ProjectController import ProjectController
 
 # Crie um Blueprint para as rotas de projeto
-project_blueprint = Blueprint('project', __name__, url_prefix='/api/projects')
+project_blueprint = Blueprint('project', __name__, url_prefix='/projects')
 
 # Instancie o controller
 project_controller = ProjectController()
@@ -59,5 +59,5 @@ def post_project():
 
 @project_blueprint.route("/", methods=['GET'])
 def get_project():
-    data = request.json
-    
+    result, code = project_controller.get_project()
+    return jsonify(result), code
