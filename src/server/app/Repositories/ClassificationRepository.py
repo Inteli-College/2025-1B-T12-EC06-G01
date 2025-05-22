@@ -1,23 +1,48 @@
+import os
+import tempfile
+import requests
 from typing import List, Dict
-# from app.classifier import ModelClassifier
+from ultralytics import YOLO
 
 class ClassificationRepository:
-    """
-    Encapsula a camada de inferência do modelo de detecção/classificação (YOLO).
-    """
     def __init__(self):
-        # instancia seu wrapper do YOLO
-        # self.classifier = ModelClassifier()
-        pass
+        # aponte para o peso “best.pt” gerado pelo seu treinamento
+        self.model = YOLO("/runs/classify/train11/weights/best.pt")
 
     def classify_urls(self, urls: List[str]) -> Dict[str, dict]:
-        """
-        Recebe uma lista de URLs e retorna um dict
-        mapeando cada URL ao resultado da inferência.
-        """
         results = {}
         for url in urls:
-            # use a API do seu modelo aqui; ex: .predict ou .classify
-            # results[url] = self.classifier.classify_url(url)
-            continue
+            try:
+                # 1) baixa imagem
+                resp = requests.get(url, timeout=5)
+                resp.raise_for_status()
+                ext = os.path.splitext(url)[1] or ".jpg"
+                with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as tmp:
+                    tmp.write(resp.content)
+                    tmp_path = tmp.name
+
+                # 2) faz a inferência (modelo de classificação)
+                preds = self.model.predict(
+                    source=tmp_path,
+                    imgsz=224,
+                    device="cpu",
+                    verbose=False
+                )
+                probs = preds[0].probs
+                class_id = int(probs.top1)
+                confidence = float(probs.top1conf)
+                label = self.model.names[class_id]
+
+                results[url] = {
+                    "class":      label,
+                    "confidence": confidence
+                }
+            except Exception as e:
+                results[url] = {"error": str(e)}
+            finally:
+                try:
+                    os.remove(tmp_path)
+                except Exception:
+                    pass
+
         return results
