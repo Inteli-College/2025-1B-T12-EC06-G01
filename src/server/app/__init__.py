@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from dotenv import load_dotenv
 load_dotenv()
 import os
@@ -18,7 +19,8 @@ def create_app():
     # Configuração com o banco
     app.config.from_object('app.config.Config')
 
-    
+    CORS(app, supports_credentials=True)
+
     # Initialize db with app
     db.init_app(app)
     

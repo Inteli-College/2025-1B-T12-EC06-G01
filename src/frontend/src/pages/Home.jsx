@@ -1,35 +1,32 @@
-import React from 'react'
-import Sidebar from '../components/Sidebar'
-import NavHome from '../components/NavHome'
-import styled from 'styled-components'
-import FoldersSection from '../components/FoldersSection'
+import React from "react";
+import Sidebar from "../components/Sidebar";
+import NavHome from "../components/NavHome";
+import styled from "styled-components";
+import FoldersSection from "../components/FoldersSection";
 
 const Homepage = styled.div`
   display: flex;
   flex-direction: row;
-`
+`;
 
 const Body = styled.div`
   display: flex;
   flex-direction: column;
-`
+`;
 
 export default function Home() {
-  const buildings = [
-    "Prédio 1",
-    "Prédio 2",
-    "Prédio 3",
-    "Prédio 4",
-    "Prédio 5"
-  ]
-
   return (
     <Homepage>
       <Sidebar />
       <Body>
         <NavHome />
-        <FoldersSection folders={buildings} path="/predio" />
+        <FoldersSection
+          path="/predio"
+          apiUrl="http://localhost:5000/building/"
+          folderNameField="predio"
+          folderIdField="id"
+        />{" "}
       </Body>
     </Homepage>
-  )
+  );
 }
