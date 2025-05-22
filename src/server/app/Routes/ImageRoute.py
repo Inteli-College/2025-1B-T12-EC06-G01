@@ -18,15 +18,19 @@ def post_images():
     files = request.files.getlist('images')
     if not files:
         print("[ImageRoute] Nenhum arquivo de imagem recebido...")
-        return jsonify({"code": 400, "message":"Nenhum arquivo associado..."})
-    image_controller.post_images(data, files)
+        return jsonify({"code": 400, "message":"Nenhum arquivo associado..."}), 400
+    
+    result, code = image_controller.post_images(data, files)
+    return jsonify(result), code
 
 @image_bp.route('/', methods=['GET'])
 def get_images():
     data = request.json
-    return image_controller.get_images(data)
+    result, code = image_controller.get_images(data)
+    return jsonify(result), code
 
 @image_bp.route('/fachadas', methods=['GET'])
 def get_fachada():
     data = request.json
-    return image_controller.get_fachadas(data)
+    result, code = image_controller.get_fachadas(data)
+    return jsonify(result), code

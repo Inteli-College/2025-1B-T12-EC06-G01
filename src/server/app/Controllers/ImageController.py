@@ -60,7 +60,7 @@ class ImageController:
         if len(id_sucess) < 0:
             return {"code": 500, "message": "Nenhum arquivo foi bem sucedido...", "id_error": id_error}, 500        
 
-        return {"id_sucess": id_sucess, "id_error": id_error}
+        return {"id_sucess": id_sucess, "id_error": id_error}, 200
     
     def get_images(self, data):
 
@@ -72,7 +72,8 @@ class ImageController:
             print("[ImageController] Os conteúdos json não são suficientes...")
             return {"code": 400, "message": f"{e}"}, 400
 
-        return self.image_repository.read_images(id_predio=id_predio, fachada=fachada)
+        result, code = self.image_repository.read_images(id_predio=id_predio, fachada=fachada)
+        return result, code
     
     def get_fachadas(self, data):
         try:
@@ -82,7 +83,8 @@ class ImageController:
             print("[ImageController] Os conteúdos json não são suficientes...")
             return {"code": 400, "message": f"{e}"}, 400
         
-        return self.image_repository.read_fachadas(id_predio=id_predio)
+        result, code = self.image_repository.read_fachadas(id_predio=id_predio)
+        return result, code
                 
 
 
