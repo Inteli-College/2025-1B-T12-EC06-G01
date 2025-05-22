@@ -5,6 +5,7 @@ import { FaRegUserCircle, FaFolder } from "react-icons/fa"
 import { IoExitOutline } from "react-icons/io5"
 import logo from '../logo.svg'
 import { useProject } from '../contexts/ProjectContext'
+import { useNavigate } from 'react-router-dom'
 
 const Container = styled.div`
   width: 18vw;
@@ -188,6 +189,7 @@ const Popup = styled.div`
 export default function Sidebar(props) {
   const [showPopup, setShowPopup] = useState(false);
   const { project, setProject } = useProject();
+  const navigate = useNavigate();
 
   const togglePopup = () => {
     setShowPopup(!showPopup);
@@ -206,6 +208,10 @@ export default function Sidebar(props) {
     });
 
     togglePopup();
+  };
+
+  const handleClick = () => {
+    navigate("/projetos");
   };
 
   return (
@@ -256,7 +262,7 @@ export default function Sidebar(props) {
       <hr style={{ width: '80%' }} />
 
       <section style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.8rem' }}>
-        <BtnMenor>Projetos</BtnMenor>
+        <BtnMenor onClick={handleClick}>Projetos</BtnMenor>
         <BtnMenor>Dashboard</BtnMenor>
       </section>
 
