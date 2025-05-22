@@ -14,7 +14,7 @@ class BuildingController:
 
         except Exception as e:
             print("[BuildingController] Os conteúdos json não são suficientes...")
-            return {"code": 400, "message": e}, 400
+            return {"code": 400, "message": f"{e}"}, 400
         
         new, code = self.building_repo.create_building(project_id=projeto_id, predio=predio, latitude=latitude, longitude=longitude)
 

@@ -46,8 +46,37 @@ class ImageRepository:
             return f"{e}", 500
     
     @staticmethod
-    def read_image():
+    def read_images(id_predio: int, fachada: str):
         try:
-            
+            images = Image.query.filter_by(building_id=id_predio, fachada=fachada).all()
+            return {
+                image.id: image.raw_image
+                for image in images
+            }, 200
+
+        except Exception as e:
+            print("[ImageRepository] Nenhuma imagem encontrada...")
+            return {"code": 404, "message": "Nenhuma imagem encontrada..."}
+        
+    @staticmethod
+    def read_fachadas(id_predio: int):
+        try:
+            fachadas = (
+                Image.query
+                .with_entities(Image.fachada)
+                .filter_by(building_id=id_predio)
+                .distinct()
+                .all()
+            )
+            fachadas = [f[0] for f in fachadas]
+
+            return {
+                "building_id": id_predio,
+                "fachadas": fachadas
+            }
+        
+        except Exception as e:
+            print("[ImageRepository] Nenhuma fachada encontrada...")
+            return {"code": 404, "message": "Nenhuma imagem encontrada..."}            
 
     

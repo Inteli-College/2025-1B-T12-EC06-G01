@@ -27,12 +27,16 @@ class ImageController:
             return {"error": str(e)}, 500 
         
     def post_images(self, data, files):
-        fachada = data['fachada']
-        predio_id = data['building_id']
-        date = data['datetime'] if data['datetime'] else str(datetime.now())
-        id_sucess = {}
-        id_error = []
+        try:
+            fachada = data['fachada']
+            predio_id = data['building_id']
+            date = data['datetime'] if data['datetime'] else str(datetime.now())
+            id_sucess = {}
+            id_error = []
 
+        except Exception as e:
+            print("[ImageController] Os conteúdos json não são suficientes...")
+            return {"code": 400, "message": e}, 400
 
         for file in files:
             if file.filename != '':
@@ -58,8 +62,27 @@ class ImageController:
 
         return {"id_sucess": id_sucess, "id_error": id_error}
     
-    def get_images(self):
-        return self.image_repository.get_images()
+    def get_images(self, data):
+
+        try:
+            id_predio = data['building_id']
+            fachada = data['fachada']
+
+        except Exception as e:
+            print("[ImageController] Os conteúdos json não são suficientes...")
+            return {"code": 400, "message": f"{e}"}, 400
+
+        return self.image_repository.read_images(id_predio=id_predio, fachada=fachada)
+    
+    def get_fachadas(self, data):
+        try:
+            id_predio = data['building_id']
+
+        except Exception as e:
+            print("[ImageController] Os conteúdos json não são suficientes...")
+            return {"code": 400, "message": f"{e}"}, 400
+        
+        return self.image_repository.read_fachadas(id_predio=id_predio)
                 
 
 

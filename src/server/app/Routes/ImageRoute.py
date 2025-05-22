@@ -23,4 +23,10 @@ def post_images():
 
 @image_bp.route('/', methods=['GET'])
 def get_images():
-    return image_controller.get_images()
+    data = request.json
+    return image_controller.get_images(data)
+
+@image_bp.route('/fachadas', methods=['GET'])
+def get_fachada():
+    data = request.json
+    return image_controller.get_fachadas(data)
