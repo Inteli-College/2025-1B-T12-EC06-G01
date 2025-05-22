@@ -3,8 +3,9 @@ import Sidebar from '../components/Sidebar'
 import NavHome from '../components/NavHome'
 import styled from 'styled-components'
 import FoldersSection from '../components/FoldersSection'
+import { useParams } from 'react-router-dom'
 
-const Homepage = styled.div`
+const ProjectPage = styled.div`
   display: flex;
   flex-direction: row;
 `
@@ -14,7 +15,9 @@ const Body = styled.div`
   flex-direction: column;
 `
 
-export default function Home() {
+export default function Projeto() {
+  const { projectName } = useParams()  
+
   const buildings = [
     "Prédio 1",
     "Prédio 2",
@@ -24,12 +27,12 @@ export default function Home() {
   ]
 
   return (
-    <Homepage>
+    <ProjectPage>
       <Sidebar />
       <Body>
         <NavHome />
-        <FoldersSection folders={buildings} path="/predio" />
+        <FoldersSection folders={buildings} path={`/projetos/${encodeURIComponent(projectName)}`} />
       </Body>
-    </Homepage>
+    </ProjectPage>
   )
 }

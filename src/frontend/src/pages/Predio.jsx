@@ -17,7 +17,7 @@ const Body = styled.div`
 `
 
 export default function Predio() {
-  const { predioNome } = useParams()
+  const { projectName, predioNome } = useParams() 
 
   const fachadas = [
     "Fachada Leste",
@@ -31,7 +31,10 @@ export default function Predio() {
       <Sidebar />
       <Body>
         <NavHome />
-        <FoldersSection folders={fachadas} path={`/predio/${encodeURIComponent(predioNome)}`} />
+        <FoldersSection
+          folders={fachadas}
+          path={`/projetos/${encodeURIComponent(projectName)}/${encodeURIComponent(predioNome)}`}
+        />
       </Body>
     </PredioPage>
   )
