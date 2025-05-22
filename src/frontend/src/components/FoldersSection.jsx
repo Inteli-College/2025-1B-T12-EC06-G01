@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { FaFolder } from "react-icons/fa6";
-// import { useProject } from '../contexts/ProjectContext'; // Temporariamente não usado
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Container = styled.div`
     width: 77vw;
@@ -33,32 +33,99 @@ const Container = styled.div`
     }
 `;
 
-export default function FoldersSection({ folders, path }) {
-    // const { project } = useProject(); // TEMPORARIAMENTE COMENTADO. TIRAR COMENTARIO QUANDO ADICIONAR O PROJECT
+const LoadingMessage = styled.h2`
+    grid-column: span 6;
+    text-align: center;
+`;
+
+const ErrorMessage = styled.h2`
+    grid-column: span 6;
+    text-align: center;
+    color: #d32f2f;
+`;
+
+/**
+ * FoldersSection - Componente genérico para exibir pastas
+ * @param {string} path - Caminho base para navegação ao clicar em uma pasta
+ * @param {Array} folders - Array de pastas a serem exibidas 
+ * @param {string} apiUrl - URL da API para buscar as pastas 
+ * @param {string} folderNameField - Nome do campo que contém o nome da pasta (default: "predio")
+ * @param {string} folderIdField - Nome do campo que contém o ID da pasta (default: "id")
+ */
+export default function FoldersSection({ 
+    path, 
+    folders: propFolders, 
+    apiUrl,
+    folderNameField = "predio",
+    folderIdField = "id"
+}) {
+    const [folders, setFolders] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
     let navigate = useNavigate();
 
-    if (!Array.isArray(folders)) {
-        // console.warn("FoldersSection: 'folders' prop is not an array or is undefined.", folders);
-        // return <div>Carregando pastas...</div>; // Ou outra indicação de carregamento/erro
-    }
+    useEffect(() => {
+        // Se recebemos folders como prop, usamos eles diretamente
+        if (propFolders) {
+            // Se for array de strings, convertemos para objetos
+            if (propFolders.length > 0 && typeof propFolders[0] === 'string') {
+                const formattedFolders = propFolders.map((name, index) => {
+                    const folder = {};
+                    folder[folderIdField] = index;
+                    folder[folderNameField] = name;
+                    return folder;
+                });
+                setFolders(formattedFolders);
+            } else {
+                // Se já for array de objetos
+                setFolders(propFolders);
+            }
+            return; // Não fazemos fetch se temos folders
+        }
+
+        // Se não temos folders, mas temos URL da API, fazemos fetch
+        if (apiUrl) {
+            const fetchFolders = async () => {
+                setIsLoading(true);
+                setError(null);
+                try {
+                    const response = await axios.get(apiUrl);
+                    if (response.data && Array.isArray(response.data)) {
+                        setFolders(response.data);
+                    } else {
+                        console.error("Formato de resposta inesperado:", response.data);
+                        setFolders([]);
+                    }
+                } catch (err) {
+                    console.error("Erro ao buscar pastas:", err);
+                    setError(err);
+                    setFolders([]);
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+            fetchFolders();
+        }
+    }, [propFolders, apiUrl, folderIdField, folderNameField]);
     
     return (
         <Container>
-            {/* {project.name === '' ? ( // CONDIÇÃO DO PROJETO TEMPORARIAMENTE REMOVIDA
-                <h2>Escolha um projeto para acessar</h2>
-            ) : ( */}
-                <>
-                    {/* Verifica se 'folders' existe e é um array antes de checar o length */}
-                    {(!folders || folders.length === 0) && <h2>Nenhum prédio encontrado.</h2>}
-                    {folders && folders.map((building) => (
-                        <div key={building.id} style={{ textAlign: 'center' }}>
-                            <FaFolder onClick={() => navigate(`${path}/${encodeURIComponent(building.predio)}`)} />
-                            <p>{building.predio}</p>
-                        </div>
-                    ))}
-                    <button>+ Adicionar Pasta</button>
-                </>
-            {/* )} */}
+            {isLoading && <LoadingMessage>Carregando pastas...</LoadingMessage>}
+            {error && <ErrorMessage>Erro ao carregar dados: {error.message}</ErrorMessage>}
+            
+            {!isLoading && !error && (!folders || folders.length === 0) && 
+                <LoadingMessage>Nenhuma pasta encontrada.</LoadingMessage>}
+            
+            {!isLoading && !error && folders && folders.map((folder) => (
+                <div key={folder[folderIdField]} style={{ textAlign: 'center' }}>
+                    <FaFolder onClick={() => 
+                        navigate(`${path}/${encodeURIComponent(folder[folderNameField])}`)
+                    } />
+                    <p>{folder[folderNameField]}</p>
+                </div>
+            ))}
+            
+            <button>+ Adicionar Pasta</button>
         </Container>
     );
 }
