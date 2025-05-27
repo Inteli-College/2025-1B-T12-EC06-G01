@@ -32,6 +32,7 @@ def create_app():
     from app.Routes.BuildingRoute import building_bp
     from app.Routes.ImageBuildingRoute import image_building_bp
     from app.Routes.ImageProjectRoute import image_project_bp
+    from app.Routes.UserRoute import user_bp
 
     # Carregando os Models
     from app.Models.project import Project
@@ -50,6 +51,7 @@ def create_app():
     app.register_blueprint(project_blueprint)
     app.register_blueprint(image_building_bp)
     app.register_blueprint(image_project_bp)
+    app.register_blueprint(user_bp)
 
     
     from app.Routes.ImageCleanRoutes import image_clean_blueprint
