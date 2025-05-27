@@ -31,6 +31,8 @@ class UserController:
         else:
             return {"code": code, "message": new}, code
         
-    def post_user(nome):
-        return UserRepository.create_user(nome)
+    def delete_user_by_id(self, user_id):
+        return UserRepository.delete_user(user_id)
+        
+
         

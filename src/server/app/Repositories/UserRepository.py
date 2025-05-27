@@ -13,7 +13,7 @@ class UserRepository:
     @staticmethod
     def get_user_by_name(name):
         try:
-            user = User.query.filter_by(name=name)
+            user = User.query.filter_by(name=name).first()
             return user
         except:
             print("[UserController] Erro ao achar user! 500") 
@@ -33,15 +33,17 @@ class UserRepository:
         try:
             if not user_id:
                 return {"error": "No image IDs provided"}, 400
-            user_to_delete = User.query.filter(User.id == user_id).first()
             
+            user_to_delete = User.query.filter(User.id == user_id).first()
+        
+            db.session.delete(user_to_delete)
+            db.session.commit()
+
+            return {
+                    "message": f"Successfully deleted {user_to_delete}"
+                }, 200   
         except Exception as e:
             return {"error": str(e)}, 500
-        db.session.delete(user_to_delete)
-        db.seesion.commit()
-        return {
-                "message": f"Successfully deleted {user_to_delete}"
-            }, 200   
 
         
 
