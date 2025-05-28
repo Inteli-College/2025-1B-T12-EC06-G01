@@ -26,3 +26,15 @@ def get_buildings_route():
     except Exception as e:
         print(f"[BuildingRoute] Erro ao processar requisição GET: {e}")
         return jsonify({"code": 500, "message": "Erro interno no servidor"}), 500
+
+@building_bp.route("/project/<int:project_id>", methods=["GET"])
+def get_buildings_by_project_route(project_id):
+    """
+    Rota para buscar todos os prédios de um projeto específico.
+    """
+    try:
+        result, code = controller.get_buildings_by_project(project_id)
+        return jsonify(result), code
+    except Exception as e:
+        print(f"[BuildingRoute] Erro ao processar requisição GET para projeto {project_id}: {e}")
+        return jsonify({"code": 500, "message": "Erro interno no servidor"}), 500
