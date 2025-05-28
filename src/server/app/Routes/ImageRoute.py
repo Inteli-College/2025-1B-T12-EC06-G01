@@ -29,15 +29,8 @@ def get_images():
     result, code = image_controller.get_images_per_fachada(data)
     return jsonify(result), code
 
-@image_bp.route('/fachadas', methods=['POST'])
-def post_fachada():
+@image_bp.route('/classified', methods=['GET'])
+def get_images_classified_per_building():
     data = request.json
-    result, code = image_controller.post_fachada(data)
+    result, code = image_controller.get_images_classified_per_building(data)
     return jsonify(result), code
-
-@image_bp.route('/fachadas', methods=['GET'])
-def get_fachada():
-    data = request.json
-    result, code = image_controller.get_fachadas(data)
-    return jsonify(result), code
-

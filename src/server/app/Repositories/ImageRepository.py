@@ -1,5 +1,8 @@
-from app.Models import Image
+from app.Models import Image, Facade
 from app import db, cloud
+from collections import defaultdict
+from sqlalchemy.orm import contains_eager
+from sqlalchemy import and_
 
 class ImageRepository:
     @staticmethod
@@ -56,7 +59,36 @@ class ImageRepository:
 
         except Exception as e:
             print("[ImageRepository] Nenhuma imagem encontrada...")
-            return {"code": 404, "message": "Nenhuma imagem encontrada..."}
+            return {"code": 404, "message": "Nenhuma imagem encontrada..."}, 404
+        
+    @staticmethod
+    def read_images_classified_per_building(id_predio: int):
+        try:
+            facades = (
+                db.session.query(Facade)
+                .filter(Facade.building_id == id_predio)
+                .outerjoin(Facade.images.and_(Image.fissure_type.isnot(None)))
+                .options(contains_eager(Facade.images))
+                .all()
+            )
+
+            facade_image_map = defaultdict(list)
+
+            for facade in facades:
+                if facade.images: 
+                    facade_image_map[facade].extend(facade.images)
+
+            return {
+                facade.name: [img.raw_image for img in images]
+                for facade, images in facade_image_map.items()
+            }, 200
+
+        except Exception as e:
+            print("[ImageRepository] Nenhuma imagem encontrada...")
+            return {"code": 404, "message": "Nenhuma imagem encontrada..."}, 404            
+
+
+
             
 
     
