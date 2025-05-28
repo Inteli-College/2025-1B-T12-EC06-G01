@@ -1,7 +1,7 @@
 from ultralytics import YOLO
 import os
 
-model = YOLO("/runs/classify/train11/weights/best.pt")
+model = YOLO("C:/Users/pietr/Documents/modulo6/2025-1B-T12-EC06-G01/runs/classify/train18/weights/best.pt")
 
 test_folder = "C:/Users/pietr/Documents/modulo6/generalizacao"
 
