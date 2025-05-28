@@ -85,6 +85,10 @@ class ImageController:
         
         result, code = self.image_repository.read_fachadas(id_predio=id_predio)
         return result, code
+    
+    def post_fachadas(self, data):
+        
+        nome = data['name']
                 
 
 

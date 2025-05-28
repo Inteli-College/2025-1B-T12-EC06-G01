@@ -11,7 +11,7 @@ def project_route():
 
     except Exception as e:
         print("[BuildingRoute] Erro ao receber requisição!")
-        return jsonify({"code": 400, "message": f"{e}"})
+        return jsonify({"code": 400, "message": f"{e}"}), 400
     
     result, code = controller.post_building(data)
     return jsonify(result), code
