@@ -38,9 +38,9 @@ class ImageRepository:
 
 
     @staticmethod
-    def create_image(raw_image: str, fachada: str, predio_id: int, date):
+    def create_image(raw_image: str, fachada_id: str, date):
         try:
-            new = Image(raw_image=raw_image, fachada=fachada, building_id=predio_id)
+            new = Image(raw_image=raw_image, facade_id=fachada_id)
             db.session.add(new)
             db.session.commit()
             return new, 201

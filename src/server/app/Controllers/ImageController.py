@@ -30,7 +30,7 @@ class ImageController:
 
     def post_images(self, data, files):
         try:
-            fachada = data['fachada']
+            fachada = data['facade_id']
             predio_id = data['building_id']
             date = data['datetime'] if data['datetime'] else str(datetime.now())
             id_sucess = {}
@@ -46,7 +46,7 @@ class ImageController:
                 url = self.image_repository.update_image(file)
 
                 if url:
-                    new, code = self.image_repository.create_image(fachada=fachada, raw_image=url, predio_id=predio_id, date=date)
+                    new, code = self.image_repository.create_image(fachada=fachada, raw_image=url, date=date)
 
                     if code == 201:
                         id_sucess[new.id] = file_name
