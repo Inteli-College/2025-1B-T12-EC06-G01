@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { FaTrash, FaPaintBrush } from 'react-icons/fa'
 import { IoSend } from 'react-icons/io5'
 import { useProject } from '../contexts/ProjectContext';
+import { useLocation } from 'react-router-dom';
 
 
 const Nav = styled.div`
@@ -77,16 +78,38 @@ const Botoes = styled.div`
 
 export default function NavHome() {
     const { project } = useProject();
+    const location = useLocation();
 
     const [dateFilter, setDateFilter] = useState(null)
     const [optionFilter, setOptionFilter] = useState('')
     const [latitudeFilter, setLatitudeFilter] = useState('')
     const [longitudeFilter, setLongitudeFilter] = useState('')
 
+    // Função para determinar o título baseado na rota atual
+    const getPageTitle = () => {
+        const path = location.pathname;
+        
+        if (path === '/projects') {
+            return 'Escolha um projeto';
+        } else if (path.includes('/predios')) {
+            return 'Escolha um prédio';
+        } else if (path.includes('/predio/') && path.split('/').length === 5) {
+            // Rota: /project/:projectId/predio/:predioNome
+            return 'Escolha uma fachada';
+        } else if (path.includes('/predio/') && path.split('/').length === 6) {
+            // Rota: /project/:projectId/predio/:predioNome/:fachadaNome
+            return 'Visualizando fachada';
+        } else if (project.name === '') {
+            return 'Adicione um projeto';
+        } else {
+            return project.name;
+        }
+    };
+
     return (
         <Nav>
             <Infos>
-                {project.name === '' ? <h3>Adicione um projeto</h3> : <h3>{project.name}</h3>}
+                <h3>{getPageTitle()}</h3>
 
                 <div className='filtros'>
                     <input type='date' onChange={(e) => setDateFilter(e.target.value)} />

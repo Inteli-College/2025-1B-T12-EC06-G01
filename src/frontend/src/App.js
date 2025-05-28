@@ -1,6 +1,8 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from './pages/Home';
+import Projects from './pages/Projects';
+import ProjectPredios from './pages/ProjectPredios';
 import Predio from './pages/Predio';
 import Fachada from './pages/Fachada'; 
 import { ProjectProvider } from './contexts/ProjectContext';
@@ -11,8 +13,13 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/project/:projectId/predios" element={<ProjectPredios />} />
+          <Route path="/project/:projectId/predio/:predioNome" element={<Predio />} />
+          <Route path="/project/:projectId/predio/:predioNome/:fachadaNome" element={<Fachada />} />
+          {/* Rotas antigas mantidas para compatibilidade */}
           <Route path="/predio/:predioNome" element={<Predio />} />
-          <Route path="/predio/:predioNome/:fachadaNome" element={<Fachada />} /> {/* opcional */}
+          <Route path="/predio/:predioNome/:fachadaNome" element={<Fachada />} />
         </Routes>
       </Router>
     </ProjectProvider>
