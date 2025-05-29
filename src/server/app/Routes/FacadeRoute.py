@@ -14,7 +14,21 @@ def get_facades():
         return jsonify({"code": 400, "message": f"{e}"}), 400
 
     result, code = controller.get_facades(data)  
-    return jsonify(result), code  
+    return jsonify(result), code
+
+@facade_bp.route("/building/<int:building_id>", methods=['GET'])
+def get_facades_by_building(building_id):
+    """
+    Rota RESTful para buscar fachadas de um prédio específico.
+    """
+    try:
+        # Simula o formato esperado pelo controller existente
+        data = {"building_id": building_id}
+        result, code = controller.get_facades(data)
+        return jsonify(result), code
+    except Exception as e:
+        print(f"[FacadeRoute] Erro ao processar requisição GET: {e}")
+        return jsonify({"code": 500, "message": "Erro interno no servidor"}), 500
 
 @facade_bp.route("/", methods=["POST"])
 def post_facade():

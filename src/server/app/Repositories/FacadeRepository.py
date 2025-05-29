@@ -15,7 +15,7 @@ class FacadeRepository:
                 .distinct()
                 .all()
             )
-            fachadas_unicas = [nome[0] for nome in fachadas_nomes]
+            fachadas_unicas = [nome[0] for nome in fachadas_nomes if nome[0] is not None]
 
             return {
                 "building_id": id_predio,
@@ -23,8 +23,8 @@ class FacadeRepository:
             }, 200
         
         except Exception as e:
-            print(f"[FacadeRepository] Nenhuma fachada encontrada... {e}")
-            return {"code": 404, "message": "Nenhuma fachada encontrada..."}, 404   
+            print(f"[FacadeRepository] Erro ao buscar fachadas: {e}")
+            return {"code": 500, "message": "Erro interno no servidor"}, 500
 
     @staticmethod
     def create_facade(nome: str, id_predio: int):
