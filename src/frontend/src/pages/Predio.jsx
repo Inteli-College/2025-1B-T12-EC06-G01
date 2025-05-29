@@ -31,10 +31,6 @@ export default function Predio() {
       <Sidebar />
       <Body>
         <NavHome />
-        <h2 style={{ margin: '2rem 0 0 2rem', fontSize: '1.8rem' }}>
-          Prédio: {decodeURIComponent(predioNome)} <br />
-          <small style={{ fontSize: '1rem', color: '#666' }}>Projeto ID: {projectId}</small>
-        </h2>
         <FoldersSection
           folders={fachadas}
           path={`/project/${projectId}/predio/${encodeURIComponent(predioNome)}`}
