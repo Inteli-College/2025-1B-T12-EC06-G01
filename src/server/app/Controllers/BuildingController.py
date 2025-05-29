@@ -30,10 +30,11 @@ class BuildingController:
         else:
             return {"code": code, "message": new}, code
 
-    def get_buildings(self):
+    def get_buildings(self, data):
         """
         Busca todos os prédios e formata para resposta JSON.
         """
+
         buildings_data, code = self.building_repo.get_all_buildings()
 
         if code == 200:
