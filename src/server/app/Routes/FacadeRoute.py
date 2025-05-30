@@ -4,7 +4,7 @@ from app.Controllers.FacadeController import FacadeController
 controller = FacadeController()
 facade_bp = Blueprint("facade", __name__, url_prefix="/facade")
 
-@facade_bp.route("/", methods=['GET'])
+@facade_bp.route("/get", methods=['POST'])
 def get_facades():
     try:
         data = request.json
