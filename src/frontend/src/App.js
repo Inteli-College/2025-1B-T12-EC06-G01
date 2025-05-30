@@ -6,6 +6,7 @@ import ProjectPredios from './pages/ProjectPredios';
 import Predio from './pages/Predio';
 import Fachada from './pages/Fachada'; 
 import { ProjectProvider } from './contexts/ProjectContext';
+import Result from './pages/Result';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           {/* Rotas antigas mantidas para compatibilidade */}
           <Route path="/predio/:predioNome" element={<Predio />} />
           <Route path="/predio/:predioNome/:fachadaNome" element={<Fachada />} />
+          <Route path="/resultado" element={<Result />} />
         </Routes>
       </Router>
     </ProjectProvider>
