@@ -17,17 +17,13 @@ const Body = styled.div`
 `
 
 export default function Fachada() {
-  const { predioNome, fachadaNome } = useParams()
+  const { projectId, predioNome, fachadaNome } = useParams()
 
   return (
     <FachadaPage>
       <Sidebar />
       <Body>
         <NavHome />
-        <h2 style={{ margin: '2rem' }}>
-          Fachada: {decodeURIComponent(fachadaNome)} <br />
-          Prédio: {decodeURIComponent(predioNome)}
-        </h2>
         <ImgSection predio={predioNome} fachada={fachadaNome} />
       </Body>
     </FachadaPage>

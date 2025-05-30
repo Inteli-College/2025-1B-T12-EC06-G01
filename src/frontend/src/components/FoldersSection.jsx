@@ -11,37 +11,57 @@ const Container = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
     gap: 2rem;
+`;
+
+const FolderCard = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    
     svg {
         font-size: 5rem;
         color: #969FB0;
+        transition: all 0.3s ease;
     }
-    svg:hover {
+    
+    &:hover svg {
         font-size: 6rem;
         color: #69758C;
     }
-    button {
-        height: 70%;
-        border: 3px solid #0A3B4E;
-        border-radius: 15px;
-        background-color: #629EBC;
-        color: #fff;
-        font-size: 1.5rem;
-    }
-    button:hover {
-        background-color: #3D80A3;
-        cursor: pointer;
+    
+    p {
+        margin: 0.5rem 0;
+        font-weight: bold;
     }
 `;
 
 const LoadingMessage = styled.h2`
     grid-column: span 6;
     text-align: center;
+    color: #666;
 `;
 
 const ErrorMessage = styled.h2`
     grid-column: span 6;
     text-align: center;
     color: #d32f2f;
+`;
+
+const AddButton = styled.button`
+    height: 70%;
+    border: 3px solid #0A3B4E;
+    border-radius: 15px;
+    background-color: #629EBC;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    
+    &:hover {
+        background-color: #3D80A3;
+    }
 `;
 
 /**
@@ -115,17 +135,17 @@ export default function FoldersSection({
             
             {!isLoading && !error && (!folders || folders.length === 0) && 
                 <LoadingMessage>Nenhuma pasta encontrada.</LoadingMessage>}
-            
-            {!isLoading && !error && folders && folders.map((folder) => (
-                <div key={folder[folderIdField]} style={{ textAlign: 'center' }}>
-                    <FaFolder onClick={() => 
-                        navigate(`${path}/${encodeURIComponent(folder[folderNameField])}`)
-                    } />
+              {!isLoading && !error && folders && folders.map((folder) => (
+                <FolderCard 
+                    key={folder[folderIdField]} 
+                    onClick={() => navigate(`${path}/${encodeURIComponent(folder[folderNameField])}`)}
+                >
+                    <FaFolder />
                     <p>{folder[folderNameField]}</p>
-                </div>
+                </FolderCard>
             ))}
             
-            <button>+ Adicionar Pasta</button>
+            <AddButton>+ Adicionar Pasta</AddButton>
         </Container>
     );
 }

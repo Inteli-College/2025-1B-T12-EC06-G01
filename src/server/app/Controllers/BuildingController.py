@@ -54,3 +54,23 @@ class BuildingController:
             return result, code
         else:
             return {"code": code, "message": "Erro ao buscar prédios"}, code
+
+    def get_buildings_by_project(self, project_id):
+        """
+        Busca todos os prédios de um projeto específico e formata para resposta JSON.
+        """
+        buildings_data, code = self.building_repo.get_buildings_by_project(project_id)
+
+        if code == 200:
+            result = []
+            for building in buildings_data:
+                result.append({
+                    "id": building.id,
+                    "project_id": building.project_id,
+                    "predio": building.predio,
+                    "latitude": building.latitude,
+                    "longitude": building.longitude,
+                })
+            return result, code
+        else:
+            return {"code": code, "message": f"Erro ao buscar prédios do projeto {project_id}"}, code
