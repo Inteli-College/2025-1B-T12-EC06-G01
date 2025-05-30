@@ -17,7 +17,7 @@ const Body = styled.div`
 `;
 
 export default function Predio() {
-  const { predioNome } = useParams();
+  const { projectId, predioNome } = useParams();
 
   const fachadas = [
     "Fachada Leste",
@@ -25,10 +25,6 @@ export default function Predio() {
     "Fachada Norte",
     "Fachada Sul",
   ];
-  
-  //<FoldersSection folders={fachadas} path={`/predio/${encodeURIComponent(predioNome)}`} />
-  // Comentei essa linha para não dar erro, mas depois descomente
-  // quando o componente projects estiver pronto e integrado
 
   return (
     <PredioPage>
@@ -37,7 +33,7 @@ export default function Predio() {
         <NavHome />
         <FoldersSection
           folders={fachadas}
-          path={`/predio/${encodeURIComponent(predioNome)}`}
+          path={`/project/${projectId}/predio/${encodeURIComponent(predioNome)}`}
         />
       </Body>
     </PredioPage>
