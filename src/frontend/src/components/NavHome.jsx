@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { FaTrash, FaPaintBrush } from 'react-icons/fa'
 import { IoSend } from 'react-icons/io5'
 import { useProject } from '../contexts/ProjectContext'
-import axios from 'axios'
+import SendPopup from '../components/SendPopup'
 
 const Nav = styled.div`
     margin-left: 18vw;
@@ -22,7 +22,7 @@ const Infos = styled.div`
     .filtros {
         display: flex;
         flex-direction: row;
-        gap: .8rem
+        gap: .8rem;
     }
 
     .filtros input, select {
@@ -75,52 +75,6 @@ const Botoes = styled.div`
     }
 `
 
-const Popup = styled.div`
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    background: rgba(0,0,0,0.4);
-    display: flex; justify-content: center; align-items: center;
-    z-index: 9999;
-
-    .popup-inner {
-        background: white;
-        padding: 2rem;
-        border-radius: 15px;
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        min-width: 400px;
-    }
-
-    select {
-        padding: .5rem;
-        border-radius: 10px;
-        border: 1px solid gray;
-    }
-
-    .popup-buttons {
-        display: flex;
-        justify-content: space-between;
-        gap: 1rem;
-    }
-
-    .popup-buttons button {
-        flex: 1;
-        padding: .5rem;
-        border-radius: 10px;
-        border: none;
-        background-color: #629EBC;
-        color: white;
-        font-weight: bold;
-        cursor: pointer;
-    }
-
-    .popup-buttons button:hover {
-        background-color: #3D80A3;
-    }
-`
-
 export default function NavHome() {
     const { project } = useProject();
 
@@ -159,7 +113,6 @@ export default function NavHome() {
             .catch(err => console.error("Erro ao buscar projetos:", err));
     }, []);
 
-
     useEffect(() => {
         if (selectedProject) {
             fetch('http://localhost:5000/building')
@@ -186,25 +139,25 @@ export default function NavHome() {
                     return res.json();
                 })
                 .then(data => {
-                    setFacades(data.fachadas); // só o array de strings
+                    setFacades(data.fachadas);
                 })
                 .catch(err => console.error("Erro ao buscar fachadas:", err));
         }
     }, [selectedBuilding]);
 
-
     const handleSend = () => {
         if (!selectedProject) {
-            alert("Selecione um projeto antes de enviar.")
-            return
+            alert("Selecione um projeto antes de enviar.");
+            return;
         }
 
         fetch('http://localhost:5000/classify/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                project_id: selectedProject
-                // Futuramente: building_id: selectedBuilding, fachada: selectedFacade
+                project_id: selectedProject,
+                building_id: selectedBuilding,
+                fachada: selectedFacade
             })
         })
             .then(res => res.json())
@@ -212,9 +165,7 @@ export default function NavHome() {
                 alert("Classificação enviada com sucesso!");
                 setShowPopup(false);
             })
-            .catch(err => console.error("Erro ao classificar:", err))
-        
-        window.alert()
+            .catch(err => console.error("Erro ao classificar:", err));
     }
 
     return (
@@ -233,6 +184,7 @@ export default function NavHome() {
                     <input type='text' placeholder='latitude' onChange={(e) => setLatitudeFilter(e.target.value)} />
                 </div>
             </Infos>
+
             <Botoes>
                 <button> <FaTrash /> </button>
                 <button> <FaPaintBrush /> </button>
@@ -240,37 +192,19 @@ export default function NavHome() {
             </Botoes>
 
             {showPopup && (
-                <Popup>
-                    <div className="popup-inner">
-                        <h2>Enviar Imagens para Classificação</h2>
-
-                        <select onChange={(e) => setSelectedProject(parseInt(e.target.value))} value={selectedProject}>
-                            <option value=''>Selecione o projeto</option>
-                            {projects.map(p => (
-                                <option key={p.id} value={p.id}>{p.name}</option>
-                            ))}
-                        </select>
-
-                        <select onChange={(e) => setSelectedBuilding(parseInt(e.target.value))} value={selectedBuilding} disabled={!selectedProject}>
-                            <option value=''>Selecione o prédio</option>
-                            {buildings.map(b => (
-                                <option key={b.id} value={b.id}>{b.predio}</option>
-                            ))}
-                        </select>
-
-                        <select onChange={(e) => setSelectedFacade(e.target.value)} value={selectedFacade} disabled={!selectedBuilding}>
-                            <option value=''>Selecione a fachada</option>
-                            {facades.map((f, index) => (
-                                <option key={index} value={f}>{f}</option>
-                            ))}
-                        </select>
-
-                        <div className="popup-buttons">
-                            <button onClick={handleSend}>Enviar</button>
-                            <button onClick={() => setShowPopup(false)}>Cancelar</button>
-                        </div>
-                    </div>
-                </Popup>
+                <SendPopup
+                    projects={projects}
+                    buildings={buildings}
+                    facades={facades}
+                    selectedProject={selectedProject}
+                    selectedBuilding={selectedBuilding}
+                    selectedFacade={selectedFacade}
+                    setSelectedProject={setSelectedProject}
+                    setSelectedBuilding={setSelectedBuilding}
+                    setSelectedFacade={setSelectedFacade}
+                    onSend={handleSend}
+                    onClose={() => setShowPopup(false)}
+                />
             )}
         </Nav>
     )
