@@ -80,8 +80,9 @@ export default function NovoProjetoPopup({ onClose, onSubmit }) {
         <h3>Data</h3>
         <input type="date" ref={dateRef} id="data" />
 
-        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '2rem' }}>
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', marginTop: '2rem', gap: '.5rem'}}>
           <button onClick={handleSubmit}>Enviar</button>
+          <button onClick={onClose}>Cancelar</button>
         </div>
       </div>
     </Popup>
