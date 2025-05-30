@@ -66,5 +66,11 @@ class ProjectController:
         
         else:
             return {"code": code, "message": new}, code
+        
+    def get_project(self):
+        result, code = self.project_repository.read_projects()
+        return result, code
+
+        
             
 
