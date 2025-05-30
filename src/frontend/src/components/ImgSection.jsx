@@ -14,127 +14,55 @@ const Container = styled.div`
     gap: 2rem;
 `
 
+const imagens = [
+  { img_name: "FR1.png", project: "teste", raw_img: "/images/FR1.png" },
+  { img_name: "FR2.png", project: "teste", raw_img: "/images/FR2.PNG" },
+  { img_name: "FR3.PNG", project: "teste", raw_img: "/images/FR3.PNG" },
+  { img_name: "FR4.PNG", project: "teste", raw_img: "/images/FR4.PNG" },
+  { img_name: "FR5.PNG", project: "teste", raw_img: "/images/FR5.PNG" },
+  { img_name: "FR6.PNG", project: "teste", raw_img: "/images/FR6.PNG" },
+  { img_name: "FR7.PNG", project: "teste", raw_img: "/images/FR7.PNG" },
+  { img_name: "FR8.PNG", project: "teste", raw_img: "/images/FR8.PNG" },
+  { img_name: "FR9.PNG", project: "teste", raw_img: "/images/FR9.PNG" },
+  { img_name: "FR10.PNG", project: "teste", raw_img: "/images/FR10.PNG" },
+  { img_name: "FR11.PNG", project: "teste", raw_img: "/images/FR11.PNG" },
+  { img_name: "FR12.PNG", project: "teste", raw_img: "/images/FR12.PNG" },
+  { img_name: "FR13.PNG", project: "teste", raw_img: "/images/FR13.PNG" },
+  { img_name: "FR14.PNG", project: "teste", raw_img: "/images/FR14.PNG" },
+  { img_name: "FR15.PNG", project: "teste", raw_img: "/images/FR15.PNG" },
+  { img_name: "FR16.PNG", project: "teste", raw_img: "/images/FR16.PNG" },
+  { img_name: "FR17.PNG", project: "teste", raw_img: "/images/FR17.PNG" },
+  { img_name: "FR18.PNG", project: "teste", raw_img: "/images/FR18.PNG" },
+  { img_name: "FR19.PNG", project: "teste", raw_img: "/images/FR19.PNG" },
+  { img_name: "FR20.PNG", project: "teste", raw_img: "/images/FR20.PNG" },
+  { img_name: "FT1.PNG", project: "teste", raw_img: "/images/FT1.PNG" },
+  { img_name: "FT2.PNG", project: "teste", raw_img: "/images/FT2.PNG" },
+  { img_name: "FT3.PNG", project: "teste", raw_img: "/images/FT3.PNG" },
+  { img_name: "FT4.PNG", project: "teste", raw_img: "/images/FT4.PNG" },
+  { img_name: "FT5.PNG", project: "teste", raw_img: "/images/FT5.PNG" },
+  { img_name: "FT6.PNG", project: "teste", raw_img: "/images/FT6.PNG" },
+  { img_name: "FT7.PNG", project: "teste", raw_img: "/images/FT7.PNG" },
+  { img_name: "FT8.PNG", project: "teste", raw_img: "/images/FT8.PNG" },
+  { img_name: "FT9.PNG", project: "teste", raw_img: "/images/FT9.PNG" },
+  { img_name: "FT10.PNG", project: "teste", raw_img: "/images/FT10.PNG" },
+  { img_name: "FT11.PNG", project: "teste", raw_img: "/images/FT11.PNG" },
+  { img_name: "FT12.PNG", project: "teste", raw_img: "/images/FT12.PNG" },
+  { img_name: "FT13.PNG", project: "teste", raw_img: "/images/FT13.PNG" },
+  { img_name: "FT14.PNG", project: "teste", raw_img: "/images/FT14.PNG" },
+  { img_name: "FT15.PNG", project: "teste", raw_img: "/images/FT15.PNG" },
+  { img_name: "FT16.PNG", project: "teste", raw_img: "/images/FT16.PNG" },
+  { img_name: "FT17.PNG", project: "teste", raw_img: "/images/FT17.PNG" },
+  { img_name: "FT18.PNG", project: "teste", raw_img: "/images/FT18.PNG" },
+  { img_name: "FT19.PNG", project: "teste", raw_img: "/images/FT19.PNG" },
+  { img_name: "FT20.PNG", project: "teste", raw_img: "/images/FT20.PNG" }
+];
+
 export default function ImgSection() {
-
-  // ---- LÓGICA PARA PUXAR IMAGENS COM A ROTA DO BACK ----
-  // const [listOfImages, setListOfImages] = useState([]);
-  // let navigate = useNavigate();
-
-  //   useEffect(() => {
-  //       axios.get('http://localhost:3001/imagens').then((response) => {
-  //           setListOfImages(response.data)
-  //       })
-  //   }, [])
-
-
-  const imagens = [
-    {
-      "img_name": "img_001.jpg",
-      "project": "teste",
-      "raw_img": "https://picsum.photos/id/1011/800/600"
-    },
-    {
-      "img_name": "img_002.jpg",
-      "project": "teste",
-      "raw_img": "https://picsum.photos/id/1025/800/600"
-    },
-    {
-      "img_name": "img_003.jpg",
-      "project": "teste",
-      "raw_img": "https://picsum.photos/id/1043/800/600"
-    },
-    {
-      "img_name": "img_004.jpg",
-      "project": "teste",
-      "raw_img": "https://picsum.photos/id/1062/800/600"
-    },
-    {
-      "img_name": "img_005.jpg",
-      "project": "teste",
-      "raw_img": "https://picsum.photos/id/1074/800/600"
-    },
-    {
-      "img_name": "img_006.jpg",
-      "project": "teste",
-      "raw_img": "https://picsum.photos/id/1084/800/600"
-    },
-    {
-      "img_name": "img_007.jpg",
-      "project": "teste",
-      "raw_img": "https://picsum.photos/id/1080/800/600"
-    },
-    {
-      "img_name": "img_008.jpg",
-      "project": "teste",
-      "raw_img": "https://picsum.photos/id/109/800/600"
-    },
-    {
-      "img_name": "img_009.jpg",
-      "project": "teste",
-      "raw_img": "https://picsum.photos/id/110/800/600"
-    },
-    {
-      "img_name": "img_010.jpg",
-      "project": "teste",
-      "raw_img": "https://picsum.photos/id/111/800/600"
-    },
-    {
-      "img_name": "img_011.jpg",
-      "project": "teste",
-      "raw_img": "https://picsum.photos/id/112/800/600"
-    },
-    {
-      "img_name": "img_012.jpg",
-      "project": "teste",
-      "raw_img": "https://picsum.photos/id/113/800/600"
-    },
-    {
-      "img_name": "img_013.jpg",
-      "project": "teste",
-      "raw_img": "https://picsum.photos/id/114/800/600"
-    },
-    {
-      "img_name": "img_014.jpg",
-      "project": "teste",
-      "raw_img": "https://picsum.photos/id/115/800/600"
-    },
-    {
-      "img_name": "img_015.jpg",
-      "project": "teste",
-      "raw_img": "https://picsum.photos/id/116/800/600"
-    },
-    {
-      "img_name": "img_016.jpg",
-      "project": "teste",
-      "raw_img": "https://picsum.photos/id/117/800/600"
-    },
-    {
-      "img_name": "img_017.jpg",
-      "project": "teste",
-      "raw_img": "https://picsum.photos/id/118/800/600"
-    },
-    {
-      "img_name": "img_018.jpg",
-      "project": "teste",
-      "raw_img": "https://picsum.photos/id/119/800/600"
-    },
-    {
-      "img_name": "img_019.jpg",
-      "project": "teste",
-      "raw_img": "https://picsum.photos/id/120/800/600"
-    },
-    {
-      "img_name": "img_020.jpg",
-      "project": "teste",
-      "raw_img": "https://picsum.photos/id/121/800/600"
-    }
-  ]
-
   return (
     <Container>
-        {imagens.map((value, key) => {
-          return <CardImg key={key} img_name={value.img_name} url={value.raw_img} />
-        })}
+      {imagens.map((img, index) => (
+        <CardImg key={index} img_name={img.img_name} url={img.raw_img} />
+      ))}
     </Container>
-  )
+  );
 }

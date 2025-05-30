@@ -1,6 +1,7 @@
 // src/components/SendPopup.jsx
 import React from 'react'
 import styled from 'styled-components'
+import { useNavigate } from 'react-router-dom'
 
 const PopupWrapper = styled.div`
   position: fixed;
@@ -61,6 +62,9 @@ export default function SendPopup({
   onSend,
   onClose
 }) {
+
+  let navigate = useNavigate();
+
   return (
     <PopupWrapper>
       <div className="popup-inner">

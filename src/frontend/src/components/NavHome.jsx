@@ -4,6 +4,7 @@ import { FaTrash, FaPaintBrush } from 'react-icons/fa'
 import { IoSend } from 'react-icons/io5'
 import { useProject } from '../contexts/ProjectContext'
 import SendPopup from '../components/SendPopup'
+import { useNavigate } from 'react-router-dom'
 
 const Nav = styled.div`
     margin-left: 18vw;
@@ -92,6 +93,8 @@ export default function NavHome() {
     const [selectedBuilding, setSelectedBuilding] = useState('')
     const [selectedFacade, setSelectedFacade] = useState('')
 
+    let navigate = useNavigate();
+
     useEffect(() => {
         fetch('http://localhost:5000/projects/')
             .then(res => res.json())
@@ -164,6 +167,7 @@ export default function NavHome() {
             .then(data => {
                 alert("Classificação enviada com sucesso!");
                 setShowPopup(false);
+                navigate('/resultado');
             })
             .catch(err => console.error("Erro ao classificar:", err));
     }
