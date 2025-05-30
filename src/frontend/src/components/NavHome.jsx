@@ -4,7 +4,7 @@ import { FaTrash, FaPaintBrush } from 'react-icons/fa'
 import { IoSend } from 'react-icons/io5'
 import { useProject } from '../contexts/ProjectContext'
 import SendPopup from '../components/SendPopup'
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 
 const Nav = styled.div`
@@ -95,6 +95,8 @@ export default function NavHome() {
     const [selectedBuilding, setSelectedBuilding] = useState('')
     const [selectedFacade, setSelectedFacade] = useState('')
 
+    let navigate = useNavigate();
+
     useEffect(() => {
         fetch('http://localhost:5000/projects/')
             .then(res => res.json())
@@ -149,27 +151,29 @@ export default function NavHome() {
     }, [selectedBuilding]);
 
     const handleSend = () => {
-        if (!selectedProject) {
-            alert("Selecione um projeto antes de enviar.");
-            return;
-        }
-
-        fetch('http://localhost:5000/classify/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                project_id: selectedProject,
-                building_id: selectedBuilding,
-                fachada: selectedFacade
-            })
-        })
-            .then(res => res.json())
-            .then(data => {
-                alert("Classificação enviada com sucesso!");
-                setShowPopup(false);
-            })
-            .catch(err => console.error("Erro ao classificar:", err));
+    if (!selectedProject) {
+        alert("Selecione um projeto antes de enviar.");
+        return;
     }
+
+    fetch('http://localhost:5000/classify/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            project_id: selectedProject,
+            building_id: selectedBuilding,
+            fachada: selectedFacade
+        })
+    })
+        .then(res => res.json())
+        .then(data => {
+            alert("Classificação enviada com sucesso!");
+            setShowPopup(false);
+            navigate('/resultado'); // Redirecionamento adicionado
+        })
+        .catch(err => console.error("Erro ao classificar:", err));
+}
+
 
     // Função para determinar o título baseado na rota atual
     const getPageTitle = () => {

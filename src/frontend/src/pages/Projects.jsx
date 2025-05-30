@@ -94,7 +94,7 @@ export default function Projects() {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await axios.get('http://10.128.0.31:5000/projects');
+        const response = await axios.get('http://localhost:5000/projects');
         
         // Converter o formato atual para array de objetos
         const projectsData = response.data;

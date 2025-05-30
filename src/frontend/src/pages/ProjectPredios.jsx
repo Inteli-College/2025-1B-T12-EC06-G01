@@ -25,7 +25,7 @@ export default function ProjectPredios() {
       <Body>
         <NavHome />
         <FoldersSection
-          apiUrl={`http://10.128.0.31:5000/building/project/${projectId}`}
+          apiUrl={`http://localhost:5000/building/project/${projectId}`}
           path={`/project/${projectId}/predio`}
           folderNameField="predio"
           folderIdField="id"
