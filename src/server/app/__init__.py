@@ -26,8 +26,7 @@ def create_app():
     
     migrate.init_app(app, db)
     cloud.init_app(app)
-    
-    # Import blueprints here to avoid circular imports
+      # Import blueprints here to avoid circular imports
     from app.Routes.ClassifyRoute import classify_bp
     from app.Routes.ImageRoute import image_bp
     from app.Routes.ProjectRoutes import project_blueprint
@@ -35,7 +34,8 @@ def create_app():
     from app.Routes.FacadeRoute import facade_bp
     from app.Routes.FilterRoute import filter_bp
     from app.Routes.ImageCleanRoutes import image_clean_blueprint
-    from app.Routes.BuildingRoute import building_bp
+    from app.Routes.ImageProjectRoute import image_project_bp
+    from app.Routes.ImageBuildingRoute import image_building_bp
 
     # Carregando os Models
     from app.Models.project import Project
@@ -44,9 +44,7 @@ def create_app():
     from app.Models.image import Image
     from app.Models.log import Log
     from app.Models.log_image import log_image
-    from app.Models.user import User
-
-    # registra rotas só depois do init
+    from app.Models.user import User    # registra rotas só depois do init
     app.register_blueprint(classify_bp)  
     app.register_blueprint(filter_bp)
     app.register_blueprint(image_bp)
@@ -54,6 +52,8 @@ def create_app():
     app.register_blueprint(facade_bp)  
     app.register_blueprint(image_clean_blueprint)    
     app.register_blueprint(building_bp)
+    app.register_blueprint(image_project_bp)
+    app.register_blueprint(image_building_bp)
     
 
 
