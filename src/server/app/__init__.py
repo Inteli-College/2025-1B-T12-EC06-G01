@@ -35,7 +35,8 @@ def create_app():
     from app.Routes.FilterRoute import filter_bp
     from app.Routes.ImageCleanRoutes import image_clean_blueprint
     from app.Routes.ImageProjectRoute import image_project_bp
-    from app.Routes.ImageBuildingRoute import image_building_bp
+    from app.Routes.UserRoute import user_bp
+
 
     # Carregando os Models
     from app.Models.project import Project
@@ -45,15 +46,18 @@ def create_app():
     from app.Models.log import Log
     from app.Models.log_image import log_image
     from app.Models.user import User    # registra rotas só depois do init
+    
+    
+    
     app.register_blueprint(classify_bp)  
     app.register_blueprint(filter_bp)
     app.register_blueprint(image_bp)
     app.register_blueprint(project_blueprint)
-    app.register_blueprint(facade_bp)  
-    app.register_blueprint(image_clean_blueprint)    
+    app.register_blueprint(user_bp)
+    app.register_blueprint(image_clean_blueprint)
+    app.register_blueprint(facade_bp)    
     app.register_blueprint(building_bp)
-    app.register_blueprint(image_project_bp)
-    app.register_blueprint(image_building_bp)
+ 
     
 
 
