@@ -9,4 +9,5 @@ class Building(db.Model):
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
 
     project = db.relationship('Project', back_populates='building')
-    images = db.relationship('Image', back_populates='building')
+    facade = db.relationship('Facade', back_populates='building', cascade='all, delete-orphan')
+    logs = db.relationship('Log', back_populates='building')
