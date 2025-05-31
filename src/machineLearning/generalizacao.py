@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 from ultralytics import YOLO
 from pathlib import Path
 import argparse, sys, os
