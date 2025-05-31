@@ -4,7 +4,7 @@ from app.Services.ImageClassificationService import ImageClassificationService
 
 class ImageReviewController:
     def __init__(self):
-        self.filter_svc   = ImageFilterService()
+        self.filter_svc = ImageFilterService()
         self.classify_svc = ImageClassificationService()
 
     def get_filtered_images(self, project_id):
