@@ -1,14 +1,25 @@
 from ultralytics import YOLO
+from pathlib import Path
 
-# model = YOLO("C:/Users/pietr/Documents/modulo6/2025-1B-T12-EC06-G01/src/machineLearning/melhores_modelos/best19.pt")
-# Caminho para o modelo treinado
-model = YOLO(r"C:/Users/pietr/Documents/modulo6/2025-1B-T12-EC06-G01/src/machineLearning/melhores_modelos/best21.pt")
+BASE = Path(__file__).parent # Define o diretório base do script
 
-# Avaliação no conjunto de teste
-model.val(data=r"C:/Users/pietr/Documents/modulo6/2025-1B-T12-EC06-G01/src/machineLearning/dataset", imgsz=224)
+# Define o caminho para a pasta de melhores modelos
+best_models_dir = BASE / "melhores_modelos"
+# Define o caminho completo para o modelo específico que você quer carregar
+model_path = best_models_dir / "best21.pt"
 
+if not model_path.exists():
+    raise FileNotFoundError(f"O modelo '{model_path.name}' não foi encontrado em: {best_models_dir}. Verifique o caminho e o nome do arquivo.")
 
+print(f"Usando modelo específico: {model_path}")
+model = YOLO(str(model_path))
 
-# metrics = model.val()
-# print(metrics.class_result)
-# print(f"Acurácia top-1: {metrics.top1:.3f}")
+# Caminho relativo para o dataset, que será usado para a avaliação
+dataset_path = BASE / "dataset"
+if not dataset_path.exists():
+    raise FileNotFoundError(f"Dataset de validação não encontrado em: {dataset_path}. Por favor, verifique o caminho.")
+
+# Avaliação no conjunto de validação/teste, usando o caminho relativo do dataset e imgsz
+metrics = model.val(data=str(dataset_path), imgsz=224)
+
+print(f"Acurácia top-1: {metrics.top1:.3f}")
