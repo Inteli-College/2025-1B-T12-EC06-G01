@@ -1,7 +1,7 @@
 from ultralytics import YOLO
 import os
 
-model = YOLO("C:/Users/pietr/Documents/modulo6/2025-1B-T12-EC06-G01/runs/classify/train18/weights/best.pt")
+model = YOLO("C:/Users/pietr/Documents/modulo6/2025-1B-T12-EC06-G01/src/machineLearning/melhores_modelos/best21.pt")
 
 test_folder = "C:/Users/pietr/Documents/modulo6/generalizacao"
 
@@ -9,7 +9,7 @@ print(model.names)
 
 # Faz a previsão para cada imagem
 for file in os.listdir(test_folder):
-    if file.endswith(".jpg") or file.endswith(".PNG"):
+    if file.endswith(".webp") or file.endswith(".PNG"):
         path = os.path.join(test_folder, file)
         results = model.predict(path)
         probs = results[0].probs
