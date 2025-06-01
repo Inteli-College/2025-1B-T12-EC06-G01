@@ -251,3 +251,57 @@ Mantemos o foco nos próximos passos já delineados para aprimorar a robustez e 
 :::tip
 As atualizações desta sprint visam principalmente aprimorar a manutenibilidade, a portabilidade do código e o ajuste ao overtift observado. As próximas etapas continuarão a focar na validação prática e na expansão do dataset para mitigar o risco de overfitting e garantir que o modelo performe de forma robusta em cenários reais.
 :::
+
+---
+## Insights sobre o Modelo e seu Desempenho
+
+### Visão Geral 
+
+O modelo de classificação treinado com o `YOLO11n-cls` utilizando imagens fornecidas pelo IPT apresentou excelente desempenho em termos de acurácia e consistência. Durante a avaliação nas imagens do conjunto de teste (dividido originalmente a partir do próprio dataset vindo do IPT), as principais observações incluem:
+
+- Alta acurácia nas imagens reais do IPT;
+- Predições corretas para *fissuras de retração* e *fissuras térmicas*;
+- Matriz de confusão sem registros de erro;
+- Classificações precisas desde que as imagens estejam dentro do padrão visual aprendido.
+
+### Qualidade das Imagens e Padrão Visual
+
+Em conversa com o parceiro do projeto, foi confirmado que todas as imagens que chegam à aplicação seguem o mesmo padrão visual do dataset de treinamento. Isso reforça que:
+
+- O modelo está sendo exposto a dados consistentes com a realidade da operação;
+- A generalização externa não é uma preocupação imediata;
+- A utilização de imagens geradas por IA foi descartada, por não refletirem fielmente o cenário real.
+
+### Avaliação de Desempenho
+
+A avaliação foi conduzida em dois contextos:
+
+**1. Conjunto de teste real (oferecido pelo IPT)**
+    - **100% de acurácia**, com todas as imagens corretamente classificadas;
+    - A matriz confusão revelou **nenhum falso positivo ou falso negativo**;
+    - Métricas de precisão, recall e F1-score foram perfeitas para ambas as classes.
+
+**2. Imagens externas ou modificadas**
+    - O modelo demostrou uma queda de desempenho, principalmente para as fissuras térmicas;
+    - Isso pode indicar que o modelo pode estar mais sensível a padrões de retração e com menor generalização para as térmicas em contextos não vistos durante o treino.
+
+### Limites de Generalização
+
+Embora seja preciso em seu domínio de treinamento, o modelo demonstrou baixa generalização para imagens vindas de outras origens (ex: resoluções variadas, IA, google e artigos). Essa limitação é comum em modelos de visão computacional treinados com datasets homogêneos.
+
+- O modelo é robusto e confiável desde que as entradas estejam dentro do padrão visual aprendido;
+- Casos externos exigem cuidado e análises mais profundas.
+
+### Estratégia para Evolução Contínua
+
+A principal conclusão estratégica foi:
+
+- Não será utilizado aumento do dataset com imagens geradas por IA, dado o risco de criar padrões artificiais que não se repetem na prática;
+- A prioridade será desenvolver rotas e mecanismos de retreinamento contínuo, permitindo que o modelo seja atualizado à medida que novos projetos gerarem mais imagens reais;
+- Garantir que o modelo se adapte a variações graduais no padrão visual real com o tempo.
+
+### Conclusão
+
+- O desempenho do modelo atual é altamente eficaz no domínio específico do IPT;
+- Possui limitações de generalização, mas está controlado;
+- A infraestrutura de revalidação periódica e retreinamento é fundamental para garantir a longevidade e adaptabilidade do sistema de classificação;
