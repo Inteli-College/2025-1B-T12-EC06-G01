@@ -91,20 +91,32 @@ const sidebars = {
     {
       type: 'category',
       label: 'Sprint 3',
-      link: { type: 'generated-index' },
+      link: { type: 'generated-index' }, // Cria uma página de índice para a Sprint 3
       items: [
-        // Se você tem 'sprint3/intro' conforme "Available document ids", adicione-o:
+        'sprint3/escopo',      // Referencia 'escopo.md'
         {
           type: 'category',
-          label: 'Modelos',
+          label: 'Frontend', // Corresponde à pasta Frontend
           link: {
-             type: 'generated-index',
+            type: 'generated-index', // Opcional: cria um índice para o Frontend
           },
           items: [
-            'sprint3/Modelos/Yolo',
+            'sprint3/Frontend/frontend', // Referencia 'frontend.md' dentro de Frontend
           ],
         },
-        // Adicione outros documentos da Sprint 3 aqui
+        {
+          type: 'category',
+          label: 'Modelos', // Corresponde à pasta Modelos
+          link: {
+            type: 'generated-index', // Opcional: cria um índice para Modelos
+          },
+          items: [
+            'sprint3/Modelos/Yolo', // Referencia 'Yolo.md' dentro de Modelos
+            'sprint3/Modelos/Unet', // Referencia 'Unet.md' dentro de Modelos
+          ],
+        },
+        'sprint3/database',    // Referencia 'database.md'
+        'sprint3/rotas',       // Referencia 'rotas.md'
       ],
     },
     {

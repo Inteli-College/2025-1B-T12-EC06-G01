@@ -16,7 +16,7 @@ O U-Net é uma arquitetura de rede neural convolucional especialmente projetada 
 
 A arquitetura se chama “U-Net” por conta do seu formato em "U", composto por duas partes principais:
 
-![User Flow](../../../docs/static/img/unet.jpeg)
+![User Flow](../../../../docs/static/img/unet.jpeg)
 _Fonte: Os autores (2025)_
 
 * **Caminho de contração (encoder)**: responsável por capturar o contexto da imagem, reduzindo progressivamente a resolução, mas aumentando a profundidade e extraindo as principais características.
