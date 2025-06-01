@@ -17,7 +17,7 @@ class UserController:
             nome = data['name']           
 
         except Exception as e:
-            print("[ProjectController] Os conteúdos json não são suficientes...")
+            print("[UserController] Os conteúdos json não são suficientes...")
             return {"code": 400, "message": f"{e}"}, 400
 
         new, code = self.user_repository.create_user(nome=nome)
