@@ -6,7 +6,7 @@ sidebar\_position: 1
 
 ## Documentação da Pesquisa de Modelos – U-Net
 
-Durante a Sprint 4, uma das principais tarefas definidas pelo time foi a realização de uma pesquisa aprofundada sobre o modelo **U-Net**, com o objetivo de avaliar sua viabilidade e aplicação dentro do escopo do nosso projeto. A intenção era entender como esse modelo poderia complementar ou substituir parcialmente a abordagem que já vínhamos desenvolvendo com o modelo **YOLO**, ampliando a performance e precisão da classificação e segmentação de imagens.
+Durante a Sprint 3, uma das principais tarefas definidas pelo time foi a realização de uma pesquisa aprofundada sobre o modelo **U-Net**, com o objetivo de avaliar sua viabilidade e aplicação dentro do escopo do nosso projeto. A intenção era entender como esse modelo poderia complementar ou substituir parcialmente a abordagem que já vínhamos desenvolvendo com o modelo **YOLO**, ampliando a performance e precisão da classificação e segmentação de imagens.
 
 ---
 
@@ -41,7 +41,7 @@ Ao longo da pesquisa foram analizados vídeos, artigos e exemplos práticos de u
 
 ### **Por que não implementamos o U-Net**
 
-Apesar do grande potencial e da eficácia comprovada do modelo, alguns fatores nos levaram a decidir **não iniciar a implementação do U-Net na Sprint 4**:
+Apesar do grande potencial e da eficácia comprovada do modelo, alguns fatores nos levaram a decidir **não iniciar a implementação do U-Net na Sprint 3**:
 
 * **Complexidade técnica:** O modelo exige um nível de estrutura mais robusto, tanto em termos de arquitetura quanto de pré-processamento e pós-processamento dos dados.
 
