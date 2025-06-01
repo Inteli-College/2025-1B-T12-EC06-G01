@@ -34,7 +34,6 @@ def create_app():
     from app.Routes.FacadeRoute import facade_bp
     from app.Routes.FilterRoute import filter_bp
     from app.Routes.ImageCleanRoutes import image_clean_blueprint
-    from app.Routes.ImageProjectRoute import image_project_bp
     from app.Routes.UserRoute import user_bp
 
 
