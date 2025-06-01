@@ -6,9 +6,7 @@ BASE     = Path(__file__).parent
 # 1) BASE → pasta deste script (machineLearning/)
 BASE     = Path(__file__).parent
 # 2) dataset relativo
-dataset_nome = "fissura_dataset_augmented" # O nome que você usou em OUTPUT_DIR
-dataset = BASE / dataset_nome
-
+dataset  = BASE / "fissura_dataset"
 if not dataset.exists():
     raise FileNotFoundError(f"Dataset não encontrado em: {dataset}")
 
