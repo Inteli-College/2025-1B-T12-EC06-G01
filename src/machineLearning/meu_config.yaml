@@ -1,0 +1,10 @@
+#lr0: 0.001
+epochs: 50
+imgsz: 224
+batch: 8
+dropout: 0.3
+#weight_decay: 0.001
+#cos_lr: true
+#multi_scale: true
+patience: 10
+label_smoothing: 0.1
