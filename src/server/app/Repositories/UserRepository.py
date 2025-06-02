@@ -1,6 +1,6 @@
 from app import db
 from app.Models.user import User
-
+# Define todas funções para controle do usuario, passando o id e a ação
 class UserRepository:
     @staticmethod
     def get_user_by_id(user_id):

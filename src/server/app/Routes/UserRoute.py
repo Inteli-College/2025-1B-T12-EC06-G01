@@ -1,15 +1,18 @@
 from flask import Blueprint, request, jsonify
 from app.Controllers.UserController import UserController
 
-
-
+# Cria um Blueprint para as rotas do usuário
 user_bp = Blueprint('user', __name__)
+# Instancie o controller
 user_controller = UserController()
+
+# Defina as rotas para manuseio do usuário
 
 @user_bp.route('/get_user_id/<int:user_id>', methods=['GET'])
 def get_users_by_id(user_id):
     try:
         user = user_controller.get_user_by_id(user_id)
+        # Define estrutura do formato do json do user
         user_data = {
             "id": user.id,
             "name": user.name,

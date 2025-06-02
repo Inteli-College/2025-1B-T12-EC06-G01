@@ -1,6 +1,8 @@
 from app.Repositories.ImageRepository import ImageRepository
 from datetime import datetime
 
+# Controller para organização dos métodos definidos pelo Repository. Definindo resposta para erros para maior monitoramento e garantindo que o formato correto seja passado para a função no Repository
+
 class ImageController:
     def __init__(self):
         self.image_repository = ImageRepository()
@@ -10,7 +12,7 @@ class ImageController:
             if not image_ids:
                 return {"error": "No image IDs provided"}, 400
             
-            # Convert to list if single ID is provided
+            # Converte para uma lista caso apenas um id seja fornecido
             if not isinstance(image_ids, list):
                 image_ids = [image_ids]
             

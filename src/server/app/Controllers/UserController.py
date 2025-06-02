@@ -1,5 +1,5 @@
 from app.Repositories.UserRepository import UserRepository
-
+# Defina cada função, dando maior cuidado para a criação de um novo usuário
 class UserController:
     def __init__(self):
         self.user_repository = UserRepository()
