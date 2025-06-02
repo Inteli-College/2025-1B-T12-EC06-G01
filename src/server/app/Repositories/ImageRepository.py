@@ -4,24 +4,26 @@ from collections import defaultdict
 from sqlalchemy.orm import contains_eager
 from sqlalchemy import and_
 
+# Repositorio para guardar cada função relacionada a controle básico das imagens
+
 class ImageRepository:
     @staticmethod
     def delete_images_by_ids(image_ids):
         try:
-            # Find the images
+            # Acha as imagens
             existing_images = Image.query.filter(Image.id.in_(image_ids)).all()
             if not existing_images:
-                return 0  # Return 0 if no images found
+                return 0  # Retorna 0 caso não ache as imagens
             
             count = len(existing_images)
             
-            # Delete each image using session.delete() which will trigger cascade
+            # Deleta todas imagens achadas pelo query.filter
             for image in existing_images:
                 db.session.delete(image)
                 
             db.session.commit()
             
-            return count  # Return the number of deleted images
+            return count  # Retorna numero de imagens deletadas para controle
         except Exception as e:
             db.session.rollback()
             raise e
@@ -48,6 +50,7 @@ class ImageRepository:
             print("[ImageController] Erro ao criar novo registro! 500")
             return f"{e}", 500
     
+    # Método dedicado para ler cada imagem na fachada
     @staticmethod
     def read_images_per_fachada(id_predio: int, fachada: str):
         try:
@@ -60,7 +63,8 @@ class ImageRepository:
         except Exception as e:
             print("[ImageRepository] Nenhuma imagem encontrada...")
             return {"code": 404, "message": "Nenhuma imagem encontrada..."}, 404
-        
+    
+    # Método para ler imagens já classificadas por prédio
     @staticmethod
     def read_images_classified_per_building(id_predio: int):
         try:

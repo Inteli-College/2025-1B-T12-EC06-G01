@@ -1,8 +1,13 @@
 from flask import Blueprint, request, jsonify
 from app.Controllers.ImageController import ImageController
 
+# Cria um Blueprint para as rotas das imagens
 image_bp = Blueprint('image', __name__, url_prefix="/images")
+
+# Instancia o controller
 image_controller = ImageController()
+
+# Define as rotas para cada operação básica relacionada às imagens 
 
 @image_bp.route('/', methods=['DELETE'])
 def delete_images():
