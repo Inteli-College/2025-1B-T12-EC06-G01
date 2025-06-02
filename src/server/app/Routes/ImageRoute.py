@@ -3,6 +3,7 @@ from app.Controllers.ImageController import ImageController
 
 image_bp = Blueprint('image', __name__, url_prefix="/images")
 image_controller = ImageController()
+# Controle geral das imagens, pega cada função de seus respectivos controllers e passa o id correto
 
 @image_bp.route('/', methods=['DELETE'])
 def delete_images():
@@ -25,7 +26,12 @@ def post_images():
 
 @image_bp.route('/', methods=['GET'])
 def get_images():
-    data = request.json
+    building_id = request.args.get('building_id')
+    fachada = request.args.get('fachada')
+    data = {
+        "building_id": building_id,
+        "fachada": fachada
+    }   
     result, code = image_controller.get_images_per_fachada(data)
     return jsonify(result), code
 

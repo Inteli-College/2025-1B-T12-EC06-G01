@@ -8,7 +8,7 @@ image_controller = ImageProjectController()
 
 @image_project_bp.route('/project/<int:project_id>', methods=['GET'])
 def get_images_by_project(project_id):
-    # chama o método do controller, passando o project_id correto
+    # chama o método do controller, passando o project_id que quer buscar as imagens
     images = image_controller.get_images_by_project(project_id)
     
     image_data = [{

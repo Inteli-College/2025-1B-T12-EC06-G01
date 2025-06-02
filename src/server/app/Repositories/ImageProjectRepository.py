@@ -2,7 +2,7 @@ from app.Models.image import Image
 from app.Models.building import Building
 from app.Models.project import Project
 from app import db
-
+# Filtra cada imagem relacionada a um projeto acessando as imagens dentro de cada predio
 class ImageProjectRepository:
     @staticmethod   
     def find_by_project_id(project_id):  
