@@ -26,6 +26,7 @@ def post_images():
 
 @image_bp.route('/', methods=['GET'])
 def get_images():
+    data = request.json
     building_id = request.args.get('building_id')
     fachada = request.args.get('fachada')
     data = {
