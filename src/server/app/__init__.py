@@ -45,7 +45,8 @@ def create_app():
     from app.Models.image import Image
     from app.Models.log import Log
     from app.Models.log_image import log_image
-    from app.Models.user import User    # registra rotas só depois do init
+    from app.Models.user import User
+    from app.Models.model_version import ModelVersion
     
     
     
