@@ -46,13 +46,13 @@ const PopupWrapper = styled.div`
   }
 `
 
-export default function AddFolderPopup({ predio, setPredio, onSend, onClose }) {
+export default function AddFolderPopup({ pasta, setPasta, onSend, onClose }) {
 
     return (
         <PopupWrapper>
             <div className="popup-inner">
                 <h2>Criar uma nova pasta</h2>
-                <input placeholder="Digite o nome da pasta" onChange={(e) => { setPredio(e.target.value) }} value={predio} />
+                <input placeholder="Digite o nome da pasta" onChange={(e) => { setPasta(e.target.value) }} value={pasta} />
                 <div className="popup-buttons">
                     <button onClick={onSend}>Criar pasta</button>
                     <button onClick={onClose}>Cancelar</button>

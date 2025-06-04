@@ -192,8 +192,8 @@ export default function FoldersSection({
 
             {showPopup && (
                 <AddFolderPopup
-                    predio={pasta}
-                    setPredio={setPasta}
+                    pasta={pasta}
+                    setPasta={setPasta}
                     onSend={handleAddFolder}
                     onClose={() => setShowPopup(false)}
                 />
