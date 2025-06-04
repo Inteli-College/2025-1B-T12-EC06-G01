@@ -90,6 +90,23 @@ class ImageController:
         
         result, code = self.image_repository.read_images_classified_per_building(id_predio=id_predio)
         return result, code
+    
+    def put_veredict(self, data):
+        try:
+            veredito = data['veredict']
+            id_imagem = int(data['image_id'])
+
+        except Exception as e:
+            print("[ImageController] Os conteúdos json não são suficientes...")
+            return {"code": 400, "message": f"{e}"}, 400
+        
+        result, code = self.image_repository.update_veredict(image_id=id_imagem, veredict=veredito)
+        
+        if code == 200:
+            return {"image_id": result.id, "veredict": result.veredict}, code
+        else:
+            return {"error": code, "message": result}, code
+        
 
 
                 

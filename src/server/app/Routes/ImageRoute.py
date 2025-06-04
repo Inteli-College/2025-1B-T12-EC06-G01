@@ -39,3 +39,9 @@ def get_images_classified_per_building():
     data = request.json
     result, code = image_controller.get_images_classified_per_building(data)
     return jsonify(result), code
+
+@image_bp.route('/veredict', methods=['PUT'])
+def put_veredict():
+    data = request.json
+    result, code = image_controller.put_veredict(data)
+    return jsonify(result), code
