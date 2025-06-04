@@ -78,6 +78,7 @@ def edit_image(image_id, operation):
 
     # Atualiza o registro
     image_rec.fresh_img = image_url
+    print("[DATABASE URI (rota)]:", current_app.config['SQLALCHEMY_DATABASE_URI'])
     db.session.commit()
     print(f"[DEBUG] fresh_img atualizado para: {image_rec.fresh_img}")
 
