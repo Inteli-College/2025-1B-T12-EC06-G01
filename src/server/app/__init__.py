@@ -35,6 +35,7 @@ def create_app():
     from app.Routes.FilterRoute import filter_bp
     from app.Routes.ImageCleanRoutes import image_clean_blueprint
     from app.Routes.UserRoute import user_bp
+    from app.Routes.PincelRoute import pincel_bp
 
 
     # Carregando os Models
@@ -56,6 +57,7 @@ def create_app():
     app.register_blueprint(image_clean_blueprint)
     app.register_blueprint(facade_bp)    
     app.register_blueprint(building_bp)
+    app.register_blueprint(pincel_bp)
  
     
 
