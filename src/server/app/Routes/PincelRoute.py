@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 import os
 from io import BytesIO
 
-from app.extensions import db 
+from app import db 
 from app.Models.image import Image
 from app.Controllers.PincelController import PincelController
 
@@ -38,7 +38,7 @@ OPERATIONS = {
 
 @pincel_bp.route('/edit/<int:image_id>/<operation>', methods=['GET'])
 def edit_image(image_id, operation):
-    image_rec = Image.query.get_or_404(image_id)
+    image_rec = Image.query.get(image_id)
 
     img_path = image_rec.raw_image
     if img_path.startswith(('http://', 'https://')):
@@ -76,9 +76,8 @@ def edit_image(image_id, operation):
     if not image_url:
         abort(500, description="Falha ao obter URL da imagem no Cloudinary")
 
-    # Atualiza o registro
-    image_rec.fresh_img = image_url
-    print("[DATABASE URI (rota)]:", current_app.config['SQLALCHEMY_DATABASE_URI'])
+    # Atualiza o registro   
+    db.session.query(Image).filter_by(id=image_id).update({"fresh_img": image_url})
     db.session.commit()
     print(f"[DEBUG] fresh_img atualizado para: {image_rec.fresh_img}")
 
