@@ -3,7 +3,7 @@ from app.Services.ImageClassificationService import ImageClassificationService
 
 class ClassifyController:
     def __init__(self):
-        self.classify_svc = ImageClassificationService()
+        self.classify_service = ImageClassificationService()
 
     def postClassify(self, data):
         """
@@ -22,7 +22,7 @@ class ClassifyController:
         end   = data.get("end_date")
 
         try:
-            results = self.classify_svc.classify_project_images(
+            results = self.classify_service.classify_project_images(
                 project_id, start, end
             )
         except ValueError as e:

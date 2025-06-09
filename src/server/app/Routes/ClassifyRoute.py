@@ -1,7 +1,7 @@
 from flask import Blueprint, request
 from app.Controllers.ClassifyController import ClassifyController
 
-classify_ctrl = ClassifyController()
+controller = ClassifyController()
 classify_bp   = Blueprint("classify", __name__, url_prefix="/classify")
 
 @classify_bp.route("/", methods=["POST"])
@@ -14,4 +14,4 @@ def classify_route():
       (futuro) ImageClassificationService grava resultado no banco e cria um log
     """
     payload = request.get_json(force=True)
-    return classify_ctrl.postClassify(payload)
+    return controller.postClassify(payload)
