@@ -52,11 +52,11 @@ class ImageRepository:
     
     # Método dedicado para ler cada imagem na fachada
     @staticmethod
-    def read_images_per_fachada(id_predio: int, fachada: str):
+    def read_images_per_fachada(id_fachada: int):
         try:
-            images = Image.query.filter_by(building_id=id_predio, fachada=fachada).all()
+            images = Image.query.filter_by(facade_id=id_fachada).all()
             return {
-                image.id: image.raw_image
+                image.name: image.raw_image
                 for image in images
             }, 200
 
@@ -102,8 +102,7 @@ class ImageRepository:
             elif image:
                 image.veredict = veredict
                 db.session.commit()
-                return image, 200
-            
+                return image, 200         
 
 
             else:
@@ -111,8 +110,8 @@ class ImageRepository:
                 return f"Nenhuma imagem encontrada", 404
         
         except Exception as e:
-            print("[ImageRepository] Erro ao atualizar a coluna veredict no banco de dados...")
-            return f"Erro ao atualizar a coluna veredict no banco de dados...", 500
+            print("[ImageRepository] Erro ao atualizar a coluna veredict no banco de dados...:")
+            return f"Erro ao atualizar a coluna veredict no banco de dados...: {e}", 500
 
 
 
