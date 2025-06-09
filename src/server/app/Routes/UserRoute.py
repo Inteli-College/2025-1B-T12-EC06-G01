@@ -34,12 +34,23 @@ def get_users_by_name(name):
     except:
         return jsonify({"error": "User not found"}), 404
 
-@user_bp.route('/create_user', methods=['POST'])
-def create_user():
+# Rota de Cadastro de Usuário
+@user_bp.route('/register', methods=['POST'])
+def register_user():
     data = request.json
-    response, status = user_controller.post_user(data)
+    response, status = user_controller.register(data)
     return jsonify(response), status
 
-@user_bp.route('/delete_user/<int:user_id>', methods=['DELETE'])
+# Rota de Login de Usuário
+@user_bp.route('/login', methods=['POST'])
+def login_user():
+    data = request.json
+    response, status = user_controller.login(data)
+    return jsonify(response), status
+
+
+# A rota de delete agora usa o prefixo /users
+@user_bp.route('/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
-    return user_controller.delete_user_by_id(user_id)
+    response, status = user_controller.delete_user_by_id(user_id)
+    return jsonify(response), status
