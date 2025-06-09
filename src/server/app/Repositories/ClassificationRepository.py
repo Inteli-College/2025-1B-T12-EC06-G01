@@ -7,7 +7,7 @@ from ultralytics import YOLO
 class ClassificationRepository:
     def __init__(self):
         # aponte para o peso “best.pt” gerado pelo seu treinamento
-        self.model = YOLO("src/machineLearning/yolo11n-cls.pt")
+        self.model = YOLO("src/machineLearning/melhores_modelos/best21.pt")
 
     def classify_urls(self, urls: List[str]) -> Dict[str, dict]:
         results = {}
