@@ -1,49 +1,44 @@
 from app import db
 from app.Models.user import User
-# Define todas funções para controle do usuario, passando o id e a ação
+
 class UserRepository:
     @staticmethod
     def get_user_by_id(user_id):
-        try:
-            user = User.query.get(user_id)
-            return user
-        except:
-            print("[UserController] Erro ao achar user! 500")
-    
+        return User.query.get(user_id)
+
     @staticmethod
     def get_user_by_name(name):
-        try:
-            user = User.query.filter_by(name=name).first()
-            return user
-        except:
-            print("[UserController] Erro ao achar user! 500") 
-    
+        return User.query.filter_by(name=name).first()
+
+    # NOVO: Método para buscar usuário pelo email, essencial para o login e para evitar cadastros duplicados.
     @staticmethod
-    def create_user(nome):
+    def get_user_by_email(email):
+        return User.query.filter_by(email=email).first()
+
+    # ALTERADO: O método create_user agora aceita todos os dados necessários.
+    @staticmethod
+    def create_user(name, email, password):
         try:
-            new = User(name=nome)
-            db.session.add(new)
+            new_user = User(name=name, email=email)
+            new_user.set_password(password) # Usa o método do modelo para hashear a senha
+            db.session.add(new_user)
             db.session.commit()
-            return new, 201
+            return new_user, 201
         except Exception as e:
-            print("[UserController] Erro ao criar novo registro! 500")
+            db.session.rollback()
+            print(f"[UserRepository] Erro ao criar novo usuário: {e}")
             return f"{e}", 500
+
     @staticmethod
     def delete_user(user_id):
         try:
-            if not user_id:
-                return {"error": "No image IDs provided"}, 400
-            
-            user_to_delete = User.query.filter(User.id == user_id).first()
-        
+            user_to_delete = User.query.get(user_id)
+            if not user_to_delete:
+                return {"error": "User not found"}, 404
+
             db.session.delete(user_to_delete)
             db.session.commit()
-
-            return {
-                    "message": f"Successfully deleted {user_to_delete}"
-                }, 200   
+            return {"message": f"Successfully deleted user {user_id}"}, 200
         except Exception as e:
+            db.session.rollback()
             return {"error": str(e)}, 500
-
-        
-
