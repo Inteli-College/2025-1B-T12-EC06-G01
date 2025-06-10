@@ -27,52 +27,44 @@ export default function Predio() {
     const fetchFachadas = async () => {
       setIsLoading(true);
       setError(null);
-      
+
       try {
-        // Primeiro, buscar todos os prédios do projeto
-        const buildingsResponse = await axios.get(`http://10.128.0.31:5000/building/project/${projectId}`);
+        // Buscar todos os prédios do projeto
+        const buildingsResponse = await axios.get(`http://localhost:5000/building/project/${projectId}`);
         const buildings = buildingsResponse.data;
-          // Encontrar o prédio atual pelo nome (decodificado da URL)
-        const currentBuilding = buildings.find(building => building.predio === decodeURIComponent(predioNome));
-          if (currentBuilding) {
-          // Buscar as fachadas usando o building_id com a nova rota RESTful
-          const facadesResponse = await axios.get(`http://10.128.0.31:5000/facade/building/${currentBuilding.id}`);
-          
-          console.log('Resposta da API de fachadas:', facadesResponse.data);
-          
+
+        // Encontrar o prédio atual pelo nome
+        const currentBuilding = buildings.find(
+          (building) => building.predio === decodeURIComponent(predioNome)
+        );
+
+        if (currentBuilding) {
+          // Buscar fachadas associadas ao prédio
+          const facadesResponse = await axios.get(
+            `http://localhost:5000/facade/building/${currentBuilding.id}`
+          );
+
+          console.log("Resposta da API de fachadas:", facadesResponse.data);
+
           if (facadesResponse.data && facadesResponse.data.fachadas) {
             setFachadas(facadesResponse.data.fachadas);
           } else {
-            // Se não há fachadas, usar lista vazia
             setFachadas([]);
           }
         } else {
           console.error(`Prédio "${predioNome}" não encontrado no projeto ${projectId}`);
-          setError(new Error(`Prédio não encontrado`));
-          // Fallback para fachadas padrão
-          setFachadas([
-            "Fachada Leste",
-            "Fachada Oeste", 
-            "Fachada Norte",
-            "Fachada Sul",
-          ]);
-        }      } catch (err) {
-        console.error('Erro ao buscar fachadas:', err);
+          setError(new Error("Prédio não encontrado"));
+          setFachadas([]);
+        }
+      } catch (err) {
+        console.error("Erro ao buscar fachadas:", err);
         setError(err);
-        
-        // Se é um erro 404 (sem fachadas), usar lista vazia
+
+        // Se for erro 404 (nenhuma fachada encontrada), usar lista vazia
         if (err.response && err.response.status === 404) {
-          console.log('Nenhuma fachada encontrada para este prédio, usando lista vazia');
           setFachadas([]);
         } else {
-          // Fallback para fachadas padrão em caso de outros erros
-          console.log('Usando fachadas padrão devido a erro na API');
-          setFachadas([
-            "Fachada Leste",
-            "Fachada Oeste",
-            "Fachada Norte", 
-            "Fachada Sul",
-          ]);
+          setFachadas([]);
         }
       } finally {
         setIsLoading(false);
@@ -83,6 +75,7 @@ export default function Predio() {
       fetchFachadas();
     }
   }, [projectId, predioNome]);
+
 
   // Preparar dados das fachadas no formato esperado pelo FoldersSection
   const fachadasFormatted = fachadas.map((fachada, index) => ({
@@ -96,9 +89,9 @@ export default function Predio() {
       <Body>
         <NavHome />
         {isLoading ? (
-          <div style={{ 
-            width: '77vw', 
-            marginLeft: '18vw', 
+          <div style={{
+            width: '77vw',
+            marginLeft: '18vw',
             padding: '2.5rem',
             textAlign: 'center',
             color: '#666'
