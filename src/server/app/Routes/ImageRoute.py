@@ -28,14 +28,20 @@ def post_images():
     result, code = image_controller.post_images(data, files)
     return jsonify(result), code
 
-@image_bp.route('/', methods=['GET'])
+@image_bp.route('/facade', methods=['PUT'])
 def get_images():
     data = request.json
     result, code = image_controller.get_images_per_fachada(data)
     return jsonify(result), code
 
-@image_bp.route('/classified', methods=['GET'])
+@image_bp.route('/classified', methods=['PUT'])
 def get_images_classified_per_building():
     data = request.json
     result, code = image_controller.get_images_classified_per_building(data)
+    return jsonify(result), code
+
+@image_bp.route('/veredict', methods=['PUT'])
+def put_veredict():
+    data = request.json
+    result, code = image_controller.put_veredict(data)
     return jsonify(result), code
