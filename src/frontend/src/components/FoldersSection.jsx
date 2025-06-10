@@ -80,7 +80,8 @@ export default function FoldersSection({
     apiUrl,
     folderNameField = "predio",
     folderIdField = "id",
-    addUrl
+    addUrl,
+    folderId
 }) {
     const [folders, setFolders] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -92,12 +93,23 @@ export default function FoldersSection({
         setError(null);
         try {
             const response = await axios.get(apiUrl);
-            if (response.data && Array.isArray(response.data)) {
-                setFolders(response.data);
-            } else {
-                console.error("Formato de resposta inesperado:", response.data);
-                setFolders([]);
+            const data = response.data;
+
+            let finalFolders = [];
+
+            // Caso especial para API de fachadas
+            if (data.fachadas && Array.isArray(data.fachadas)) {
+                finalFolders = data.fachadas.map((nome, index) => ({
+                    [folderIdField]: index,
+                    [folderNameField]: nome
+                }));
             }
+            else if (Array.isArray(data)) {
+                finalFolders = data;
+            } else {
+                console.error("Formato de resposta inesperado:", data);
+            }
+            setFolders(finalFolders);
         } catch (err) {
             console.error("Erro ao buscar pastas:", err);
             setError(err);
@@ -105,7 +117,7 @@ export default function FoldersSection({
         } finally {
             setIsLoading(false);
         }
-    }, [apiUrl]);
+    }, [apiUrl, folderIdField, folderNameField]);
 
 
     useEffect(() => {
@@ -141,11 +153,11 @@ export default function FoldersSection({
     //Lógica para adição de uma nova pasta
     const handleAddFolder = () => {
         if (pasta === "") {
-            alert("Dê um nome para a pasta.")
+            alert("Dê um nome para a pasta.");
             return;
         }
 
-        let folderInfos = {}
+        let folderInfos = {};
 
         if (addUrl === "http://localhost:5000/building/") {
             folderInfos = {
@@ -153,7 +165,12 @@ export default function FoldersSection({
                 predio: pasta,
                 latitude: null,
                 longitude: null
-            }
+            };
+        } else if (addUrl === "http://localhost:5000/facade/") {
+            folderInfos = {
+                building_id: folderId,
+                name: pasta
+            };
         }
 
         axios.post(addUrl, folderInfos, {
@@ -168,8 +185,8 @@ export default function FoldersSection({
             })
             .catch(err => {
                 console.error("Erro ao criar pasta:", err);
-            })
-    }
+            });
+    };
 
     return (
         <Container>
@@ -181,12 +198,18 @@ export default function FoldersSection({
             {!isLoading && !error && folders && folders.map((folder) => (
                 <FolderCard
                     key={folder[folderIdField]}
-                    onClick={() => navigate(`${path}/${encodeURIComponent(folder[folderNameField])}`)}
+                    onClick={() => {
+                        if (addUrl === "http://localhost:5000/building/") {
+                            navigate(`${path}/${encodeURIComponent(folder[folderNameField])}`);
+                        }
+                    }}
                 >
                     <FaFolder />
                     <p>{folder[folderNameField]}</p>
                 </FolderCard>
             ))}
+
+
 
             <AddButton onClick={() => setShowPopup(true)}>+ Adicionar Pasta</AddButton>
 

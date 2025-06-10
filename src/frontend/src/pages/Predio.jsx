@@ -20,6 +20,7 @@ const Body = styled.div`
 export default function Predio() {
   const { projectId, predioNome } = useParams();
   const [fachadas, setFachadas] = useState([]);
+  const [currentBuilding, setCurrentBuilding] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -34,14 +35,16 @@ export default function Predio() {
         const buildings = buildingsResponse.data;
 
         // Encontrar o prédio atual pelo nome
-        const currentBuilding = buildings.find(
+        const foundBuilding = buildings.find(
           (building) => building.predio === decodeURIComponent(predioNome)
         );
 
-        if (currentBuilding) {
+        if (foundBuilding) {
+          setCurrentBuilding(foundBuilding); // Armazena para uso posterior
+
           // Buscar fachadas associadas ao prédio
           const facadesResponse = await axios.get(
-            `http://localhost:5000/facade/building/${currentBuilding.id}`
+            `http://localhost:5000/facade/building/${foundBuilding.id}`
           );
 
           console.log("Resposta da API de fachadas:", facadesResponse.data);
@@ -60,7 +63,6 @@ export default function Predio() {
         console.error("Erro ao buscar fachadas:", err);
         setError(err);
 
-        // Se for erro 404 (nenhuma fachada encontrada), usar lista vazia
         if (err.response && err.response.status === 404) {
           setFachadas([]);
         } else {
@@ -75,7 +77,6 @@ export default function Predio() {
       fetchFachadas();
     }
   }, [projectId, predioNome]);
-
 
   // Preparar dados das fachadas no formato esperado pelo FoldersSection
   const fachadasFormatted = fachadas.map((fachada, index) => ({
@@ -99,12 +100,17 @@ export default function Predio() {
             Carregando fachadas...
           </div>
         ) : (
-          <FoldersSection
-            folders={fachadasFormatted}
-            path={`/project/${projectId}/predio/${encodeURIComponent(predioNome)}`}
-            folderNameField="predio"
-            folderIdField="id"
-          />
+          currentBuilding && (
+            <FoldersSection
+              apiUrl={`http://localhost:5000/facade/building/${currentBuilding.id}`}
+              path={`/project/${projectId}/predio/${encodeURIComponent(predioNome)}`}
+              folderNameField="predio"
+              folderIdField="id"
+              addUrl="http://localhost:5000/facade/"
+              folderId={currentBuilding.id}
+            />
+
+          )
         )}
       </Body>
     </PredioPage>
