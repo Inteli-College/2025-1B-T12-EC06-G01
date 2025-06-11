@@ -48,6 +48,7 @@ def create_app():
     from app.Models.log_image import log_image
     from app.Models.user import User
     from app.Models.model_version import ModelVersion
+    from app.Models.fissure import Fissure
     
     
     
