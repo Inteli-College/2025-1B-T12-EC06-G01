@@ -4,6 +4,7 @@ from app import db
 from app.Models.project import Project
 from app.Models.log import Log
 from flask import jsonify
+from flask import request
 
 class ProjectController:
     def __init__(self):
@@ -67,10 +68,54 @@ class ProjectController:
         else:
             return {"code": code, "message": new}, code
         
-    def get_project(self):
-        result, code = self.project_repository.read_projects()
-        return result, code
 
+    def get_all_contractors(self):
+        contractors, code = self.project_repository.get_unique_contractors()
+        
+        if code == 200:
+            return contractors, 200 # Retorna a lista diretamente
+        
+        return {"error": contractors}, code 
+    
+        
+    def get_projects(self):
+        # Lê os parâmetros da URL (ex: /projects?order=desc&contractor=IPT)
+        contractor = request.args.get('contractor')
+        start_date_str = request.args.get('start_date')
+        end_date_str = request.args.get('end_date')
+        order = request.args.get('order', 'asc') # 'asc' é o padrão
+
+        start_date, end_date = None, None
+        try:
+            if start_date_str:
+                start_date = datetime.fromisoformat(start_date_str).date()
+            if end_date_str:
+                end_date = datetime.fromisoformat(end_date_str).date()
+        except ValueError:
+            return {"error": "Formato de data inválido. Use YYYY-MM-DD."}, 400
+
+        # Chama o novo método do repositório
+        projects_list, code = self.project_repository.get_filtered_projects(
+            contractor=contractor,
+            start_date=start_date,
+            end_date=end_date,
+            order=order
+        )
+        
+        if code == 200:
+            # Formata a resposta para um JSON limpo e padronizado
+            result = [
+                {
+                    "id": p.id,
+                    "name": p.name,
+                    "contractor": p.contractor,
+                    "date": p.date.isoformat() if p.date else None
+                }
+                for p in projects_list
+            ]
+            return result, 200
+        
+        return {"error": projects_list}, code
         
             
 
