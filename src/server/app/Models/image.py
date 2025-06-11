@@ -8,7 +8,7 @@ class Image(db.Model):
     raw_image = db.Column(db.String, nullable=True)  # agora URL em vez de inteiro
     fresh_img = db.Column(db.String)
     datetime = db.Column(db.String, nullable=False, default=lambda : datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-    veredict = db.Column(db.Integer, nullable=True)
+    veredict = db.Column(db.String, nullable=True)
 
     facade_id = db.Column(db.Integer, db.ForeignKey('facade.id'), nullable=False)
     fissure_id = db.Column(db.Integer, db.ForeignKey('fissure.id'), nullable=False)
