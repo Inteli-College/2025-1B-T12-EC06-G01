@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from app.Controllers.ClassifyController import ClassifyController
 
 controller = ClassifyController()
@@ -15,3 +15,9 @@ def classify_route(facade_id):
     """
     payload = request.get_json(force=True) if request.is_json else {}
     return controller.postClassify(facade_id, payload)
+
+@classify_bp.route("/retrain", methods=["POST"])
+def retrain_route():
+    data = request.json
+    result, code = controller.retrain(data)
+    return jsonify(result), code
