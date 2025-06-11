@@ -50,12 +50,7 @@ export default function Predio() {
           console.error(`Prédio "${predioNome}" não encontrado no projeto ${projectId}`);
           setError(new Error(`Prédio não encontrado`));
           // Fallback para fachadas padrão
-          setFachadas([
-            "Fachada Leste",
-            "Fachada Oeste", 
-            "Fachada Norte",
-            "Fachada Sul",
-          ]);
+          setFachadas([]);
         }      } catch (err) {
         console.error('Erro ao buscar fachadas:', err);
         setError(err);
@@ -67,12 +62,8 @@ export default function Predio() {
         } else {
           // Fallback para fachadas padrão em caso de outros erros
           console.log('Usando fachadas padrão devido a erro na API');
-          setFachadas([
-            "Fachada Leste",
-            "Fachada Oeste",
-            "Fachada Norte", 
-            "Fachada Sul",
-          ]);
+          setFachadas([]);
+          setError(new Error("Nenhuma fachada encontrada para este prédio."));
         }
       } finally {
         setIsLoading(false);
@@ -85,9 +76,9 @@ export default function Predio() {
   }, [projectId, predioNome]);
 
   // Preparar dados das fachadas no formato esperado pelo FoldersSection
-  const fachadasFormatted = fachadas.map((fachada, index) => ({
-    id: index,
-    predio: fachada
+  const fachadasFormatted = fachadas.map((fachada) => ({
+    id: fachada.id,
+    nome: fachada.nome
   }));
 
   return (
