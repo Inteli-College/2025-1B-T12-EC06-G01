@@ -6,7 +6,7 @@ class ModelVersion(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     train_directory = db.Column(db.String, nullable=False)
     version = db.Column(db.Integer, nullable=False)
-    real_model = db.Column(db.Boolean, nullable=False)
+    real_model = db.Column(db.Boolean, nullable=False) 
 
     def __repr__(self):
         return f'<User {self.id} - {self.name}>'
