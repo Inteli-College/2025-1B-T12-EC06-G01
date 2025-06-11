@@ -14,6 +14,7 @@ class Image(db.Model):
     facade_id = db.Column(db.Integer, db.ForeignKey('facade.id'), nullable=False)
 
     facade = db.relationship('Facade', back_populates='images')
+    fissure = db.relationship('Fissure', back_populates='images')
     logs = db.relationship('Log', secondary='log_image', back_populates='images')
     def __repr__(self):
         return f'<Image {self.id}>'
