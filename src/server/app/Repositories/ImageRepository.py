@@ -114,7 +114,6 @@ class ImageRepository:
             return f"Erro ao atualizar a coluna veredict no banco de dados...: {e}", 500
         
     def read_veredict_images_per_facade(facade_id: int):
-
         try:
             images = Image.query.filter(
                 Image.facade_id == facade_id,
@@ -127,6 +126,17 @@ class ImageRepository:
         except Exception as e:
             print(f"[ImageRepository] Algo deu errado ao buscar as imagens no banco de dados: {e}")
             return f"Algo deu errado ao buscar as imagens no banco de dados: {e}", 404
+    
+    def read_fissure_types():
+        try: 
+            fissure_types = (
+                db.session.query(Image.fissure_type)
+                .distinct()
+                .all()
+            )
+        except Exception as e:
+            print("IHA")
+
 
 
 

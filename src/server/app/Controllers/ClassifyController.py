@@ -41,11 +41,17 @@ class ClassifyController:
             return {"code": 400, "message": f"Os conteúdos json não são suficientes: {e}"}, 400
         
         result, code = self.image_repository.read_veredict_images_per_facade(facade_id=target_facade_id)
+        fissures = self.image_repository.read_fissure_types()
 
         if code == 200:
             for image in result:
                 url = str(image.raw_img)
                 response = request.get(url)
+                output_path = {
+                    "termic": "termic",
+                    "retraction": "retraction"
+                }.get(image.veredict, "")
+
 
                 if response.status_code == 200:
                     with open(output_path, "wb") as f:
