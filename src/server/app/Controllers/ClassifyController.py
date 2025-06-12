@@ -1,5 +1,5 @@
 from flask import request, jsonify
-import requests, os
+import requests, os, uuid
 from app.Services.ImageClassificationService import ImageClassificationService
 from app.Repositories.ImageRepository import ImageRepository
 
@@ -42,26 +42,35 @@ class ClassifyController:
         
         result, code = self.image_repository.read_veredict_images_per_facade(facade_id=target_facade_id)
         fissures, code2 = self.image_repository.read_fissure_types()
+        root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
         
         fissure_dict = {}
         for fissura in fissures:
             nome_fissura = fissura[0]
-            dir_path = os.path.join("src", "machineLearning", "imagens_raw", f"fissura_{nome_fissura}")
+            dir_path = os.path.join(root_dir, "machineLearning", "imagens_raw", f"fissura_{nome_fissura}")
             os.makedirs(dir_path, exist_ok=True)
             fissure_dict[nome_fissura] = dir_path
         
-        print(fissure_dict)
 
         if code == 200 and code2 == 200:
             for image in result:
                 url = str(image.raw_image)
+                file_name = f"{uuid.uuid4().hex}.jpg"
                 response = requests.get(url)
-                output_path = fissure_dict.get(str(image.veredict), "")
+                dir_path = fissure_dict.get(str(image.veredict), "")
 
                 if response.status_code == 200:
+                    output_path = os.path.join(dir_path, file_name)
+
                     with open(output_path, "wb") as f:
                         f.write(response.content)
+
                     print("Imagem baixada com sucesso!")
+                    
+
+        
+
+        return {"message": "O modelo começou a retreinar!"}, 200
 
 
         
