@@ -32,7 +32,14 @@ class FacadeRepository:
             new = Facade(name=nome, building_id=id_predio)
             db.session.add(new) 
             db.session.commit()
-            return new, 201
+
+            result = {
+                "id": new.id,
+                "name": new.name,
+                "building_id": new.building_id
+            }
+
+            return result, 201
         
         except Exception as e:
             print("[FacadeRepository] Erro ao criar novo registro 500")
