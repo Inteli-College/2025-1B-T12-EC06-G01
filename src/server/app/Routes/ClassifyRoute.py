@@ -2,9 +2,9 @@ from flask import Blueprint, request, jsonify
 from app.Controllers.ClassifyController import ClassifyController
 
 controller = ClassifyController()
-classify_bp   = Blueprint("classify", __name__, url_prefix="/facades/<int:facade_id>/classify")
+classify_bp   = Blueprint("classify", __name__, url_prefix="/classify")
 
-@classify_bp.route("/", methods=["POST"])
+@classify_bp.route("/facades/<int:facade_id>", methods=["POST"])
 def classify_route(facade_id):
     """
     Fluxo de dados:
