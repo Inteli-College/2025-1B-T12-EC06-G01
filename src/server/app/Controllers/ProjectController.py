@@ -83,18 +83,18 @@ class ProjectController:
         contractor = request.args.get('contractor')
         start_date_str = request.args.get('start_date')
         end_date_str = request.args.get('end_date')
-        order = request.args.get('order', 'asc') # 'asc' é o padrão
+        order = request.args.get('order', 'asc')
 
         start_date, end_date = None, None
         try:
             if start_date_str:
+                # Agora que o banco usa datas, podemos converter o filtro para um objeto date
                 start_date = datetime.fromisoformat(start_date_str).date()
             if end_date_str:
                 end_date = datetime.fromisoformat(end_date_str).date()
         except ValueError:
             return {"error": "Formato de data inválido. Use YYYY-MM-DD."}, 400
 
-        # Chama o novo método do repositório
         projects_list, code = self.project_repository.get_filtered_projects(
             contractor=contractor,
             start_date=start_date,
@@ -104,24 +104,12 @@ class ProjectController:
         
         if code == 200:
             
-            def parse_date_string(date_str):
-                # Tenta o formato completo primeiro (com hora, minuto, segundo)
-                try:
-                    return datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S")
-                except ValueError:
-                    # Se o primeiro formato falhar, tenta o formato mais curto (apenas data)
-                    try:
-                        return datetime.strptime(date_str, "%Y-%m-%d")
-                    except ValueError:
-                        # Se ambos falharem, retorna None
-                        return None
-
             result = [
                 {
                     "id": p.id,
                     "name": p.name,
                     "contractor": p.contractor,
-                    "date": parse_date_string(p.date).isoformat() if p.date and parse_date_string(p.date) else None
+                    "date": p.date.isoformat() if p.date else None
                 }
                 for p in projects_list
             ]
