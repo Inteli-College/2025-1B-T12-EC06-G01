@@ -1,4 +1,4 @@
-from app.Models import Image, Facade
+from app.Models import Image, Facade, Fissure
 from app import db, cloud
 from collections import defaultdict
 from sqlalchemy.orm import contains_eager
@@ -112,7 +112,8 @@ class ImageRepository:
         except Exception as e:
             print("[ImageRepository] Erro ao atualizar a coluna veredict no banco de dados...:")
             return f"Erro ao atualizar a coluna veredict no banco de dados...: {e}", 500
-        
+    
+    @staticmethod
     def read_veredict_images_per_facade(facade_id: int):
         try:
             images = Image.query.filter(
@@ -120,22 +121,24 @@ class ImageRepository:
                 Image.veredict.isnot(None),
                 Image.veredict != ''  # caso queira evitar strings vazias também
             ).all()
-
             return images, 200
         
         except Exception as e:
             print(f"[ImageRepository] Algo deu errado ao buscar as imagens no banco de dados: {e}")
             return f"Algo deu errado ao buscar as imagens no banco de dados: {e}", 404
     
+    @staticmethod
     def read_fissure_types():
         try: 
             fissure_types = (
-                db.session.query(Image.fissure_type)
+                db.session.query(Fissure.fissure_name)
                 .distinct()
                 .all()
             )
+            return fissure_types, 200
         except Exception as e:
-            print("IHA")
+            print(f"[ImageRepository] Algo deu errado ao buscar as fissuras no banco de dados: {e}")
+            return f"Algo deu errado ao buscar as fissuras no banco de dados: {e}", 404
 
 
 

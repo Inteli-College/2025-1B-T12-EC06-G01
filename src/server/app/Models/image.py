@@ -7,11 +7,11 @@ class Image(db.Model):
     name = db.Column(db.String, nullable=True)
     raw_image = db.Column(db.String, nullable=True)  # agora URL em vez de inteiro
     fresh_img = db.Column(db.String)
-    datetime = db.Column(db.String, nullable=False, default=lambda : datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-    fissure_type = db.Column(db.String)
+    datetime = db.Column(db.DateTime, nullable=False, default=datetime.now)
     veredict = db.Column(db.String, nullable=True)
 
     facade_id = db.Column(db.Integer, db.ForeignKey('facade.id'), nullable=False)
+    fissure_id = db.Column(db.Integer, db.ForeignKey('fissure.id'), nullable=False)
 
     facade = db.relationship('Facade', back_populates='images')
     fissure = db.relationship('Fissure', back_populates='images')

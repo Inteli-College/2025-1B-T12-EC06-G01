@@ -9,18 +9,18 @@ class FacadeRepository:
     @staticmethod
     def read_facades(id_predio: int):
         try:
-            fachadas_nomes = (
-                db.session.query(Facade.name)
-                .filter(Facade.building_id == id_predio)
-                .distinct()
+            facades = (
+                Facade.query
+                .filter_by(building_id=id_predio)
+                .with_entities(Facade.id, Facade.name)
+                .distinct(Facade.name)
                 .all()
             )
-            fachadas_unicas = [nome[0] for nome in fachadas_nomes if nome[0] is not None]
-
             return {
-                "building_id": id_predio,
-                "fachadas": fachadas_unicas
-            }, 200
+                    "building_id": id_predio,
+                    "fachadas":
+                    [{"id": f.id, "nome": f.name} for f in facades]
+                    }, 200
         
         except Exception as e:
             print(f"[FacadeRepository] Erro ao buscar fachadas: {e}")
