@@ -1,7 +1,8 @@
 from flask import request, jsonify
-import requests, os, uuid
+import requests, os, uuid, sys
 from app.Services.ImageClassificationService import ImageClassificationService
 from app.Repositories.ImageRepository import ImageRepository
+
 
 class ClassifyController:
     def __init__(self):
@@ -66,7 +67,33 @@ class ClassifyController:
                         f.write(response.content)
 
                     print("Imagem baixada com sucesso!")
-                    
+
+        root_src_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+        print(root_src_path)
+
+        if root_src_path not in sys.path:
+            sys.path.insert(0, root_src_path)
+
+        from machineLearning.split_real import real_split
+        from machineLearning.train import train_model
+
+        real_split()
+        # train_model()         
+
+        classify_runs_path = os.path.join(root_dir, "machineLearning", "runs", "classify")
+        train_dirs = [
+            d for d in os.listdir(classify_runs_path)
+            if os.path.isdir(os.path.join(classify_runs_path, d)) and d.startswith("train")
+        ]
+
+        if not train_dirs:
+            return {"code": 500, "message": "Nenhuma pasta de treino encontrada."}, 500
+
+        # Ordenar pelas datas de criação
+        train_dirs.sort(key=lambda d: os.path.getctime(os.path.join(classify_runs_path, d)), reverse=True)
+        latest_train_path = os.path.join(classify_runs_path, train_dirs[0])
+
+        
 
         
 

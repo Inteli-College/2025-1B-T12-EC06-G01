@@ -5,8 +5,8 @@ import random
 # Caminho absoluto da raiz do projeto
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 RAW_DIR = os.path.join(ROOT_DIR, "2025-1B-T12-EC06-G01", "src", "machineLearning", "imagens_raw")
-DATASET_DIR = os.path.join(ROOT_DIR, "src", "machineLearning", "dataset")
-TEST_DIR = os.path.join(ROOT_DIR, "src", "machineLearning", "dataset", "test")
+DATASET_DIR = os.path.join(ROOT_DIR, "2025-1B-T12-EC06-G01", "src", "machineLearning", "dataset")
+TEST_DIR = os.path.join(ROOT_DIR, "2025-1B-T12-EC06-G01", "src", "machineLearning", "dataset", "test")
 
 # Função de divisão
 def split_images(image_list, train_ratio=0.7, val_ratio=0.2):
