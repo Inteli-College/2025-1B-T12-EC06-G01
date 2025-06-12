@@ -1,0 +1,6 @@
+path: C:/Users/Bruno/2025-1B-T12-EC06-G01/src/machineLearning/dataset_deteccao
+train: images/train
+val: images/val
+nc: 1
+names:
+  0: fissura
