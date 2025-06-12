@@ -20,7 +20,7 @@ class FacadeRepository:
                     "building_id": id_predio,
                     "fachadas":
                     [{"id": f.id, "nome": f.name} for f in facades]
-                    }, 200
+                }, 200
         
         except Exception as e:
             print(f"[FacadeRepository] Erro ao buscar fachadas: {e}")

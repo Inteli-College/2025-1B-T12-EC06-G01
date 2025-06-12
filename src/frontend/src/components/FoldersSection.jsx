@@ -99,10 +99,17 @@ export default function FoldersSection({
 
             // Caso especial para API de fachadas
             if (data.fachadas && Array.isArray(data.fachadas)) {
-                finalFolders = data.fachadas.map((nome, index) => ({
+                const isStringList = typeof data.fachadas[0] === "string";
+
+                finalFolders = isStringList
+                    ? data.fachadas.map((nome, index) => ({
                     [folderIdField]: index,
                     [folderNameField]: nome
-                }));
+                }))
+                    : data.fachadas.map((fachada) => ({
+                        [folderIdField]: fachada.id,
+                        [folderNameField]: fachada.name
+                    }));
             }
             else if (Array.isArray(data)) {
                 finalFolders = data;
@@ -199,8 +206,14 @@ export default function FoldersSection({
                 <FolderCard
                     key={folder[folderIdField]}
                     onClick={() => {
-                        if (addUrl === "http://localhost:5000/building/") {
-                            navigate(`${path}/${encodeURIComponent(folder[folderNameField])}`);
+                        const encodedName = encodeURIComponent(folder[folderNameField]);
+
+                        if (addUrl === "http://localhost:5000/facade/") {
+                            navigate(`${path}/${encodedName}`, {
+                                state: { fachadaId: folder[folderIdField] }
+                            });
+                        } else if (addUrl === "http://localhost:5000/building/") {
+                            navigate(`${path}/${encodedName}`);
                         }
                     }}
                 >
