@@ -103,13 +103,25 @@ class ProjectController:
         )
         
         if code == 200:
-            # Formata a resposta para um JSON limpo e padronizado
+            
+            def parse_date_string(date_str):
+                # Tenta o formato completo primeiro (com hora, minuto, segundo)
+                try:
+                    return datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S")
+                except ValueError:
+                    # Se o primeiro formato falhar, tenta o formato mais curto (apenas data)
+                    try:
+                        return datetime.strptime(date_str, "%Y-%m-%d")
+                    except ValueError:
+                        # Se ambos falharem, retorna None
+                        return None
+
             result = [
                 {
                     "id": p.id,
                     "name": p.name,
                     "contractor": p.contractor,
-                    "date": p.date.isoformat() if p.date else None
+                    "date": parse_date_string(p.date).isoformat() if p.date and parse_date_string(p.date) else None
                 }
                 for p in projects_list
             ]

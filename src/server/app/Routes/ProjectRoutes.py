@@ -57,7 +57,7 @@ def post_project():
     result, code = project_controller.post_project(data)
     return jsonify(result), code
 
-@project_blueprint.route('/projects', methods=['GET'])
+@project_blueprint.route('/', methods=['GET'])
 def get_projects():
     """
     Busca uma lista de projetos.
