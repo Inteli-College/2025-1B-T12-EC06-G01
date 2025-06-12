@@ -9,14 +9,14 @@ class ImageClassificationService:
         self.filter_svc    = ImageFilterService()
         self.classify_repo = ClassificationRepository()
 
-    def classify_project_images(
+    def classify_facade_images(
         self,
-        project_id: int,
+        facade_id: int,
         start_date: str = None,
         end_date:   str = None
     ) -> Dict[str, dict]:
         # 1) filtra e carrega URLs
-        images = self.filter_svc.filter_images(project_id, start_date, end_date)
+        images = self.filter_svc.filter_images(facade_id, start_date, end_date)
         urls   = [img["raw_image"] for img in images]
 
         # 2) chama o modelo

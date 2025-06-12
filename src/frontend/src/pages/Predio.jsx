@@ -67,6 +67,7 @@ export default function Predio() {
           setFachadas([]);
         } else {
           setFachadas([]);
+
         }
       } finally {
         setIsLoading(false);
@@ -79,9 +80,9 @@ export default function Predio() {
   }, [projectId, predioNome]);
 
   // Preparar dados das fachadas no formato esperado pelo FoldersSection
-  const fachadasFormatted = fachadas.map((fachada, index) => ({
-    id: index,
-    predio: fachada
+  const fachadasFormatted = fachadas.map((fachada) => ({
+    id: fachada.id,
+    nome: fachada.nome
   }));
 
   return (
