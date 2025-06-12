@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { FaFolder } from "react-icons/fa6";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import AddFolderPopup from './AddFolderPopup';
 
 const Container = styled.div`
     width: 77vw;
@@ -71,18 +72,53 @@ const AddButton = styled.button`
  * @param {string} apiUrl - URL da API para buscar as pastas 
  * @param {string} folderNameField - Nome do campo que contém o nome da pasta (default: "predio")
  * @param {string} folderIdField - Nome do campo que contém o ID da pasta (default: "id")
+ * @param {string} addUrl - URL da API para adicionar pastas
  */
-export default function FoldersSection({ 
-    path, 
-    folders: propFolders, 
+export default function FoldersSection({
+    path,
+    folders: propFolders,
     apiUrl,
     folderNameField = "predio",
-    folderIdField = "id"
+    folderIdField = "id",
+    addUrl,
+    folderId
 }) {
     const [folders, setFolders] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     let navigate = useNavigate();
+
+    const fetchFolders = React.useCallback(async () => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            const response = await axios.get(apiUrl);
+            const data = response.data;
+
+            let finalFolders = [];
+
+            // Caso especial para API de fachadas
+            if (data.fachadas && Array.isArray(data.fachadas)) {
+                finalFolders = data.fachadas.map((nome, index) => ({
+                    [folderIdField]: index,
+                    [folderNameField]: nome
+                }));
+            }
+            else if (Array.isArray(data)) {
+                finalFolders = data;
+            } else {
+                console.error("Formato de resposta inesperado:", data);
+            }
+            setFolders(finalFolders);
+        } catch (err) {
+            console.error("Erro ao buscar pastas:", err);
+            setError(err);
+            setFolders([]);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [apiUrl, folderIdField, folderNameField]);
+
 
     useEffect(() => {
         // Se recebemos folders como prop, usamos eles diretamente
@@ -105,47 +141,86 @@ export default function FoldersSection({
 
         // Se não temos folders, mas temos URL da API, fazemos fetch
         if (apiUrl) {
-            const fetchFolders = async () => {
-                setIsLoading(true);
-                setError(null);
-                try {
-                    const response = await axios.get(apiUrl);
-                    if (response.data && Array.isArray(response.data)) {
-                        setFolders(response.data);
-                    } else {
-                        console.error("Formato de resposta inesperado:", response.data);
-                        setFolders([]);
-                    }
-                } catch (err) {
-                    console.error("Erro ao buscar pastas:", err);
-                    setError(err);
-                    setFolders([]);
-                } finally {
-                    setIsLoading(false);
-                }
-            };
             fetchFolders();
         }
-    }, [propFolders, apiUrl, folderIdField, folderNameField]);
-    
+    }, [propFolders, apiUrl, folderIdField, folderNameField, fetchFolders]);
+
+
+    const [pasta, setPasta] = useState('');
+    const { projectId } = useParams();
+    const [showPopup, setShowPopup] = useState(false)
+
+    //Lógica para adição de uma nova pasta
+    const handleAddFolder = () => {
+        if (pasta === "") {
+            alert("Dê um nome para a pasta.");
+            return;
+        }
+
+        let folderInfos = {};
+
+        if (addUrl === "http://localhost:5000/building/") {
+            folderInfos = {
+                project_id: projectId,
+                predio: pasta,
+                latitude: null,
+                longitude: null
+            };
+        } else if (addUrl === "http://localhost:5000/facade/") {
+            folderInfos = {
+                building_id: folderId,
+                name: pasta
+            };
+        }
+
+        axios.post(addUrl, folderInfos, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => {
+                alert("Pasta criada com sucesso!");
+                setShowPopup(false);
+                fetchFolders();
+            })
+            .catch(err => {
+                console.error("Erro ao criar pasta:", err);
+            });
+    };
+
     return (
         <Container>
             {isLoading && <LoadingMessage>Carregando pastas...</LoadingMessage>}
             {error && <ErrorMessage>Erro ao carregar dados: {error.message}</ErrorMessage>}
-            
-            {!isLoading && !error && (!folders || folders.length === 0) && 
+
+            {!isLoading && !error && (!folders || folders.length === 0) &&
                 <LoadingMessage>Nenhuma pasta encontrada.</LoadingMessage>}
-              {!isLoading && !error && folders && folders.map((folder) => (
-                <FolderCard 
-                    key={folder[folderIdField]} 
-                    onClick={() => navigate(`${path}/${encodeURIComponent(folder[folderNameField])}`)}
+            {!isLoading && !error && folders && folders.map((folder) => (
+                <FolderCard
+                    key={folder[folderIdField]}
+                    onClick={() => {
+                        if (addUrl === "http://localhost:5000/building/") {
+                            navigate(`${path}/${encodeURIComponent(folder[folderNameField])}`);
+                        }
+                    }}
                 >
                     <FaFolder />
                     <p>{folder[folderNameField]}</p>
                 </FolderCard>
             ))}
-            
-            <AddButton>+ Adicionar Pasta</AddButton>
+
+
+
+            <AddButton onClick={() => setShowPopup(true)}>+ Adicionar Pasta</AddButton>
+
+            {showPopup && (
+                <AddFolderPopup
+                    pasta={pasta}
+                    setPasta={setPasta}
+                    onSend={handleAddFolder}
+                    onClose={() => setShowPopup(false)}
+                />
+            )}
         </Container>
     );
 }

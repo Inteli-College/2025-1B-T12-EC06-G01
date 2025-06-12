@@ -33,6 +33,7 @@ const ProjectCard = styled(Link)`
   flex-direction: column;
   align-items: center;
   text-align: center;
+  text-transform: capitalize;
   
   svg {
     font-size: 5rem;
@@ -149,7 +150,7 @@ export default function Projects() {
             </ProjectCard>
           ))}
           
-          {!isLoading && !error && <AddButton>+ Adicionar Projeto</AddButton>}
+          
         </Container>
       </Body>
     </ProjectsPage>
