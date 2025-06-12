@@ -1,13 +1,14 @@
 from flask import request, jsonify
-import requests, os, uuid, sys
+import requests, os, uuid, sys, re
 from app.Services.ImageClassificationService import ImageClassificationService
 from app.Repositories.ImageRepository import ImageRepository
-
+from app.Repositories.ClassificationRepository import ClassificationRepository
 
 class ClassifyController:
     def __init__(self):
         self.classify_service = ImageClassificationService()
         self.image_repository = ImageRepository()
+        self.classify_repository = ClassificationRepository()
 
     def postClassify(self, facade_id, data):
         """
@@ -33,6 +34,8 @@ class ClassifyController:
 
         return jsonify(results), 200
     
+
+
     def retrain(self, data):
         try:
             target_facade_id = int(data['facade_id'])
@@ -91,13 +94,20 @@ class ClassifyController:
 
         # Ordenar pelas datas de criação
         train_dirs.sort(key=lambda d: os.path.getctime(os.path.join(classify_runs_path, d)), reverse=True)
-        latest_train_path = os.path.join(classify_runs_path, train_dirs[0])
+        latest_train_path = str(os.path.join(classify_runs_path, train_dirs[0]))
+        match = re.search(r'[^/\\]+$', latest_train_path)
 
-        
+        if match:
+            versao = match.group()
+            print("VERSÃO PAPAI: ", versao)
 
-        
+        result1, code3 = self.classify_repository.create_new_version(version=versao, train_directory=latest_train_path)
 
-        return {"message": "O modelo começou a retreinar!"}, 200
+        print("RESULTADO PAPAI: ",result1)
+        return {
+            "version_id": result1.id,
+            "new_version": result1.version
+        }, 201
 
 
         
