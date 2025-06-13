@@ -3,6 +3,7 @@ import requests, os, uuid, sys, re
 from app.Services.ImageClassificationService import ImageClassificationService
 from app.Repositories.ImageRepository import ImageRepository
 from app.Repositories.ClassificationRepository import ClassificationRepository
+from app.Utils.DiretoryUtil import DirectoryUtil
 
 class ClassifyController:
     def __init__(self):
@@ -47,32 +48,18 @@ class ClassifyController:
         result, code = self.image_repository.read_veredict_images_per_facade(facade_id=target_facade_id)
         fissures, code2 = self.image_repository.read_fissure_types()
         root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
-        
-        fissure_dict = {}
-        for fissura in fissures:
-            nome_fissura = fissura[0]
-            dir_path = os.path.join(root_dir, "machineLearning", "imagens_raw", f"fissura_{nome_fissura}")
-            os.makedirs(dir_path, exist_ok=True)
-            fissure_dict[nome_fissura] = dir_path
+
+
+        util = DirectoryUtil(root_dir=root_dir)
+        util.all_fissures(fissures=fissures)
         
 
         if code == 200 and code2 == 200:
-            for image in result:
-                url = str(image.raw_image)
-                file_name = f"{uuid.uuid4().hex}.jpg"
-                response = requests.get(url)
-                dir_path = fissure_dict.get(str(image.veredict), "")
-
-                if response.status_code == 200:
-                    output_path = os.path.join(dir_path, file_name)
-
-                    with open(output_path, "wb") as f:
-                        f.write(response.content)
-
-                    print("Imagem baixada com sucesso!")
+            result, code = util.download_images(result=result) 
+            if code != 200:
+                return result, code
 
         root_src_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
-        print(root_src_path)
 
         if root_src_path not in sys.path:
             sys.path.insert(0, root_src_path)
@@ -81,33 +68,26 @@ class ClassifyController:
         from machineLearning.train import train_model
 
         real_split()
+        """
+            SEGUNDA THREAD PARA O MODELO E ATUALIZAR A PORCENTAGEM DO BANCO
+        """
+
         # train_model()         
 
-        classify_runs_path = os.path.join(root_dir, "machineLearning", "runs", "classify")
-        train_dirs = [
-            d for d in os.listdir(classify_runs_path)
-            if os.path.isdir(os.path.join(classify_runs_path, d)) and d.startswith("train")
-        ]
+        versao, latest_train = util.get_train_version()
 
-        if not train_dirs:
-            return {"code": 500, "message": "Nenhuma pasta de treino encontrada."}, 500
+        result1, code3 = self.classify_repository.create_new_version(version=versao, train_directory=latest_train)
 
-        # Ordenar pelas datas de criação
-        train_dirs.sort(key=lambda d: os.path.getctime(os.path.join(classify_runs_path, d)), reverse=True)
-        latest_train_path = str(os.path.join(classify_runs_path, train_dirs[0]))
-        match = re.search(r'[^/\\]+$', latest_train_path)
-
-        if match:
-            versao = match.group()
-            print("VERSÃO PAPAI: ", versao)
-
-        result1, code3 = self.classify_repository.create_new_version(version=versao, train_directory=latest_train_path)
-
-        print("RESULTADO PAPAI: ",result1)
-        return {
-            "version_id": result1.id,
-            "new_version": result1.version
-        }, 201
+        if code3 == 201:
+            return {
+                "version_id": result1.id,
+                "new_version": result1.version
+            }, 201
+        else:
+            return {
+                "code": code3,
+                "message": result1
+            }
 
 
         
