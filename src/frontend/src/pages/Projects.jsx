@@ -94,28 +94,12 @@ export default function Projects() {
       setIsLoading(true);
       setError(null);
       try {
+        // A resposta da API já é um array de projetos no formato correto
         const response = await axios.get('http://localhost:5000/projects');
         
-        // Converter o formato atual para array de objetos
-        const projectsData = response.data;
-        const formattedProjects = Object.entries(projectsData).map(([id, nameAndContractor]) => {
-          // Parse da string "('Nome do Projeto', 'Contratante')"
-          const match = nameAndContractor.match(/\('(.+?)', '(.+?)'\)/);
-          if (match) {
-            return {
-              id: parseInt(id),
-              name: match[1],
-              contractor: match[2]
-            };
-          }
-          return {
-            id: parseInt(id),
-            name: 'Nome não disponível',
-            contractor: 'Contratante não disponível'
-          };
-        });
-        
-        setProjects(formattedProjects);
+        // A response.data já é o array que queremos, não precisa de conversão!
+        setProjects(response.data);
+    
       } catch (err) {
         console.error('Erro ao buscar projetos:', err);
         setError(err);
