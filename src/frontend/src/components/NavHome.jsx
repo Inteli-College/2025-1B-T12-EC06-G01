@@ -9,6 +9,73 @@ import axios from "axios";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 
+// Coloque este objeto dentro do seu componente NavHome.jsx, antes da declaração do return.
+const mockReportData = {
+    informacoes_gerais: {
+      id_relatorio: "REL-2025-001",
+      nome_projeto: "Projeto Demo Shopping Center",
+      nome_contratante: "IPT - Instituto de Pesquisas Tecnológicas",
+      data_emissao_relatorio: new Date().toISOString(),
+      modelo_utilizado: "Modelo de Fissuras v2.1"
+    },
+    resumo_quantitativo_projeto: {
+      total_imagens_analisadas: 350,
+      total_imagens_com_fissura: 85,
+      total_fissuras_por_tipo: {
+        fissura_termica: 40,
+        fissura_retracao: 45
+      }
+    },
+    detalhamento_por_predio: [
+      {
+        nome_predio: "Bloco A - Lojas",
+        resumo_quantitativo_predio: {
+          total_imagens: 200,
+          total_imagens_com_fissura: 50,
+          fissura_termica: 25,
+          fissura_retracao: 25
+        },
+        fachadas: [
+          {
+            nome_fachada: "Fachada Norte",
+            resumo_quantitativo_fachada: {
+              total_imagens: 100,
+              fissura_termica: 15,
+              fissura_retracao: 10
+            }
+          },
+          {
+            nome_fachada: "Fachada Leste",
+            resumo_quantitativo_fachada: {
+              total_imagens: 100,
+              fissura_termica: 10,
+              fissura_retracao: 15
+            }
+          }
+        ]
+      },
+      {
+        nome_predio: "Bloco B - Estacionamento",
+        resumo_quantitativo_predio: {
+          total_imagens: 150,
+          total_imagens_com_fissura: 35,
+          fissura_termica: 15,
+          fissura_retracao: 20
+        },
+        fachadas: [
+          {
+            nome_fachada: "Fachada Sul",
+            resumo_quantitativo_fachada: {
+              total_imagens: 150,
+              fissura_termica: 15,
+              fissura_retracao: 20
+            }
+          }
+        ]
+      }
+    ]
+  };
+
 const generatePDF = (data) => {
     const doc = new jsPDF();
 
@@ -21,6 +88,9 @@ const generatePDF = (data) => {
     doc.text(`Data de emissão: ${new Date(data.informacoes_gerais.data_emissao_relatorio).toLocaleDateString()}`, 14, 42);
     doc.text(`Modelo utilizado: ${data.informacoes_gerais.modelo_utilizado}`, 14, 48);
 
+    // --- INÍCIO DA CORREÇÃO ---
+
+    // 1. Gera a primeira tabela (Resumo do Projeto)
     autoTable(doc, {
         startY: 55,
         head: [['Resumo do Projeto', 'Valor']],
@@ -32,9 +102,13 @@ const generatePDF = (data) => {
         ],
     });
 
-    let y = doc.previousAutoTable.finalY + 10;
+    // 2. Define a posição 'y' de forma segura
+    // Se a tabela anterior foi desenhada, usa a sua posição final. Senão, começa a partir de um valor padrão.
+    let y = doc.lastAutoTable ? doc.lastAutoTable.finalY + 10 : 55;
 
+    // 3. Itera sobre cada prédio, aplicando a mesma lógica segura
     data.detalhamento_por_predio.forEach((predio) => {
+        if (y > 260) { doc.addPage(); y = 20; } // Adiciona nova página se necessário
         doc.setFontSize(14);
         doc.text(`Prédio: ${predio.nome_predio}`, 14, y);
         y += 6;
@@ -49,10 +123,12 @@ const generatePDF = (data) => {
                 ['Fissuras por retração', predio.resumo_quantitativo_predio.fissura_retracao],
             ]
         });
+        
+        y = doc.lastAutoTable ? doc.lastAutoTable.finalY + 5 : y;
 
-        y = doc.previousAutoTable.finalY + 5;
-
+        // 4. Itera sobre cada fachada, com a mesma lógica segura
         predio.fachadas?.forEach((fachada) => {
+            if (y > 260) { doc.addPage(); y = 20; }
             doc.setFontSize(12);
             doc.text(`Fachada: ${fachada.nome_fachada}`, 16, y);
             y += 6;
@@ -67,15 +143,12 @@ const generatePDF = (data) => {
                     ['Fissuras por retração', fachada.resumo_quantitativo_fachada.fissura_retracao],
                 ]
             });
-
-            y = doc.previousAutoTable.finalY + 5;
+            
+            y = doc.lastAutoTable ? doc.lastAutoTable.finalY + 5 : y;
         });
-
-        if (y > 260) {
-            doc.addPage();
-            y = 20;
-        }
     });
+
+    // --- FIM DA CORREÇÃO ---
 
     doc.save(`${data.informacoes_gerais.nome_projeto}.pdf`);
 };
@@ -228,20 +301,34 @@ export default function NavHome() {
     }, [selectedBuilding]);
 
     const handleDownloadReport = async () => {
-        if (!selectedReportProject) {
-            alert("Selecione um projeto antes de gerar o relatório.");
-            return;
-        }
+    // A seleção de projeto pode ser ignorada para o mock,
+    // mas vamos manter a validação para simular o fluxo completo.
+    if (!selectedReportProject) {
+        alert("Para a demo: Selecione qualquer projeto para continuar.");
+        //return; // Pode comentar o return para a demo funcionar mesmo sem seleção
+    }
 
-        try {
-            const response = await axios.get(`http://localhost:5000/projects/${selectedReportProject}/report`);
-            generatePDF(response.data);
-            setShowReportPopup(false);
-            setSelectedReportProject('');
-        } catch (error) {
-            console.error("Erro ao gerar relatório:", error);
-        }
-    };
+    console.log("Gerando relatório com dados MOCKADOS para apresentação...");
+
+    // 1. Chame a função generatePDF diretamente com os dados mockados
+    generatePDF(mockReportData);
+
+    // 2. Comente ou remova a chamada à API original
+    /*
+    try {
+        const response = await axios.get(`http://localhost:5000/projects/${selectedReportProject}/report`);
+        generatePDF(response.data);
+        setShowReportPopup(false);
+        setSelectedReportProject('');
+    } catch (error) {
+        console.error("Erro ao gerar relatório:", error);
+    }
+    */
+
+    // Opcional: pode fechar o popup após gerar o PDF de demo
+    setShowReportPopup(false);
+    setSelectedReportProject('');
+};
 
     const handleSend = () => {
         if (!selectedProject) {
