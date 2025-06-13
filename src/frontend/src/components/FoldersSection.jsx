@@ -210,7 +210,7 @@ export default function FoldersSection({
 
                         if (addUrl === "http://localhost:5000/facade/") {
                             navigate(`${path}/${encodedName}`, {
-                                state: { fachadaId: folder[folderIdField] }
+                                state: { fachadaId: folder[folderIdField], buildingId: folderId }
                             });
                         } else if (addUrl === "http://localhost:5000/building/") {
                             navigate(`${path}/${encodedName}`);

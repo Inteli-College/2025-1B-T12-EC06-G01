@@ -22,6 +22,8 @@ export default function Predio() {
   const [fachadas, setFachadas] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentBuildingId, setCurrentBuildingId] = useState(null);
+
 
   useEffect(() => {
     const fetchFachadas = async () => {
@@ -42,6 +44,8 @@ export default function Predio() {
           );
 
           console.log("Resposta da API de fachadas:", facadesResponse.data);
+          setCurrentBuildingId(currentBuilding.id);
+
 
           if (facadesResponse.data && facadesResponse.data.fachadas) {
             setFachadas(facadesResponse.data.fachadas);
@@ -108,7 +112,9 @@ export default function Predio() {
             folderNameField="predio"
             folderIdField="id"
             addUrl="http://localhost:5000/facade/"
+            folderId={currentBuildingId}
           />
+
         )}
       </Body>
     </PredioPage>
