@@ -120,11 +120,10 @@ export default function NavHome() {
 
     useEffect(() => {
         if (selectedProject) {
-            fetch('http://localhost:5000/building')
+            fetch(`http://localhost:5000/building/project/${selectedProject}`)
                 .then(res => res.json())
                 .then(data => {
-                    const filtered = data.filter(b => b.project_id === selectedProject);
-                    setBuildings(filtered);
+                    setBuildings(data);
                 })
                 .catch(err => console.error("Erro ao buscar prédios:", err));
         }
@@ -132,53 +131,60 @@ export default function NavHome() {
 
     useEffect(() => {
         if (selectedBuilding) {
-            fetch('http://localhost:5000/facade/get', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ building_id: selectedBuilding })
-            })
+            fetch(`http://localhost:5000/facade/building/${selectedBuilding}`)
                 .then(res => {
                     if (!res.ok) throw new Error(`HTTP ${res.status}`);
                     return res.json();
                 })
                 .then(data => {
-                    setFacades(data.fachadas);
+                    if (Array.isArray(data.fachadas)) {
+                        setFacades(data.fachadas.map(f => f.name || f));
+                    } else {
+                        console.warn("Formato inesperado de fachadas:", data);
+                        setFacades([]);
+                    }
                 })
                 .catch(err => console.error("Erro ao buscar fachadas:", err));
         }
     }, [selectedBuilding]);
 
-    const handleSend = () => {
-    if (!selectedProject) {
-        alert("Selecione um projeto antes de enviar.");
-        return;
-    }
 
-    fetch('http://localhost:5000/classify/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            project_id: selectedProject,
-            building_id: selectedBuilding,
-            fachada: selectedFacade
+    const handleSend = () => {
+        if (!selectedFacade) {
+            alert("Selecione uma fachada antes de enviar.");
+            return;
+        }
+
+        fetch(`http://localhost:5000/classify/facades/${selectedFacade}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                // opcional: filtros de data aqui:
+                // start_date: "2025-06-01",
+                // end_date: "2025-06-13"
+            })
         })
-    })
-        .then(res => res.json())
-        .then(data => {
-            alert("Classificação enviada com sucesso!");
-            setShowPopup(false);
-            navigate('/resultado'); // Redirecionamento adicionado
-        })
-        .catch(err => console.error("Erro ao classificar:", err));
-}
+            .then(res => {
+                if (!res.ok) throw new Error(`Erro HTTP ${res.status}`);
+                return res.json();
+            })
+            .then(data => {
+                alert("Classificação enviada com sucesso!");
+                setShowPopup(false);
+                navigate('/result'); 
+            })
+            .catch(err => {
+                console.error("Erro ao classificar:", err);
+                alert("Ocorreu um erro ao enviar a classificação.");
+            });
+    };
+
 
 
     // Função para determinar o título baseado na rota atual
     const getPageTitle = () => {
         const path = location.pathname;
-        
+
         if (path === '/projects') {
             return 'Escolha um projeto';
         } else if (path.includes('/predios')) {
