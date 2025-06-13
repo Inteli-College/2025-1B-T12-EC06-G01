@@ -145,8 +145,9 @@ export default function Sidebar(props) {
 
 
   const handleClick = () => {
-    navigate("/projetos");
+    navigate("/projects");
   };
+
 
   return (
     <Container>

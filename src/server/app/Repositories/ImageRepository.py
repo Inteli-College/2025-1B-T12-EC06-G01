@@ -55,14 +55,18 @@ class ImageRepository:
     def read_images_per_fachada(id_fachada: int):
         try:
             images = Image.query.filter_by(facade_id=id_fachada).all()
-            return {
-                image.name: image.raw_image
+            # Sempre retorna uma lista de dicts, mesmo se vazio
+            result = [
+                {
+                    "img_name": image.name if hasattr(image, 'name') else f"Imagem {image.id}",
+                    "raw_img": image.raw_image
+                }
                 for image in images
-            }, 200
-
+            ]
+            return result, 200
         except Exception as e:
             print("[ImageRepository] Nenhuma imagem encontrada...")
-            return {"code": 404, "message": "Nenhuma imagem encontrada..."}, 404
+            return [], 200
     
     # Método para ler imagens já classificadas por prédio
     @staticmethod
@@ -121,6 +125,7 @@ class ImageRepository:
                 Image.veredict.isnot(None),
                 Image.veredict != ''  # caso queira evitar strings vazias também
             ).all()
+
             return images, 200
         
         except Exception as e:
@@ -131,19 +136,10 @@ class ImageRepository:
     def read_fissure_types():
         try: 
             fissure_types = (
-                db.session.query(Fissure.fissure_name)
+                db.session.query(Image.fissure_type)
                 .distinct()
                 .all()
             )
-            return fissure_types, 200
         except Exception as e:
             print(f"[ImageRepository] Algo deu errado ao buscar as fissuras no banco de dados: {e}")
             return f"Algo deu errado ao buscar as fissuras no banco de dados: {e}", 404
-
-
-
-
-
-            
-
-    
