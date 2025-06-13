@@ -26,7 +26,9 @@ def create_app():
     
     migrate.init_app(app, db)
     cloud.init_app(app)
-      # Import blueprints here to avoid circular imports
+
+
+    # Import blueprints here to avoid circular imports
     from app.Routes.ClassifyRoute import classify_bp
     from app.Routes.ImageRoute import image_bp
     from app.Routes.ProjectRoutes import project_blueprint
@@ -46,6 +48,7 @@ def create_app():
     from app.Models.log_image import log_image
     from app.Models.user import User
     from app.Models.model_version import ModelVersion
+    from app.Models.fissure import Fissure
     
     
     

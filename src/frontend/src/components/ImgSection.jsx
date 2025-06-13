@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import styled from 'styled-components'
-import CardImg from './CardImg'
-import axios from 'axios'
+import React, { useState, useEffect } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
+import styled from 'styled-components';
+import CardImg from './CardImg';
+import axios from 'axios';
 
 const Container = styled.div`
     width: 77vw;
@@ -11,71 +11,72 @@ const Container = styled.div`
 
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    justify-items:center;
+    justify-items: center;
     gap: 2rem;
-`
+`;
 
 export default function ImgSection() {
+  const { fachadaNome } = useParams();
+  const location = useLocation();
+  const fachadaId = location.state?.fachadaId;
 
-  // ---- LÓGICA PARA PUXAR IMAGENS COM A ROTA DO BACK ----
-  // const [listOfImages, setListOfImages] = useState([]);
-  // let navigate = useNavigate();
+  const [imagens, setImagens] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  //   useEffect(() => {
-  //       axios.get('http://localhost:3001/imagens').then((response) => {
-  //           setListOfImages(response.data)
-  //       })
-  //   }, [])
+  useEffect(() => {
+    const fetchImagens = async () => {
+      if (fachadaId === undefined || fachadaId === null) {
+        console.error("Fachada ID não encontrado no state.", { fachadaId });
+        setLoading(false);
+        return;
+      }
 
+      try {
+        const response = await axios.get(`http://localhost:5000/images/facade/${fachadaId}`);
+        console.log("Resposta da API:", response.data);
+        console.log("fachadaId:", fachadaId);
 
-  const imagens = [
-    { img_name: "FR1.png", project: "teste", raw_img: "/images/FR1.png" },
-    { img_name: "FR2.png", project: "teste", raw_img: "/images/FR2.PNG" },
-    { img_name: "FR3.PNG", project: "teste", raw_img: "/images/FR3.PNG" },
-    { img_name: "FR4.PNG", project: "teste", raw_img: "/images/FR4.PNG" },
-    { img_name: "FR5.PNG", project: "teste", raw_img: "/images/FR5.PNG" },
-    { img_name: "FR6.PNG", project: "teste", raw_img: "/images/FR6.PNG" },
-    { img_name: "FR7.PNG", project: "teste", raw_img: "/images/FR7.PNG" },
-    { img_name: "FR8.PNG", project: "teste", raw_img: "/images/FR8.PNG" },
-    { img_name: "FR9.PNG", project: "teste", raw_img: "/images/FR9.PNG" },
-    { img_name: "FR10.PNG", project: "teste", raw_img: "/images/FR10.PNG" },
-    { img_name: "FR11.PNG", project: "teste", raw_img: "/images/FR11.PNG" },
-    { img_name: "FR12.PNG", project: "teste", raw_img: "/images/FR12.PNG" },
-    { img_name: "FR13.PNG", project: "teste", raw_img: "/images/FR13.PNG" },
-    { img_name: "FR14.PNG", project: "teste", raw_img: "/images/FR14.PNG" },
-    { img_name: "FR15.PNG", project: "teste", raw_img: "/images/FR15.PNG" },
-    { img_name: "FR16.PNG", project: "teste", raw_img: "/images/FR16.PNG" },
-    { img_name: "FR17.PNG", project: "teste", raw_img: "/images/FR17.PNG" },
-    { img_name: "FR18.PNG", project: "teste", raw_img: "/images/FR18.PNG" },
-    { img_name: "FR19.PNG", project: "teste", raw_img: "/images/FR19.PNG" },
-    { img_name: "FR20.PNG", project: "teste", raw_img: "/images/FR20.PNG" },
-    { img_name: "FT1.PNG", project: "teste", raw_img: "/images/FT1.PNG" },
-    { img_name: "FT2.PNG", project: "teste", raw_img: "/images/FT2.PNG" },
-    { img_name: "FT3.PNG", project: "teste", raw_img: "/images/FT3.PNG" },
-    { img_name: "FT4.PNG", project: "teste", raw_img: "/images/FT4.PNG" },
-    { img_name: "FT5.PNG", project: "teste", raw_img: "/images/FT5.PNG" },
-    { img_name: "FT6.PNG", project: "teste", raw_img: "/images/FT6.PNG" },
-    { img_name: "FT7.PNG", project: "teste", raw_img: "/images/FT7.PNG" },
-    { img_name: "FT8.PNG", project: "teste", raw_img: "/images/FT8.PNG" },
-    { img_name: "FT9.PNG", project: "teste", raw_img: "/images/FT9.PNG" },
-    { img_name: "FT10.PNG", project: "teste", raw_img: "/images/FT10.PNG" },
-    { img_name: "FT11.PNG", project: "teste", raw_img: "/images/FT11.PNG" },
-    { img_name: "FT12.PNG", project: "teste", raw_img: "/images/FT12.PNG" },
-    { img_name: "FT13.PNG", project: "teste", raw_img: "/images/FT13.PNG" },
-    { img_name: "FT14.PNG", project: "teste", raw_img: "/images/FT14.PNG" },
-    { img_name: "FT15.PNG", project: "teste", raw_img: "/images/FT15.PNG" },
-    { img_name: "FT16.PNG", project: "teste", raw_img: "/images/FT16.PNG" },
-    { img_name: "FT17.PNG", project: "teste", raw_img: "/images/FT17.PNG" },
-    { img_name: "FT18.PNG", project: "teste", raw_img: "/images/FT18.PNG" },
-    { img_name: "FT19.PNG", project: "teste", raw_img: "/images/FT19.PNG" },
-    { img_name: "FT20.PNG", project: "teste", raw_img: "/images/FT20.PNG" }
-  ];
+        let imgs = [];
+        if (Array.isArray(response.data)) {
+          imgs = response.data;
+        } else if (response.data.data && Array.isArray(response.data.data)) {
+          imgs = response.data.data;
+        } else if (response.data.imagens && Array.isArray(response.data.imagens)) {
+          imgs = response.data.imagens;
+        } else {
+          console.warn("Formato inesperado de resposta da API.", response.data);
+        }
+
+        setImagens(imgs);
+      } catch (err) {
+        console.error("Erro ao buscar imagens da fachada:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchImagens();
+  }, [fachadaId]);
+
+  if (loading) {
+    return <p style={{ marginLeft: "18vw", padding: "2.5rem" }}>Carregando imagens da fachada: {fachadaNome}</p>;
+  }
+
+  if (!imagens || imagens.length === 0) {
+    return (
+      <Container>
+        <p style={{ gridColumn: '1 / -1', textAlign: 'center', fontSize: '1.2rem', color: '#888' }}>
+          Nenhuma imagem cadastrada para esta fachada.
+        </p>
+      </Container>
+    );
+  }
 
   return (
     <Container>
-      {imagens.map((value, key) => {
-        return <CardImg key={key} img_name={value.img_name} url={value.raw_img} />
-      })}
+      {imagens.map((img, index) => (
+        <CardImg key={index} img_name={img.img_name} url={img.raw_img} />
+      ))}
     </Container>
-  )
+  );
 }

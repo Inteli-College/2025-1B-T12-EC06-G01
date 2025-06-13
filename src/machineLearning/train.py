@@ -34,6 +34,7 @@ def train_classify():
         cfg=str(config_file)           
     )
 
+
 def train_detect():
      # → Pipeline novo de detecção
     data_yaml = BASE / "data_detect.yaml"
