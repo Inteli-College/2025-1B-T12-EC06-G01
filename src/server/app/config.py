@@ -18,16 +18,16 @@ class Config():
     CLOUDINARY_API_KEY = os.getenv("CLOUDINARY_API_KEY")
     CLOUDINARY_API_SECRET = os.getenv("CLOUDINARY_API_SECRET")
 
-class Cloudinary:
-    def __init__(self):
-        pass
+# class Cloudinary:
+#     def __init__(self):
+#         pass
 
-    def init_app(self, app):
-        cloudinary.config( 
-            cloud_name = app.config.get("CLOUDINARY_CLOUD_NAME"), 
-            api_key = app.config.get("CLOUDINARY_API_KEY"), 
-            api_secret = app.config.get("CLOUDINARY_API_SECRET"),
-            secure = True
-        )
+#     def init_app(self, app):
+#         cloudinary.config( 
+#             cloud_name = app.config.get("CLOUDINARY_CLOUD_NAME"), 
+#             api_key = app.config.get("CLOUDINARY_API_KEY"), 
+#             api_secret = app.config.get("CLOUDINARY_API_SECRET"),
+#             secure = True
+#         )
 
-        app.cloudinary = cloudinary
+#         app.cloudinary = cloudinary
