@@ -37,7 +37,8 @@ def create_app():
     from app.Routes.FilterRoute import filter_bp
     from app.Routes.ImageCleanRoutes import image_clean_blueprint
     from app.Routes.UserRoute import user_bp
-
+    from app.Routes.ReportRoute import report_bp
+    from app.Routes.ContractorRoute import contractor_bp
 
     # Carregando os Models
     from app.Models.project import Project
@@ -60,7 +61,8 @@ def create_app():
     app.register_blueprint(image_clean_blueprint)
     app.register_blueprint(facade_bp)    
     app.register_blueprint(building_bp)
- 
+    app.register_blueprint(report_bp)
+    app.register_blueprint(contractor_bp)
     
 
 
