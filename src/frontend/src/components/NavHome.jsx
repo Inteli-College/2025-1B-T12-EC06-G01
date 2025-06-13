@@ -516,7 +516,7 @@ export default function NavHome() {
                     setSelectedProject={setSelectedProject}
                     setSelectedBuilding={setSelectedBuilding}
                     setSelectedFacade={setSelectedFacade}
-                    onSend={handleSendImage}
+                    onSend={handleSendImages}
                     onClose={() => setShowPopup(false)}
                 />
             )}
