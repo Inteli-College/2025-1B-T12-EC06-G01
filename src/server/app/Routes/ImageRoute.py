@@ -9,6 +9,19 @@ image_controller = ImageController()
 
 # Define as rotas para cada operação básica relacionada às imagens 
 
+@image_bp.route("/facade/<int:facade_id>", methods=['GET'])
+def get_images_by_facade(facade_id):
+    """
+    Rota RESTful para buscar imagens de uma fachada específica.
+    """
+    try:
+        data = {"facade_id": facade_id}
+        result, code = image_controller.get_images_per_fachada(data)
+        return jsonify(result), code
+    except Exception as e:
+        print(f"[ImageRoute] Erro ao processar requisição GET: {e}")
+        return jsonify({"code": 500, "message": "Erro interno no servidor"}), 500
+    
 @image_bp.route('/', methods=['DELETE'])
 def delete_images():
     data = request.get_json()

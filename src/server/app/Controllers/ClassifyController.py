@@ -1,5 +1,6 @@
 from flask import request, jsonify
 import requests, os
+
 from app.Services.ImageClassificationService import ImageClassificationService
 from app.Repositories.ImageRepository import ImageRepository
 
@@ -35,7 +36,7 @@ class ClassifyController:
     def retrain(self, data):
         try:
             target_facade_id = int(data['facade_id'])
-        
+
         except Exception as e:            
             print("[ClassifyController] Os conteúdos json não são suficiente")
             return {"code": 400, "message": f"Os conteúdos json não são suficientes: {e}"}, 400
