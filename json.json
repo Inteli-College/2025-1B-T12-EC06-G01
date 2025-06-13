@@ -1,0 +1,61 @@
+{
+  "informacoes_gerais": {
+    "id_relatorio": "REP-2025-06-001",
+    "nome_projeto": "Edifício Copan - Restauração 2025",
+    "nome_contratante": "Administradora XYZ",
+    "data_emissao_relatorio": "2025-06-10T17:03:00Z",
+    "modelo_utilizado": "YOLOv8-cls-v1.2"
+  },
+  "resumo_quantitativo_projeto": {
+    "total_imagens_analisadas": 2500,
+    "total_imagens_com_fissura": 235,
+    "total_fissuras_por_tipo": {
+      "fissura_termica": 150,
+      "fissura_retracao": 85
+    }
+  },
+  "detalhamento_por_predio": [
+    {
+      "id_predio": 1,
+      "nome_predio": "Bloco A",
+      "resumo_quantitativo_predio": {
+        "total_imagens": 1200,
+        "total_imagens_com_fissura": 125,
+        "fissura_termica": 80,
+        "fissura_retracao": 45
+      },
+      "fachadas": [
+        {
+          "id_fachada": 101,
+          "nome_fachada": "Fachada Norte",
+          "resumo_quantitativo_fachada": {
+            "total_imagens": 300,
+            "fissura_termica": 30,
+            "fissura_retracao": 15
+          }
+        },
+        {
+          "id_fachada": 102,
+          "nome_fachada": "Fachada Sul",
+          "resumo_quantitativo_fachada": {
+            "total_imagens": 300,
+            "fissura_termica": 50,
+            "fissura_retracao": 30
+          }
+        }
+      ]
+    },
+    {
+      "id_predio": 2,
+      "nome_predio": "Bloco B",
+      "resumo_quantitativo_predio": {
+        "total_imagens": 1300,
+        "total_imagens_com_fissura": 110,
+        "fissura_termica": 70,
+        "fissura_retracao": 40
+      },
+      "fachadas": [
+      ]
+    }
+  ]
+}
