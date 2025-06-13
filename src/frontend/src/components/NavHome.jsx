@@ -171,7 +171,7 @@ export default function NavHome() {
             .then(data => {
                 alert("Classificação enviada com sucesso!");
                 setShowPopup(false);
-                navigate('/result'); 
+                navigate(`/result/${selectedFacade}`);
             })
             .catch(err => {
                 console.error("Erro ao classificar:", err);

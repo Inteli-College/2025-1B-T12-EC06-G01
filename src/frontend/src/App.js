@@ -20,7 +20,7 @@ function App() {
           {/* Rotas antigas mantidas para compatibilidade */}
           <Route path="/predio/:predioNome" element={<Predio />} />
           <Route path="/predio/:predioNome/:fachadaNome" element={<Fachada />} />
-          <Route path="/result" element={<Result />} />
+          <Route path="/result/:facadeId" element={<Result />} />
         </Routes>
       </Router>
     </ProjectProvider>
