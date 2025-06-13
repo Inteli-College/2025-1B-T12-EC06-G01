@@ -1,5 +1,6 @@
 from flask import request, jsonify
-import requests
+import requests, os
+
 from app.Services.ImageClassificationService import ImageClassificationService
 from app.Repositories.ImageRepository import ImageRepository
 
@@ -34,24 +35,29 @@ class ClassifyController:
     
     def retrain(self, data):
         try:
-            target_facade_id = data['facade_id']
-        
+            target_facade_id = int(data['facade_id'])
+
         except Exception as e:            
             print("[ClassifyController] Os conteúdos json não são suficiente")
             return {"code": 400, "message": f"Os conteúdos json não são suficientes: {e}"}, 400
         
         result, code = self.image_repository.read_veredict_images_per_facade(facade_id=target_facade_id)
-        fissures = self.image_repository.read_fissure_types()
+        fissures, code2 = self.image_repository.read_fissure_types()
+        
+        fissure_dict = {}
+        for fissura in fissures:
+            nome_fissura = fissura[0]
+            dir_path = os.path.join("src", "machineLearning", "imagens_raw", f"fissura_{nome_fissura}")
+            os.makedirs(dir_path, exist_ok=True)
+            fissure_dict[nome_fissura] = dir_path
+        
+        print(fissure_dict)
 
-        if code == 200:
+        if code == 200 and code2 == 200:
             for image in result:
-                url = str(image.raw_img)
-                response = request.get(url)
-                output_path = {
-                    "termic": "termic",
-                    "retraction": "retraction"
-                }.get(image.veredict, "")
-
+                url = str(image.raw_image)
+                response = requests.get(url)
+                output_path = fissure_dict.get(str(image.veredict), "")
 
                 if response.status_code == 200:
                     with open(output_path, "wb") as f:
