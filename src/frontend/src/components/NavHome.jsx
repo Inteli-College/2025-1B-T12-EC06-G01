@@ -181,24 +181,18 @@ export default function NavHome() {
     const [selectedReportProject, setSelectedReportProject] = useState('')
 
     useEffect(() => {
-        fetch('http://localhost:5000/projects/')
-            .then(res => res.json())
-            .then(data => {
-                const parsed = Object.entries(data).map(([id, value]) => {
-                    const [name, company] = value
-                        .replace("(", "")
-                        .replace(")", "")
-                        .replaceAll("'", "")
-                        .split(", ");
-                    return {
-                        id: parseInt(id),
-                        name: name.trim(),
-                        company: company.trim()
-                    };
-                });
-                setProjects(parsed);
-            })
-            .catch(err => console.error("Erro ao buscar projetos:", err));
+        const fetchProjects = async () => {
+            try {
+                // Usamos axios para consistência e o URL com a barra no final
+                const response = await axios.get('http://localhost:5000/projects/');
+                // A resposta (response.data) já é o array de projetos que queremos.
+                setProjects(response.data);
+            } catch (err) {
+                console.error("Erro ao buscar projetos:", err);
+            }
+        };
+    
+        fetchProjects();
     }, []);
 
     useEffect(() => {
