@@ -18,12 +18,14 @@ class DirectoryUtil:
         self.__fissure_dict = fissure_dict
 
     def download_images(self, result):
+        if len(result) == 0:
+            return "Nenhuma imagem para download", 404
+
         for image in result:
             url = str(image.raw_image)
             file_name = f"{uuid.uuid4().hex}.jpg"
             response = requests.get(url)
             dir_path = self.__fissure_dict.get(str(image.veredict), "")
-
             if response.status_code == 200:
                 output_path = os.path.join(dir_path, file_name)
 
@@ -52,9 +54,12 @@ class DirectoryUtil:
         # Ordenar pelas datas de criação
         train_dirs.sort(key=lambda d: os.path.getctime(os.path.join(classify_runs_path, d)), reverse=True)
         latest_train_path = str(os.path.join(classify_runs_path, train_dirs[0]))
+
+        match2 = re.search(r"(2025-1B-T12-EC06-G01.*)", latest_train_path)
         match = re.search(r'[^/\\]+$', latest_train_path)
 
-        if match:
+        if match and match2:
+            latest_train_path = match2.group()
             versao = match.group()
         else:
             return 

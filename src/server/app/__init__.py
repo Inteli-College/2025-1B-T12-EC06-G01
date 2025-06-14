@@ -6,10 +6,12 @@ import os
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from app.config import Cloudinary
+from flask_socketio import SocketIO
 
 db = SQLAlchemy()
 migrate = Migrate()
 cloud = Cloudinary()
+socketio = SocketIO()
 
 def create_app():
     # Configuração do app
@@ -23,9 +25,9 @@ def create_app():
 
     # Initialize db with app
     db.init_app(app)
-    
     migrate.init_app(app, db)
     cloud.init_app(app)
+    socketio.init_app(app, cors_allowed_origins='*')
 
 
     # Import blueprints here to avoid circular imports

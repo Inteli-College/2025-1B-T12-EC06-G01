@@ -6,7 +6,7 @@ import random
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 RAW_DIR = os.path.join(ROOT_DIR, "2025-1B-T12-EC06-G01", "src", "machineLearning", "imagens_raw")
 DATASET_DIR = os.path.join(ROOT_DIR, "2025-1B-T12-EC06-G01", "src", "machineLearning", "dataset")
-TEST_DIR = os.path.join(ROOT_DIR, "2025-1B-T12-EC06-G01", "src", "machineLearning", "dataset", "test")
+TEST_DIR = os.path.join(ROOT_DIR, "2025-1B-T12-EC06-G01", "src", "machineLearning", "dataset")
 
 # Função de divisão
 def split_images(image_list, train_ratio=0.7, val_ratio=0.2):
@@ -18,11 +18,9 @@ def split_images(image_list, train_ratio=0.7, val_ratio=0.2):
 
 def real_split():
     # Criar diretórios de saída
-    for split in ['train', 'val']:
+    for split in ['train', 'val', 'test']:
         split_dir = os.path.join(DATASET_DIR, split)
         os.makedirs(split_dir, exist_ok=True)
-
-    os.makedirs(TEST_DIR, exist_ok=True)
 
 
     # Percorrer tipos de fissuras
@@ -37,8 +35,10 @@ def real_split():
         # Criar subpastas para treino e validação
         train_subdir = os.path.join(DATASET_DIR, "train", fissure_folder)
         val_subdir = os.path.join(DATASET_DIR, "val", fissure_folder)
+        test_subdir = os.path.join(DATASET_DIR, "test", fissure_folder)
         os.makedirs(train_subdir, exist_ok=True)
         os.makedirs(val_subdir, exist_ok=True)
+        os.makedirs(test_subdir, exist_ok=True)
 
         # Copiar imagens
         for img in train_imgs:
@@ -48,8 +48,6 @@ def real_split():
             shutil.copy2(os.path.join(fissure_path, img), os.path.join(val_subdir, img))
 
         for img in test_imgs:
-            shutil.copy2(os.path.join(fissure_path, img), os.path.join(TEST_DIR, img))
+            shutil.copy2(os.path.join(fissure_path, img), os.path.join(test_subdir, img))
 
     print("Divisão e organização das imagens concluída.")
-
-real_split()
