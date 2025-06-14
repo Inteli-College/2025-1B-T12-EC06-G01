@@ -1,5 +1,6 @@
 from app.Models.project import Project
 from app import db
+from sqlalchemy import asc, desc
 
 class ProjectRepository:
     @staticmethod
@@ -27,6 +28,41 @@ class ProjectRepository:
             raise e
 
     @staticmethod
+    def get_unique_contractors():
+        try:
+            # Consulta que seleciona a coluna 'contractor', pega apenas os valores distintos (únicos) e ordena.
+            query = db.session.query(Project.contractor).distinct().order_by(Project.contractor)
+            # O resultado é uma lista de tuplas, ex: [('Inteli',), ('IPT',)], então extraímos o primeiro item de cada.
+            contractors = [row[0] for row in query.all()]
+            return contractors, 200
+        except Exception as e:
+            print(f"[ProjectRepository] Erro ao buscar contratantes únicos: {e}")
+            return str(e), 500
+
+    @staticmethod
+    def get_filtered_projects(contractor=None, start_date=None, end_date=None, order='asc'):
+        try:
+            query = Project.query
+
+            if contractor:
+                query = query.filter(Project.contractor == contractor)
+
+            if start_date:
+                query = query.filter(Project.date >= start_date)
+            if end_date:
+                query = query.filter(Project.date <= end_date)
+
+            if order.lower() == 'desc':
+                query = query.order_by(desc(Project.name))
+            else:
+                query = query.order_by(asc(Project.name))
+
+            return query.all(), 200
+        except Exception as e:
+            print(f"[ProjectRepository] Erro ao buscar projetos filtrados: {e}")
+            return str(e), 500
+
+    @staticmethod
     def create_project(nome, contratante, date):
         try:
             new = Project(name=nome, contractor=contratante, date=date)
@@ -34,18 +70,7 @@ class ProjectRepository:
             db.session.commit()
             return new, 201
         except Exception as e:
-            print("[ProjectController] Erro ao criar novo registro na tabela project... 500")
+            print("[ProjectRepository] Erro ao criar novo registro na tabela project... 500")
+            db.session.rollback() # Adicionado rollback em caso de erro
             return f"{e}", 500
         
-    @staticmethod
-    def read_projects():
-        try:
-            projetos = Project.query.all()
-            return {
-                projeto.id: f"{projeto.name, projeto.contractor}"
-                for projeto in projetos
-            }, 200
-        
-        except Exception as e:
-            print("[ProjectController] Nenhum projeto encontrado... 404")
-            return f"{e}", 404            
