@@ -3,7 +3,7 @@ import os, sys
 from app.Services.ImageClassificationService import ImageClassificationService
 from app.Repositories.ImageRepository import ImageRepository
 from app.Repositories.ClassificationRepository import ClassificationRepository
-from app.Utils.DiretoryUtil import DirectoryUtil
+from app.Utils.DiretoryUtil import DiretoryUtil
 from app.Repositories.FissureRepository import FissureRepository
 
 class ClassifyController:
@@ -48,7 +48,7 @@ class ClassifyController:
         # Organiza diretório raiz para conseguir acessar as pastas corretas
         root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
         
-        util = DirectoryUtil(root_dir=root_dir)
+        util = DiretoryUtil(root_dir=root_dir)
 
         util.all_fissures(fissures=fissures)
 
@@ -65,13 +65,14 @@ class ClassifyController:
 
         # Importação para separação do dataset e treinamento
         from machineLearning.split_real import real_split
+        from machineLearning.train import train_model
         from app.websocket import handle_training
         
         # Separaração do dataset
         real_split()
 
         # Treinamento
-        handle_training()        
+        handle_training(train_model=train_model)        
 
         # Pega a última versão gerada na pasta runs/classify
         versao, latest_train = util.get_train_version()

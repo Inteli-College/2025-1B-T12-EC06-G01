@@ -1,7 +1,9 @@
 import os, uuid, requests, re
 from app.Repositories.ImageRepository import ImageRepository
+from app.websocket import send_message
 
-class DirectoryUtil:
+
+class DiretoryUtil:
     def __init__(self, root_dir):
         self.__root_dir = root_dir
         self.__fissure_dict = {}
@@ -33,6 +35,7 @@ class DirectoryUtil:
                     f.write(response.content)
                 
                 msg, code = self.image_repo.put_image_name(image=image, new_name=file_name)
+                send_message(f"Baixando imagem {file_name}", "training_progress_fe")
 
                 if not code == 204:
                     return msg, code

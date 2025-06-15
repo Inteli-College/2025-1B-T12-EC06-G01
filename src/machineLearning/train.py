@@ -1,7 +1,17 @@
 from ultralytics import YOLO
 from pathlib import Path
+from datetime import datetime
+from threading import Thread
+import time, sys, os, csv
 
 BASE = Path(__file__).parent
+
+def import_ws():
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+    # Agora o import funciona
+    from server.app.websocket import send_message
+    return send_message
 
 # 1) BASE → pasta deste script (machineLearning/)
 
@@ -19,6 +29,10 @@ def train_model():
     # 3) onde salvar os runs
     runs_dir = BASE / "runs" / "classify"
     runs_dir.mkdir(parents=True, exist_ok=True)
+    nome_treino = f"train_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    log_path = runs_dir / nome_treino / "results.csv"
+
+    Thread(target=monitorar_epochs, args=(log_path, 50)).start()
 
     model = YOLO("yolo11n-cls.pt")
 
@@ -29,6 +43,41 @@ def train_model():
         epochs=50,                     
         imgsz=224,                     
         project=str(runs_dir),        
-        name="train",                  
-        cfg=str(config_file)           
+        name=nome_treino,                  
+        cfg=str(config_file)         
     )
+
+def monitorar_epochs(log_path, total_epochs):
+    send_message = import_ws()
+    last_epoch_reported = -1
+    i = 0
+
+    while True:
+        if not log_path.exists():
+            time.sleep(1)
+            continue
+
+        with log_path.open(newline='') as csvfile:
+            reader = csv.reader(csvfile)
+            lines = list(reader)
+
+            if len(lines) > 1:
+                current_epoch = len(lines) - 1
+
+                if current_epoch != last_epoch_reported:
+                    progress = int((current_epoch / total_epochs) * 100)
+                    send_message(progress, 'training_progress_fe')
+                    last_epoch_reported = current_epoch
+                    i = 0
+                
+                else:
+                    i += 1
+                    if i == 70:
+                        print(f"\nOLHA O CONTADOR PAPAI: {i}\n")
+                        send_message(100, 'training_progress_fe')
+                        break
+
+        if current_epoch >= total_epochs:
+            break
+
+        time.sleep(1)
