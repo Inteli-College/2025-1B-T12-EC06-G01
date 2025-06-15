@@ -7,8 +7,9 @@ from ultralytics import YOLO
 class ClassificationRepository:
     def __init__(self):
         # ALTERAÇÃO 1: Guardamos apenas o CAMINHO do modelo, não o modelo em si.
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        self.model_path = os.path.normpath(os.path.join(base_dir, "..", "..", "..", "src", "machineLearning", "melhores_modelos", "best21.pt"))
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../.."))
+        self.model_path = os.path.join(project_root, "src", "machineLearning", "melhores_modelos", "best21.pt")
+
         
         # ALTERAÇÃO 2: O modelo começa como None. Ele ainda não foi carregado na memória.
         self.model = None
@@ -24,6 +25,7 @@ class ClassificationRepository:
             self.model = YOLO(self.model_path)
 
     def classify_urls(self, urls: List[str]) -> Dict[str, dict]:
+        self._load_model()
         results = {}
         for url in urls:
             try:

@@ -1,5 +1,6 @@
 from app.Models import Image, Facade, Fissure
-from app import db, cloud
+from app import db
+import cloudinary.uploader
 from collections import defaultdict
 from sqlalchemy.orm import contains_eager
 from sqlalchemy import and_
@@ -30,25 +31,27 @@ class ImageRepository:
         
     @staticmethod
     def update_image(image):
-        update = cloud.uploader.upload(image, folder='raw-images')
-        url = update.get("secure_url")
-
-        if url:
-            return url
-        else:
+        try:
+            update = cloudinary.uploader.upload(image, folder='raw-images')
+            url = update.get("secure_url")
+            return url if url else None
+        except Exception as e:
+            print("[ImageRepository] Erro ao enviar imagem para Cloudinary:", e)
             return None
+
 
 
     @staticmethod
     def create_image(raw_image: str, fachada_id: str, date):
         try:
-            new = Image(raw_image=raw_image, facade_id=fachada_id)
+            new = Image(raw_image=raw_image, facade_id=fachada_id, datetime=date, fissure_id=1)
             db.session.add(new)
             db.session.commit()
             return new, 201
         except Exception as e:
-            print("[ImageController] Erro ao criar novo registro! 500")
+            print("[ImageRepository] Erro ao criar novo registro:", e)
             return f"{e}", 500
+
     
     # Método dedicado para ler cada imagem na fachada
     @staticmethod
