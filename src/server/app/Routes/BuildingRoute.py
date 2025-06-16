@@ -38,3 +38,14 @@ def get_buildings_by_project_route(project_id):
     except Exception as e:
         print(f"[BuildingRoute] Erro ao processar requisição GET para projeto {project_id}: {e}")
         return jsonify({"code": 500, "message": "Erro interno no servidor"}), 500
+    
+@building_bp.route("/", methods=["PUT"])
+def put_new_building_name():
+    try:
+        data = request.json
+    except Exception as e:
+        print("[BuildingRoute] Erro ao receber requisição POST!")
+        return jsonify({"code": 400, "message": f"Erro ao receber requisição: {e}"})
+    
+    result, code = controller.put_new_building_name(data)
+    return jsonify(result), code
