@@ -75,3 +75,24 @@ class BuildingController:
             return result, code
         else:
             return {"code": code, "message": f"Erro ao buscar prédios do projeto {project_id}"}, code
+    
+    def put_new_building_name(self, data):
+        try:
+            id_predio = data["building_id"]
+            nome_predio = data["building_name"]
+        
+        except Exception as e:
+            print("[BuildingController] Os conteúdos json não são suficientes...")
+            return {"code": 400, "message": f"Os conteúdos json não são suficentes: {e}"}, 400
+        
+        new_building, code = self.building_repo.update_building_name(building_id=id_predio, building_name=nome_predio)
+
+        if code == 200:
+            return {
+                "name": new_building.predio,
+                "id": new_building.id                
+            }, 200
+        
+        else:
+            return {"code": code, "message": new_building}, code
+
