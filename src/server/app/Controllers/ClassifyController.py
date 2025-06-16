@@ -2,15 +2,12 @@ from flask import jsonify
 import os, sys
 from app.Services.ImageClassificationService import ImageClassificationService
 from app.Repositories.ImageRepository import ImageRepository
-from app.Repositories.ClassificationRepository import ClassificationRepository
-from app.Utils.DiretoryUtil import DiretoryUtil
 from app.Repositories.FissureRepository import FissureRepository
 
 class ClassifyController:
     def __init__(self):
         self.classify_service = ImageClassificationService()
         self.image_repository = ImageRepository()
-        self.classify_repository = ClassificationRepository()
         self.fissure_repository = FissureRepository()
 
     def postClassify(self, facade_id, data):
@@ -48,6 +45,7 @@ class ClassifyController:
         # Organiza diretório raiz para conseguir acessar as pastas corretas
         root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
         
+        from app.Utils.DiretoryUtil import DiretoryUtil
         util = DiretoryUtil(root_dir=root_dir)
 
         util.all_fissures(fissures=fissures)
@@ -72,24 +70,13 @@ class ClassifyController:
         real_split()
 
         # Treinamento
-        handle_training(train_model=train_model)        
+        from main import app
+        handle_training(train_model=train_model)   
 
-        # Pega a última versão gerada na pasta runs/classify
-        versao, latest_train = util.get_train_version()
-
-        # Cria uma nova versão do modelo na tabela model_version no banco de dados
-        result1, code3 = self.classify_repository.create_new_version(version=versao, train_directory=latest_train)
-
-        if code3 == 201:
-            return {
-                "version_id": result1.id,
-                "new_version": result1.version
-            }, 201
-        else:
-            return {
-                "code": code3,
-                "message": result1
-            }
+        return {
+            "code": 200,
+            "message": "Treinamento iniciado!"
+        }    
 
 
         

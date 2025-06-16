@@ -76,5 +76,5 @@ class ClassificationRepository:
             return new, 201
 
         except Exception as e:
-            print("[ClassificationRepository] Algo deu errado ao consultar o banco de dados...")
+            print(f"[ClassificationRepository] Algo deu errado ao consultar o banco de dados: {e}")
             return f"Algo deu errado ao consultar o banco de dados... {e}", 500

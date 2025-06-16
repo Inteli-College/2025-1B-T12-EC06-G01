@@ -5,13 +5,16 @@ from threading import Thread
 import time, sys, os, csv
 
 BASE = Path(__file__).parent
+print("BASE FILE: ",BASE)
 
 def import_ws():
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
     # Agora o import funciona
     from server.app.websocket import send_message
-    return send_message
+    from server.app.Utils.DiretoryUtil import DiretoryUtil
+    util = DiretoryUtil(root_dir="")
+    return send_message, util
 
 # 1) BASE → pasta deste script (machineLearning/)
 
@@ -48,7 +51,7 @@ def train_model():
     )
 
 def monitorar_epochs(log_path, total_epochs):
-    send_message = import_ws()
+    send_message, util = import_ws()
     last_epoch_reported = -1
     i = 0
 
@@ -72,12 +75,14 @@ def monitorar_epochs(log_path, total_epochs):
                 
                 else:
                     i += 1
-                    if i == 70:
-                        print(f"\nOLHA O CONTADOR PAPAI: {i}\n")
+                    print(f"\nOLHA O CONTADOR PAPAI: {i}\n")
+                    if i == 15:                  
                         send_message(100, 'training_progress_fe')
+                        util.get_train_version(str(BASE))
                         break
 
         if current_epoch >= total_epochs:
+            
             break
 
         time.sleep(1)

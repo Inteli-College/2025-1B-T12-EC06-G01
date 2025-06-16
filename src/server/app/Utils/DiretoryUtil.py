@@ -1,5 +1,6 @@
 import os, uuid, requests, re
 from app.Repositories.ImageRepository import ImageRepository
+from app.Repositories.ClassificationRepository import ClassificationRepository
 from app.websocket import send_message
 
 
@@ -8,6 +9,7 @@ class DiretoryUtil:
         self.__root_dir = root_dir
         self.__fissure_dict = {}
         self.image_repo = ImageRepository()
+        self.classify_repository = ClassificationRepository()
         pass
 
     def all_fissures(self, fissures):
@@ -43,28 +45,26 @@ class DiretoryUtil:
                 print("Imagem baixada com sucesso!")
 
         return "Imagens baixadas com sucesso!", 201
-    
+
     def get_train_version(self):
-        classify_runs_path = os.path.join(self.__root_dir, "machineLearning", "runs", "classify")
+        classify_runs_path = os.path.join(self.__root_dir, "runs", "classify")
+        
         train_dirs = [
             d for d in os.listdir(classify_runs_path)
-            if os.path.isdir(os.path.join(classify_runs_path, d)) and d.startswith("train")
+            if os.path.isdir(os.path.join(classify_runs_path, d)) and re.match(r"train_\d{8}_\d{6}", d)
         ]
 
         if not train_dirs:
             return {"code": 500, "message": "Nenhuma pasta de treino encontrada."}, 500
 
-        # Ordenar pelas datas de criação
-        train_dirs.sort(key=lambda d: os.path.getctime(os.path.join(classify_runs_path, d)), reverse=True)
-        latest_train_path = str(os.path.join(classify_runs_path, train_dirs[0]))
+        train_dirs.sort(reverse=True)
 
-        match2 = re.search(r"(2025-1B-T12-EC06-G01.*)", latest_train_path)
-        match = re.search(r'[^/\\]+$', latest_train_path)
+        latest_dir_name = train_dirs[0]
+        latest_dir_path = os.path.join(classify_runs_path, latest_dir_name)
 
-        if match and match2:
-            latest_train_path = match2.group()
-            versao = match.group()
-        else:
-            return 
+        match = re.search(r"2025-1B-T12-EC06-G01(.*)", latest_dir_path)
+        if match:
+            latest_dir_path = match.group(1)
 
-        return versao, latest_train_path
+        # Cria uma nova versão do modelo na tabela model_version no banco de dados
+        result1, code3 =self.classify_repository.create_new_version(version=latest_dir_name, train_directory=latest_dir_path)

@@ -2,7 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 from dotenv import load_dotenv
 load_dotenv()
-import os
+
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from app.config import Cloudinary
@@ -63,7 +63,7 @@ def create_app():
     app.register_blueprint(facade_bp)    
     app.register_blueprint(building_bp)
  
-    
+    from app import websocket
 
 
     return app
