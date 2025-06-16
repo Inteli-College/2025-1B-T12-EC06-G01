@@ -13,11 +13,11 @@ def handle_training(train_model):
     send_message("Treinamento iniciado!", "training_progress_fe")
 
 
-def send_message(message: str, event: str, namespace: str = '/'):
+def send_message(message: str, event: str):
     msg = {"message": message}
     try:
         # Emissão segura mesmo fora de contexto HTTP
-        socketio.emit(event, msg, namespace=namespace, broadcast=True)
+        socketio.emit(event, msg)
         print(f"[websockets] Mensagem enviada com sucesso no evento: {event}")
     except RuntimeError as e:
         print(f"[websockets] RuntimeError ao enviar a mensagem (talvez fora do contexto?): {e}")

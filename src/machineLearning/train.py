@@ -9,16 +9,17 @@ print("BASE FILE: ",BASE)
 
 def import_ws():
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-    # Agora o import funciona
+    from server.main import get_app
     from server.app.websocket import send_message
     from server.app.Utils.DiretoryUtil import DiretoryUtil
-    util = DiretoryUtil(root_dir="")
-    return send_message, util
+    util = DiretoryUtil(root_dir=str(BASE))
+    current_app = get_app()
+    return util, current_app, send_message
 
 # 1) BASE → pasta deste script (machineLearning/)
 
-def train_model():
+def train_model(socketio):
+    print("RODEI MONSTRO!!!")
     # 2) dataset relativo
     dataset = BASE / "dataset" # Alterado para "dataset" conforme o HEAD
     if not dataset.exists():
@@ -34,8 +35,8 @@ def train_model():
     runs_dir.mkdir(parents=True, exist_ok=True)
     nome_treino = f"train_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
     log_path = runs_dir / nome_treino / "results.csv"
-
-    Thread(target=monitorar_epochs, args=(log_path, 50)).start()
+    
+    socketio.start_background_task(monitorar_epochs, log_path, 50)
 
     model = YOLO("yolo11n-cls.pt")
 
@@ -51,11 +52,12 @@ def train_model():
     )
 
 def monitorar_epochs(log_path, total_epochs):
-    send_message, util = import_ws()
+    util, current_app, send_message = import_ws()
     last_epoch_reported = -1
     i = 0
 
     while True:
+        print("\nESTOU RODANDO!!\n")
         if not log_path.exists():
             time.sleep(1)
             continue
@@ -75,14 +77,13 @@ def monitorar_epochs(log_path, total_epochs):
                 
                 else:
                     i += 1
-                    print(f"\nOLHA O CONTADOR PAPAI: {i}\n")
-                    if i == 15:                  
-                        send_message(100, 'training_progress_fe')
-                        util.get_train_version(str(BASE))
-                        break
+                    if i == 15:   
+                        with current_app.app_context():               
+                            send_message(100, 'training_progress_fe')
+                            util.get_train_version()
+                            break
 
-        if current_epoch >= total_epochs:
-            
+        if current_epoch >= total_epochs:           
             break
 
         time.sleep(1)
