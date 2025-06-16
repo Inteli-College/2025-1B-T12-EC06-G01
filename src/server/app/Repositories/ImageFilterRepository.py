@@ -6,12 +6,12 @@ class ImageFilterRepository:
     # Filtra as imagens com base em períodos de tempo ou ordena em ordem crescente ou decrescente de tempo
     def get_filtered(
         self,
-        project_id: int,
+        facade_id: int,
         start_datetime: datetime = None,
         end_datetime:   datetime = None,
         order:          str       = "asc"
     ):
-        query = Image.query.filter_by(project_id=project_id) # Filtra pelos elementos da tabela image com base no id do projeto
+        query = Image.query.filter_by(facade_id=facade_id) # Filtra pelos elementos da tabela image com base no id do projeto
 
         if start_datetime:
             query = query.filter(Image.datetime >= start_datetime) # Caso o usuário selecione filtrar para imagens a partir de um período

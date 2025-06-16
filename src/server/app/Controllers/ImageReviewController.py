@@ -7,13 +7,13 @@ class ImageReviewController:
         self.filter_svc = ImageFilterService()
         self.classify_svc = ImageClassificationService()
 
-    def get_filtered_images(self, project_id):
+    def get_filtered_images(self, facade_id):
         start = request.args.get("start_date") # O usuário poderá filtrar por intervalo de tempo das imagens
         end   = request.args.get("end_date")
         order = request.args.get("order", "asc") # O usuário poderá ordernar de forma crescenete ou decrescente
 
         try:
-            data = self.filter_svc.filter_images(project_id, start, end, order) # Todos os filtros são opcionais
+            data = self.filter_svc.filter_images(facade_id, start, end, order) # Todos os filtros são opcionais
         except ValueError:
             return jsonify({"error": "formato de data inválido"}), 400
 
