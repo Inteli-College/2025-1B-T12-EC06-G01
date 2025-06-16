@@ -57,7 +57,15 @@ def post_project():
     result, code = project_controller.post_project(data)
     return jsonify(result), code
 
-@project_blueprint.route("/", methods=['GET'])
-def get_project():
-    result, code = project_controller.get_project()
+@project_blueprint.route('/', methods=['GET'])
+def get_projects():
+    """
+    Busca uma lista de projetos.
+    Aceita parâmetros de query opcionais:
+    - contractor (string): Filtra por nome do contratante.
+    - start_date (string YYYY-MM-DD): Filtra por data de início.
+    - end_date (string YYYY-MM-DD): Filtra por data de fim.
+    - order (string 'asc'|'desc'): Ordena pelo nome do projeto.
+    """
+    result, code = project_controller.get_projects()
     return jsonify(result), code

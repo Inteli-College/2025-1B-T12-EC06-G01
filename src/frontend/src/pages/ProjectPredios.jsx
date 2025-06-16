@@ -29,6 +29,7 @@ export default function ProjectPredios() {
           path={`/project/${projectId}/predio`}
           folderNameField="predio"
           folderIdField="id"
+          addUrl={'http://localhost:5000/building/'}
         />
       </Body>
     </ProjectPrediosPage>

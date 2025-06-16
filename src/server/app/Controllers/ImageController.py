@@ -32,15 +32,18 @@ class ImageController:
 
     def post_images(self, data, files):
         try:
-            fachada = data['facade_id']
-            predio_id = data['building_id']
-            date = data['datetime'] if data['datetime'] else str(datetime.now())
+            fachada = data.get('facade_id')
+            predio_id = data.get('building_id')
+            date = data.get('datetime', str(datetime.now()))
             id_sucess = {}
             id_error = []
 
+            if not fachada or not predio_id:
+                raise ValueError("Parâmetros 'facade_id' ou 'building_id' ausentes")
+
         except Exception as e:
-            print("[ImageController] Os conteúdos json não são suficientes...")
-            return {"code": 400, "message": e}, 400
+            print("[ImageController] Os conteúdos recebidos não são suficientes:", e)
+            return {"code": 400, "message": str(e)}, 400
 
         for file in files:
             if file.filename != '':
@@ -48,21 +51,19 @@ class ImageController:
                 url = self.image_repository.update_image(file)
 
                 if url:
-                    new, code = self.image_repository.create_image(fachada=fachada, raw_image=str(url), date=date)
+                    new, code = self.image_repository.create_image(raw_image=str(url), fachada_id=fachada, date=date)
 
                     if code == 201:
                         id_sucess[new.id] = file_name
-
                     else:
-                        print(f"[ImageController] A criação do novo registro da imagem deu erro...")
+                        print(f"[ImageController] Erro ao criar registro no banco para a imagem {file_name}")
                         id_error.append(file_name)
-
                 else:
-                    print("[ImageController] Erro ao fazer o upload de uma das imagens...")
+                    print(f"[ImageController] Erro ao enviar imagem para o Cloudinary: {file_name}")
                     id_error.append(file_name)
-        
-        if len(id_sucess) < 0:
-            return {"code": 500, "message": "Nenhum arquivo foi bem sucedido...", "id_error": id_error}, 500        
+
+        if len(id_sucess) == 0:
+            return {"code": 500, "message": "Nenhum arquivo foi processado com sucesso.", "id_error": id_error}, 500        
 
         return {"id_sucess": id_sucess, "id_error": id_error}, 200
     
@@ -70,14 +71,13 @@ class ImageController:
 
     def get_images_per_fachada(self, data):
         try:
-            id_predio = data['building_id']
-            fachada = data['fachada']
+            id_fachada = data['facade_id']
 
         except Exception as e:
             print("[ImageController] Os conteúdos json não são suficientes...")
             return {"code": 400, "message": f"{e}"}, 400
 
-        result, code = self.image_repository.read_images_per_fachada(id_predio=id_predio, fachada=fachada)
+        result, code = self.image_repository.read_images_per_fachada(id_fachada=id_fachada)
         return result, code
     
     def get_images_classified_per_building(self, data):
@@ -90,15 +90,19 @@ class ImageController:
         
         result, code = self.image_repository.read_images_classified_per_building(id_predio=id_predio)
         return result, code
+    
+    def put_veredict(self, data):
+        try:
+            veredito = data['veredict']
+            id_imagem = int(data['image_id'])
 
-
-                
-
-
-
-            
-
-
-
-
+        except Exception as e:
+            print("[ImageController] Os conteúdos json não são suficientes...")
+            return {"code": 400, "message": f"{e}"}, 400
         
+        result, code = self.image_repository.update_veredict(image_id=id_imagem, veredict=veredito)
+        
+        if code == 200:
+            return {"image_id": result.id, "veredict": result.veredict}, code
+        else:
+            return {"error": code, "message": result}, code

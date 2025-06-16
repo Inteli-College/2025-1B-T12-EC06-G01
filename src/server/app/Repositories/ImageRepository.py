@@ -1,5 +1,6 @@
-from app.Models import Image, Facade
-from app import db, cloud
+from app.Models import Image, Facade, Fissure
+from app import db
+import cloudinary.uploader
 from collections import defaultdict
 from sqlalchemy.orm import contains_eager
 from sqlalchemy import and_
@@ -30,39 +31,45 @@ class ImageRepository:
         
     @staticmethod
     def update_image(image):
-        update = cloud.uploader.upload(image, folder='raw-images')
-        url = update.get("secure_url")
-
-        if url:
-            return url
-        else:
+        try:
+            update = cloudinary.uploader.upload(image, folder='raw-images')
+            url = update.get("secure_url")
+            return url if url else None
+        except Exception as e:
+            print("[ImageRepository] Erro ao enviar imagem para Cloudinary:", e)
             return None
+
 
 
     @staticmethod
     def create_image(raw_image: str, fachada_id: str, date):
         try:
-            new = Image(raw_image=raw_image, facade_id=fachada_id)
+            new = Image(raw_image=raw_image, facade_id=fachada_id, datetime=date, fissure_id=1)
             db.session.add(new)
             db.session.commit()
             return new, 201
         except Exception as e:
-            print("[ImageController] Erro ao criar novo registro! 500")
+            print("[ImageRepository] Erro ao criar novo registro:", e)
             return f"{e}", 500
+
     
     # Método dedicado para ler cada imagem na fachada
     @staticmethod
-    def read_images_per_fachada(id_predio: int, fachada: str):
+    def read_images_per_fachada(id_fachada: int):
         try:
-            images = Image.query.filter_by(building_id=id_predio, fachada=fachada).all()
-            return {
-                image.id: image.raw_image
+            images = Image.query.filter_by(facade_id=id_fachada).all()
+            # Sempre retorna uma lista de dicts, mesmo se vazio
+            result = [
+                {
+                    "img_name": image.name if hasattr(image, 'name') else f"Imagem {image.id}",
+                    "raw_img": image.raw_image
+                }
                 for image in images
-            }, 200
-
+            ]
+            return result, 200
         except Exception as e:
             print("[ImageRepository] Nenhuma imagem encontrada...")
-            return {"code": 404, "message": "Nenhuma imagem encontrada..."}, 404
+            return [], 200
     
     # Método para ler imagens já classificadas por prédio
     @staticmethod
@@ -89,10 +96,53 @@ class ImageRepository:
 
         except Exception as e:
             print("[ImageRepository] Nenhuma imagem encontrada...")
-            return {"code": 404, "message": "Nenhuma imagem encontrada..."}, 404            
+            return {"code": 404, "message": "Nenhuma imagem encontrada..."}, 404      
+
+    @staticmethod
+    def update_veredict(image_id: int, veredict: str):
+        try:
+            image = Image.query.get(image_id)
+
+            if image.veredict:
+                return f"Veredito já dado nessa imagem...", 409
+
+            elif image:
+                image.veredict = veredict
+                db.session.commit()
+                return image, 200         
 
 
-
-            
-
+            else:
+                print("[ImageRepository] Nenhuma imagem encontrada...")
+                return f"Nenhuma imagem encontrada", 404
+        
+        except Exception as e:
+            print("[ImageRepository] Erro ao atualizar a coluna veredict no banco de dados...:")
+            return f"Erro ao atualizar a coluna veredict no banco de dados...: {e}", 500
     
+    @staticmethod
+    def read_veredict_images_per_facade(facade_id: int):
+        try:
+            images = Image.query.filter(
+                Image.facade_id == facade_id,
+                Image.veredict.isnot(None),
+                Image.veredict != ''  # caso queira evitar strings vazias também
+            ).all()
+
+            return images, 200
+        
+        except Exception as e:
+            print(f"[ImageRepository] Algo deu errado ao buscar as imagens no banco de dados: {e}")
+            return f"Algo deu errado ao buscar as imagens no banco de dados: {e}", 404
+    
+    @staticmethod
+    def read_fissure_types():
+        try: 
+            fissure_types = (
+                db.session.query(Image.fissure_type)
+                .distinct()
+                .all()
+            )
+        except Exception as e:
+            print(f"[ImageRepository] Algo deu errado ao buscar as fissuras no banco de dados: {e}")
+            return f"Algo deu errado ao buscar as fissuras no banco de dados: {e}", 404
