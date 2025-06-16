@@ -127,6 +127,13 @@ const sidebars = {
         // Se você tem 'sprint4/intro' conforme "Available document ids", adicione-o:
         'sprint4/analise_financeira',
         'sprint4/teste_usabilidade',
+        'sprint4/autenticacao-e-usuarios',
+        'sprint4/projetos-e-recursos',
+        'sprint4/relatorio'
+
+        
+        
+
         // Adicione outros documentos da Sprint 4 aqui
       ],
     },
@@ -143,7 +150,8 @@ const sidebars = {
     // O arquivo 'intro' que aparece sozinho na lista de "Available document ids"
     // pode ser um arquivo na raiz do seu diretório 'docs'.
     // Se quiser adicioná-lo à sidebar, pode ser assim:
-    // 'intro', // Se ele estiver em docs/intro.md
+    // 'intro', // Se ele estiver em docs/intro.md'
+    'Guia de execução do sistema'
   ],
 };
 
