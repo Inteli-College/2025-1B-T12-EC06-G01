@@ -4,7 +4,6 @@ from datetime import datetime
 from threading import Thread
 import time, sys, os, csv
 import argparse
-import sys
 
 BASE = Path(__file__).parent
 print("BASE FILE: ",BASE)
@@ -93,7 +92,6 @@ def monitorar_epochs(log_path, total_epochs):
 
         time.sleep(1)
 
-
 def train_detect():
      # → Pipeline novo de detecção
     data_yaml = BASE / "data_detect.yaml"
@@ -135,4 +133,3 @@ if __name__ == "__main__":
     else:
         print("=== Iniciando treinamento de DETECÇÃO ===")
         train_detect()
-

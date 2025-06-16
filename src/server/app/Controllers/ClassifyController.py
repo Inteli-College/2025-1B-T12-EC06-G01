@@ -1,4 +1,3 @@
-
 from flask import jsonify
 import os, sys
 from app.Services.ImageClassificationService import ImageClassificationService
@@ -46,7 +45,6 @@ class ClassifyController:
             return jsonify({"error": f"erro interno: {str(e)}"}), 500
 
     
-
 
     def retrain(self):
         

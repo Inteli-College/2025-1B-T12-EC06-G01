@@ -7,8 +7,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from app.config import Cloudinary
 from flask_socketio import SocketIO
+
 import os
 import cloudinary
+
 
 # Carrega as variáveis do .env
 load_dotenv()
@@ -40,7 +42,6 @@ def create_app():
     migrate.init_app(app, db)
     cloud.init_app(app)
     socketio.init_app(app, cors_allowed_origins='*')
-
 
     # Import blueprints here to avoid circular imports
     from app.Routes.ClassifyRoute import classify_bp
@@ -76,7 +77,7 @@ def create_app():
     app.register_blueprint(building_bp)
     app.register_blueprint(report_bp)
     app.register_blueprint(contractor_bp)
+    
     from app import websocket
-
 
     return app
