@@ -128,11 +128,10 @@ const sidebars = {
 
         'sprint4/escopo',
         'sprint4/analise_financeira',
-        'sprint4/Guia de execução do sistema',
         'sprint4/analise_financeira',
         'sprint4/frontend/frontend',
         'sprint4/teste_usabilidade',
-        'sprint4/retrain,
+        'sprint4/retrain',
         'sprint4/autenticacao-e-usuarios',
         'sprint4/projetos-e-recursos',
         'sprint4/relatorio',

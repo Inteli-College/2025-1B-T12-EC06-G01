@@ -25,7 +25,6 @@ def train_classify():
         raise FileNotFoundError(f"Dataset não encontrado em: {dataset}")
 
 def train_model(socketio):
-    print("RODEI MONSTRO!!!")
     # 2) dataset relativo
     dataset = BASE / "dataset" # Alterado para "dataset" conforme o HEAD
     if not dataset.exists():
@@ -116,6 +115,7 @@ def train_detect():
         project=str(runs_dir),
         name="train"
     )
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Treinar modelo de fissura (classify ou detect)")

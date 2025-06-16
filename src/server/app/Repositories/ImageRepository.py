@@ -149,7 +149,6 @@ class ImageRepository:
             print(f"[ImageRepository] Erro ao alterar nome de imagem: {e}")
             return f"Erro ao alterar nome de imagem: {e}", 404
 
-
     def read_fissure_types():
         try: 
             fissure_types = (

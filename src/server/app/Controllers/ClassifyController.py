@@ -1,7 +1,5 @@
-feat/route-retrain
 from flask import jsonify
 import os, sys
-
 from app.Services.ImageClassificationService import ImageClassificationService
 from app.Repositories.ImageRepository import ImageRepository
 from app.Repositories.FissureRepository import FissureRepository
@@ -48,15 +46,11 @@ class ClassifyController:
 
     
 
-
-
     def retrain(self):
-
-        # Recolhe os dados necessários para retreinamento
+        
         result, code = self.image_repository.read_veredict_images_per_facade()
-        fissures, code2 = self.fissure_repository.read_fissure_types()
+        fissures, code2 = self.image_repository.read_fissure_types()
 
-        # Organiza diretório raiz para conseguir acessar as pastas corretas
         root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
         
         from app.Utils.DiretoryUtil import DiretoryUtil
