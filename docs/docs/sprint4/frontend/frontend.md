@@ -8,7 +8,7 @@ sidebar_position: 3
 
 ## Escopo da Sprint
 
-Nesta sprint, focamos em integrar as rotas de adição (permitindo a criação de novos projetos, prédio e fachadas, assim como adição de imagens por fachada), assim como criar a funcionalidade de gerar relatório e integrar a tela de resultados
+Nesta sprint, focamos em integrar as rotas de adição (permitindo a criação de novos projetos, prédio e fachadas, e também o upload de imagens por fachada), assim como criar a funcionalidade de gerar relatório e integrar a tela de resultados.
 As entregas contemplam:
 
 ---
@@ -18,7 +18,7 @@ As entregas contemplam:
 * Popup de adição de novas pastas;
 * Remoção do botão de adicionar projetos da tela de projeto (mantendo-o só na navbar para melhor usabilidade);
 * Botão para gerar relatórios;
-* Integração do botão "Adicionar Pasta" com o backend
+* Integração do botão "Adicionar Pasta" com o backend.
 
 ---
 ## Funcionalidades desenvolvidas desenvolvidas
