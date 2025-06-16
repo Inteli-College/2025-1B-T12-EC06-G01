@@ -80,12 +80,17 @@ export default function SendPopup({
           ))}
         </select>
 
-        <select onChange={(e) => setSelectedFacade(e.target.value)} value={selectedFacade} disabled={!selectedBuilding}>
+        <select
+          onChange={(e) => setSelectedFacade(parseInt(e.target.value))}
+          value={selectedFacade}
+          disabled={!selectedBuilding}
+        >
           <option value=''>Selecione a fachada</option>
-          {facades.map((f, index) => (
-            <option key={index} value={f}>{f}</option>
+          {facades.map((f) => (
+            <option key={f.id} value={f.id}>{f.nome}</option>
           ))}
         </select>
+
 
         <div className="popup-buttons">
           <button onClick={onSend}>Enviar</button>

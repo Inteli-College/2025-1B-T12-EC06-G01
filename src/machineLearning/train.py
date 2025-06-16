@@ -12,6 +12,11 @@ def train_classify():
     if not dataset.exists():
         raise FileNotFoundError(f"Dataset não encontrado em: {dataset}")
 
+def train_model():
+    # 2) dataset relativo
+    dataset = BASE / "dataset" # Alterado para "dataset" conforme o HEAD
+    if not dataset.exists():
+        raise FileNotFoundError(f"Dataset não encontrado em: {dataset}")
     # O caminho para o arquivo de configuração, tornando-o relativo
     config_file = BASE / "meu_config.yaml"
     if not config_file.exists():
@@ -33,7 +38,6 @@ def train_classify():
         name="train",                  
         cfg=str(config_file)           
     )
-
 
 def train_detect():
      # → Pipeline novo de detecção
@@ -75,3 +79,4 @@ if __name__ == "__main__":
     else:
         print("=== Iniciando treinamento de DETECÇÃO ===")
         train_detect()
+

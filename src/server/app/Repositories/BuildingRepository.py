@@ -39,3 +39,18 @@ class BuildingRepository:
         except Exception as e:
             print(f"[BuildingRepository] Erro ao buscar prédios do projeto {project_id}: {e}")
             return [], 500
+    
+    @staticmethod
+    def update_building_name(building_id: int, building_name: str):
+        try:
+            building = Building.query.filter_by(id=building_id).first()
+            if not building:
+                return f"Prédio com id {building_id} não encontrado", 404
+            
+            
+            building.predio = building_name
+            db.session.commit()
+            return building, 200
+        except Exception as e:
+            print("[BuildingRepository] Erro ao mudar o nome da prédio no banco de dados")
+            return f"Erro ao mudar o nome da prédio no banco de dados: {e}", 500

@@ -32,7 +32,7 @@ def delete_images():
 
 @image_bp.route('/', methods=['POST'])
 def post_images():
-    data = request.json
+    data = request.form.to_dict()
     files = request.files.getlist('images')
     if not files:
         print("[ImageRoute] Nenhum arquivo de imagem recebido...")
