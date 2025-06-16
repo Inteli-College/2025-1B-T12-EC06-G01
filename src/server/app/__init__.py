@@ -1,22 +1,42 @@
 from flask import Flask
 from flask_cors import CORS
 from dotenv import load_dotenv
+<<<<<<< HEAD
 load_dotenv()
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from app.config import Cloudinary
 from flask_socketio import SocketIO
+=======
+import os
+import cloudinary
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+>>>>>>> 4e065106507417945b703ce12f555559f99e8e06
 
+# Carrega as variáveis do .env
+load_dotenv()
+
+# Configuração do Cloudinary diretamente com o SDK oficial
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+    secure=True
+)
+
+# Banco de dados e migrações
 db = SQLAlchemy()
 migrate = Migrate()
+<<<<<<< HEAD
 cloud = Cloudinary()
 socketio = SocketIO()
+=======
+>>>>>>> 4e065106507417945b703ce12f555559f99e8e06
 
 def create_app():
-    # Configuração do app
     app = Flask(__name__)
-    
     
     # Configuração com o banco
     app.config.from_object('app.config.Config')
@@ -26,9 +46,12 @@ def create_app():
     # Initialize db with app
     db.init_app(app)
     migrate.init_app(app, db)
+<<<<<<< HEAD
     cloud.init_app(app)
     socketio.init_app(app, cors_allowed_origins='*')
 
+=======
+>>>>>>> 4e065106507417945b703ce12f555559f99e8e06
 
     # Import blueprints here to avoid circular imports
     from app.Routes.ClassifyRoute import classify_bp
@@ -39,7 +62,8 @@ def create_app():
     from app.Routes.FilterRoute import filter_bp
     from app.Routes.ImageCleanRoutes import image_clean_blueprint
     from app.Routes.UserRoute import user_bp
-
+    from app.Routes.ReportRoute import report_bp
+    from app.Routes.ContractorRoute import contractor_bp
 
     # Carregando os Models
     from app.Models.project import Project
@@ -51,9 +75,8 @@ def create_app():
     from app.Models.user import User
     from app.Models.model_version import ModelVersion
     from app.Models.fissure import Fissure
-    
-    
-    
+
+
     app.register_blueprint(classify_bp)  
     app.register_blueprint(filter_bp)
     app.register_blueprint(image_bp)
@@ -62,8 +85,13 @@ def create_app():
     app.register_blueprint(image_clean_blueprint)
     app.register_blueprint(facade_bp)    
     app.register_blueprint(building_bp)
+<<<<<<< HEAD
  
     from app import websocket
 
+=======
+    app.register_blueprint(report_bp)
+    app.register_blueprint(contractor_bp)
+>>>>>>> 4e065106507417945b703ce12f555559f99e8e06
 
     return app

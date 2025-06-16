@@ -20,7 +20,8 @@ class FacadeRepository:
                     "building_id": id_predio,
                     "fachadas":
                     [{"id": f.id, "nome": f.name} for f in facades]
-                    }, 200
+            }, 200
+
         
         except Exception as e:
             print(f"[FacadeRepository] Erro ao buscar fachadas: {e}")
@@ -32,7 +33,14 @@ class FacadeRepository:
             new = Facade(name=nome, building_id=id_predio)
             db.session.add(new) 
             db.session.commit()
-            return new, 201
+
+            result = {
+                "id": new.id,
+                "name": new.name,
+                "building_id": new.building_id
+            }
+
+            return result, 201
         
         except Exception as e:
             print("[FacadeRepository] Erro ao criar novo registro 500")

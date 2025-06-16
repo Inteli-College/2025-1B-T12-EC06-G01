@@ -19,7 +19,6 @@ def import_ws():
 # 1) BASE → pasta deste script (machineLearning/)
 
 def train_model(socketio):
-    print("RODEI MONSTRO!!!")
     # 2) dataset relativo
     dataset = BASE / "dataset" # Alterado para "dataset" conforme o HEAD
     if not dataset.exists():

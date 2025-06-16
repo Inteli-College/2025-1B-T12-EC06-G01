@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 blinker==1.9.0
 click==8.1.8
 Flask==3.1.0
@@ -5,7 +6,18 @@ Flask-SQLAlchemy==3.1.1
 Flask-SocketIO==5.5.1
 greenlet==3.2.1
 SQLAlchemy==2.0.40
+=======
+alembic==1.16.1
+>>>>>>> 4e065106507417945b703ce12f555559f99e8e06
 cloudinary==1.36.0
-requests==2.32.3
-python-dotenv==1.0.0  # Opcional: se estiver usando variáveis de ambiente
-Flask-Migrate==4.1.0
+Flask==3.1.1
+Flask_Bcrypt==1.0.1
+flask_cors==6.0.0
+Flask_Migrate==4.1.0
+flask_sqlalchemy==3.1.1
+PyJWT==2.10.1
+PyJWT==2.10.1
+python-dotenv==1.1.0
+Requests==2.32.4
+SQLAlchemy==2.0.41
+ultralytics==8.3.129
