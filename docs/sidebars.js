@@ -125,8 +125,9 @@ const sidebars = {
       link: { type: 'generated-index' },
       items: [
         // Se você tem 'sprint4/intro' conforme "Available document ids", adicione-o:
-        'sprint4/Guia de execução do sistema',
-        'sprint4/analise_financeira'
+        //'sprint4/Guia de execução do sistema',
+        'sprint4/analise_financeira',
+        'sprint4/frontend/frontend'
 
         // Adicione outros documentos da Sprint 4 aqui
       ],
