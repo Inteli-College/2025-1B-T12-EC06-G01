@@ -1,13 +1,15 @@
-from flask import request, jsonify
-import requests, os, uuid
 
+from flask import jsonify
+import os, sys
 from app.Services.ImageClassificationService import ImageClassificationService
 from app.Repositories.ImageRepository import ImageRepository
+from app.Repositories.FissureRepository import FissureRepository
 
 class ClassifyController:
     def __init__(self):
         self.classify_service = ImageClassificationService()
         self.image_repository = ImageRepository()
+        self.fissure_repository = FissureRepository()
 
     def postClassify(self, facade_id, data):
         """
@@ -44,45 +46,47 @@ class ClassifyController:
             return jsonify({"error": f"erro interno: {str(e)}"}), 500
 
     
-    def retrain(self, data):
-        try:
-            target_facade_id = int(data['facade_id'])
 
-        except Exception as e:            
-            print("[ClassifyController] Os conteúdos json não são suficiente")
-            return {"code": 400, "message": f"Os conteúdos json não são suficientes: {e}"}, 400
+
+    def retrain(self):
         
-        result, code = self.image_repository.read_veredict_images_per_facade(facade_id=target_facade_id)
+        result, code = self.image_repository.read_veredict_images_per_facade()
         fissures, code2 = self.image_repository.read_fissure_types()
+
         root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
         
-        fissure_dict = {}
-        for fissura in fissures:
-            nome_fissura = fissura[0]
-            dir_path = os.path.join(root_dir, "machineLearning", "imagens_raw", f"fissura_{nome_fissura}")
-            os.makedirs(dir_path, exist_ok=True)
-            fissure_dict[nome_fissura] = dir_path
-        
+        from app.Utils.DiretoryUtil import DiretoryUtil
+        util = DiretoryUtil(root_dir=root_dir)
 
+        util.all_fissures(fissures=fissures)
+
+        # Faz o download das imagens pegadas do banco de dados
         if code == 200 and code2 == 200:
-            for image in result:
-                url = str(image.raw_image)
-                file_name = f"{uuid.uuid4().hex}.jpg"
-                response = requests.get(url)
-                dir_path = fissure_dict.get(str(image.veredict), "")
+            result4, code = util.download_images(result=result) 
+            if code != 201:
+                return {"code": code, "message": result4}, code
 
-                if response.status_code == 200:
-                    output_path = os.path.join(dir_path, file_name)
+        # Organiza diretório src para importação de dependência do machineLearning
+        root_src_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+        if root_src_path not in sys.path:
+            sys.path.insert(0, root_src_path)
 
-                    with open(output_path, "wb") as f:
-                        f.write(response.content)
-
-                    print("Imagem baixada com sucesso!")
-                    
-
+        # Importação para separação do dataset e treinamento
+        from machineLearning.split_real import real_split
+        from machineLearning.train import train_model
+        from app.websocket import handle_training
         
+        # Separaração do dataset
+        real_split()
 
-        return {"message": "O modelo começou a retreinar!"}, 200
+        # Treinamento
+        from main import app
+        handle_training(train_model=train_model)   
+
+        return {
+            "code": 200,
+            "message": "Treinamento iniciado!"
+        }    
 
 
         

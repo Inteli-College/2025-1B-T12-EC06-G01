@@ -18,6 +18,5 @@ def classify_route(facade_id):
 
 @classify_bp.route("/retrain", methods=["POST"])
 def retrain_route():
-    data = request.json
-    result, code = controller.retrain(data)
+    result, code = controller.retrain()
     return jsonify(result), code

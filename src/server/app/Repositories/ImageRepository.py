@@ -109,7 +109,7 @@ class ImageRepository:
             elif image:
                 image.veredict = veredict
                 db.session.commit()
-                return image, 200         
+                return image, 204         
 
 
             else:
@@ -121,12 +121,15 @@ class ImageRepository:
             return f"Erro ao atualizar a coluna veredict no banco de dados...: {e}", 500
     
     @staticmethod
-    def read_veredict_images_per_facade(facade_id: int):
+    def read_veredict_images_per_facade():
+        """
+        Método responsável por acessar todas as imagens com veredito e sem o campo 'name' preenchido
+        """
         try:
             images = Image.query.filter(
-                Image.facade_id == facade_id,
                 Image.veredict.isnot(None),
-                Image.veredict != ''  # caso queira evitar strings vazias também
+                Image.veredict != '',  # caso queira evitar strings vazias também
+                (Image.name.is_(None)) | (Image.name == '')
             ).all()
 
             return images, 200
@@ -134,8 +137,18 @@ class ImageRepository:
         except Exception as e:
             print(f"[ImageRepository] Algo deu errado ao buscar as imagens no banco de dados: {e}")
             return f"Algo deu errado ao buscar as imagens no banco de dados: {e}", 404
-    
+        
     @staticmethod
+    def put_image_name(image, new_name: str):
+        try:
+            image.name = new_name
+            db.session.commit()
+            return f"Nome da imagem atualizado com sucesso!", 204
+        
+        except Exception as e:
+            print(f"[ImageRepository] Erro ao alterar nome de imagem: {e}")
+            return f"Erro ao alterar nome de imagem: {e}", 404
+
     def read_fissure_types():
         try: 
             fissure_types = (
