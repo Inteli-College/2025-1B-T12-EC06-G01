@@ -1,6 +1,6 @@
 
 from flask import jsonify
-import os
+import os, sys
 from app.Services.ImageClassificationService import ImageClassificationService
 from app.Repositories.ImageRepository import ImageRepository
 from app.Repositories.FissureRepository import FissureRepository

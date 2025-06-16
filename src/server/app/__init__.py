@@ -1,19 +1,14 @@
 from flask import Flask
 from flask_cors import CORS
 from dotenv import load_dotenv
-<<<<<<< HEAD
 load_dotenv()
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from app.config import Cloudinary
 from flask_socketio import SocketIO
-=======
 import os
 import cloudinary
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
->>>>>>> 4e065106507417945b703ce12f555559f99e8e06
 
 # Carrega as variáveis do .env
 load_dotenv()
@@ -29,11 +24,8 @@ cloudinary.config(
 # Banco de dados e migrações
 db = SQLAlchemy()
 migrate = Migrate()
-<<<<<<< HEAD
 cloud = Cloudinary()
 socketio = SocketIO()
-=======
->>>>>>> 4e065106507417945b703ce12f555559f99e8e06
 
 def create_app():
     app = Flask(__name__)
@@ -46,12 +38,9 @@ def create_app():
     # Initialize db with app
     db.init_app(app)
     migrate.init_app(app, db)
-<<<<<<< HEAD
     cloud.init_app(app)
     socketio.init_app(app, cors_allowed_origins='*')
 
-=======
->>>>>>> 4e065106507417945b703ce12f555559f99e8e06
 
     # Import blueprints here to avoid circular imports
     from app.Routes.ClassifyRoute import classify_bp
@@ -85,13 +74,9 @@ def create_app():
     app.register_blueprint(image_clean_blueprint)
     app.register_blueprint(facade_bp)    
     app.register_blueprint(building_bp)
-<<<<<<< HEAD
- 
-    from app import websocket
-
-=======
     app.register_blueprint(report_bp)
     app.register_blueprint(contractor_bp)
->>>>>>> 4e065106507417945b703ce12f555559f99e8e06
+    from app import websocket
+
 
     return app
