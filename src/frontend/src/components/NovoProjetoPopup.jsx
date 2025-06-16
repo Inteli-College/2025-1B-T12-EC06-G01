@@ -1,4 +1,6 @@
+import axios from 'axios';
 import React, { useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const Popup = styled.div`
@@ -58,15 +60,36 @@ export default function NovoProjetoPopup({ onClose, onSubmit }) {
   const nameRef = useRef();
   const contractorRef = useRef();
   const dateRef = useRef();
+  let navigate = useNavigate();
 
-  const handleSubmit = () => {
-    onSubmit({
-      name: nameRef.current.value,
-      contractor: contractorRef.current.value,
-      date: dateRef.current.value
-    });
-    onClose();
-  };
+
+    //Lógica para adição de um novo projeto
+    const handleAddProject = () => {
+      if (nameRef.current.value === "") {
+        alert("Dê um nome para o projeto.")
+        return;
+      }
+
+      axios.post('http://localhost:5000/projects/',  {
+        name: nameRef.current.value,
+        contractor: contractorRef.current.value,
+        date: dateRef.current.value
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(res => {
+          alert("Projeto criado com sucesso!");
+          onClose();
+          navigate('/');
+          window.location.reload();
+        })
+        .catch(err => {
+          console.error("Erro ao criar pasta:", err);
+        })
+    }
+
 
   return (
     <Popup>
@@ -81,7 +104,7 @@ export default function NovoProjetoPopup({ onClose, onSubmit }) {
         <input type="date" ref={dateRef} id="data" />
 
         <div style={{ width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', marginTop: '2rem', gap: '.5rem'}}>
-          <button onClick={handleSubmit}>Enviar</button>
+          <button onClick={handleAddProject}>Enviar</button>
           <button onClick={onClose}>Cancelar</button>
         </div>
       </div>

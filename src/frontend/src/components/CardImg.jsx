@@ -71,11 +71,18 @@ const CheckboxWrapper = styled.label`
 
 const ImagemCard = styled.div`
   width: 100%;
-  height: 95%;
-  backgroung-color: #fff;
-  object-fit: cover;
+  height: 100%;
+  background-color: #fff;
   z-index: 1;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 `
+
 
 export default function CardImg({ url }) {
   const [checked, setChecked] = useState(false);
@@ -94,8 +101,9 @@ export default function CardImg({ url }) {
       </div>
 
       <ImagemCard>
-        <img src={url} alt="sim" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        <img src={url} alt="sim" />
       </ImagemCard>
+
     </Card>
   );
 }

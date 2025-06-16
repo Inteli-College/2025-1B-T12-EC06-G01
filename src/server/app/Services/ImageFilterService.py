@@ -47,9 +47,9 @@ class ImageFilterService:
                 "id":           img.id,
                 "raw_image":    img.raw_image,
                 "datetime":     img.datetime.isoformat(),  # Converte o objeto datetime para string no formato ISO.
-                "latitude":     float(img.latitude)  if img.latitude  is not None else None,
-                "longitude":    float(img.longitude) if img.longitude is not None else None,
-                "fissure_type": img.fissure_type,
+                #"latitude":     float(img.latitude)  if img.latitude  is not None else None,
+                #"longitude":    float(img.longitude) if img.longitude is not None else None,
+                "fissure_id": img.fissure_id,
                 "veredict":     img.veredict
             }
             for img in valid  # A iteração ocorre apenas na lista 'valid', que contém somente imagens com URL funcional.
