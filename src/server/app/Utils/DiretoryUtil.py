@@ -47,7 +47,7 @@ class DiretoryUtil:
         return "Imagens baixadas com sucesso!", 201
 
     def get_train_version(self):
-        classify_runs_path = os.path.join(self.__root_dir, "runs", "classify")
+        classify_runs_path = os.path.join(self.__root_dir, "machineLearning", "runs", "classify")
         
         train_dirs = [
             d for d in os.listdir(classify_runs_path)
@@ -55,7 +55,7 @@ class DiretoryUtil:
         ]
 
         if not train_dirs:
-            return {"code": 500, "message": "Nenhuma pasta de treino encontrada."}, 500
+            return "Nenhuma pasta de treino encontrada.", 500
 
         train_dirs.sort(reverse=True)
 
@@ -67,4 +67,4 @@ class DiretoryUtil:
             latest_dir_path = match.group(1)
 
         # Cria uma nova versão do modelo na tabela model_version no banco de dados
-        result1, code3 =self.classify_repository.create_new_version(version=latest_dir_name, train_directory=latest_dir_path)
+        return latest_dir_name, latest_dir_path
