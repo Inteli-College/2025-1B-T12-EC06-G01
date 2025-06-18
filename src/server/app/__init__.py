@@ -41,7 +41,7 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     cloud.init_app(app)
-    socketio.init_app(app, cors_allowed_origins='*')
+    socketio.init_app(app, async_mode='threading', cors_allowed_origins='*')
 
     # Import blueprints here to avoid circular imports
     from app.Routes.ClassifyRoute import classify_bp

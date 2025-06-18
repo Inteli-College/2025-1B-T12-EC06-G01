@@ -49,7 +49,7 @@ class ClassifyController:
     def retrain(self):
         
         result, code = self.image_repository.read_veredict_images_per_facade()
-        fissures, code2 = self.image_repository.read_fissure_types()
+        fissures, code2 = self.fissure_repository.read_fissure_types()
 
         root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
         
@@ -59,6 +59,7 @@ class ClassifyController:
         util.all_fissures(fissures=fissures)
 
         # Faz o download das imagens pegadas do banco de dados
+        print(f"CODIGOS PAPAI CODIGO1: {code}, CODIGO2: {code2}")
         if code == 200 and code2 == 200:
             result4, code = util.download_images(result=result) 
             if code != 201:
@@ -77,8 +78,7 @@ class ClassifyController:
         # Separaração do dataset
         real_split()
 
-        # Treinamento
-        from main import app
+        # Re-Treinamento
         handle_training(train_model=train_model)   
 
         return {

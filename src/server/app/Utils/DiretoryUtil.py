@@ -42,7 +42,7 @@ class DiretoryUtil:
                 if not code == 204:
                     return msg, code
 
-                print("Imagem baixada com sucesso!")
+                print("\nImagem baixada com sucesso!")
 
         return "Imagens baixadas com sucesso!", 201
 
