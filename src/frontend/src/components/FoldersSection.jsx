@@ -5,39 +5,39 @@ import { MdOutlineEdit } from "react-icons/md";
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import AddFolderPopup from './AddFolderPopup';
+import EditFolderPopup from './EditFolderPopup';
 
 const Page = styled.div`
     margin-left: 18vw;
     
-  .btn-section {
-    padding: 2rem 2.5rem 0 2.5rem;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-  }
+    .btn-section {
+        padding: 2rem 2.5rem 0 2.5rem;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
 
-  .btn-section button {
-    width: 20%;
-    height: 20px;
-    border-radius: 10px;
-    background-color: #629EBC;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 3px solid #145E7A;
-    color: #fff;
-    font-size: 16px;
-    padding: 1rem;
-    
-    transition: background-color 0.3s ease;
-  } 
+    .btn-section button {
+        width: 20%;
+        height: 20px;
+        border-radius: 10px;
+        background-color: #629EBC;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 3px solid #145E7A;
+        color: #fff;
+        font-size: 16px;
+        padding: 1rem;
+        transition: background-color 0.3s ease;
+    } 
 
-  button:hover {
-    background-color: #3D80A3; 
-    cursor: pointer; 
-  }
-`
+    button:hover {
+        background-color: #3D80A3; 
+        cursor: pointer; 
+    }
+`;
 
 const Container = styled.div`
     width: 77vw;
@@ -74,7 +74,6 @@ const FolderCard = styled.div`
         gap: .3rem;
     }
 `;
-
 
 const Edit = styled.div`
     svg {
@@ -161,7 +160,6 @@ export default function FoldersSection({
         }
     }, [apiUrl, folderIdField, folderNameField]);
 
-
     useEffect(() => {
         // Se recebemos folders como prop, usamos eles diretamente
         if (propFolders) {
@@ -187,10 +185,12 @@ export default function FoldersSection({
         }
     }, [propFolders, apiUrl, folderIdField, folderNameField, fetchFolders]);
 
-
     const [pasta, setPasta] = useState('');
     const { projectId } = useParams();
-    const [showPopup, setShowPopup] = useState(false)
+    const [showAddPopup, setShowAddPopup] = useState(false);
+    const [showEditPopup, setShowEditPopup] = useState(false);
+    const [selectedFolder, setSelectedFolder] = useState(null);
+
 
     //Lógica para adição de uma nova pasta
     const handleAddFolder = () => {
@@ -222,7 +222,7 @@ export default function FoldersSection({
         })
             .then(res => {
                 alert("Pasta criada com sucesso!");
-                setShowPopup(false);
+                setShowAddPopup(false);
                 fetchFolders();
                 window.location.reload();
             })
@@ -231,10 +231,46 @@ export default function FoldersSection({
             });
     };
 
+    const handleEditFolderName = () => {
+    if (pasta === "") {
+        alert("Dê um nome para a pasta.");
+        return;
+    }
+
+    let folderInfos = {};
+
+    if (addUrl === "http://localhost:5000/building/") {
+        folderInfos = {
+            building_id: selectedFolder[folderIdField],
+            building_name: pasta
+        };
+    } else if (addUrl === "http://localhost:5000/facade/") {
+        folderInfos = {
+            facade_id: selectedFolder[folderIdField],
+            facade_name: pasta
+        };
+    }
+
+    axios.put(addUrl, folderInfos, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => {
+        alert("Pasta atualizada com sucesso!");
+        setShowEditPopup(false);
+        fetchFolders();
+        window.location.reload();
+    })
+    .catch(err => {
+        console.error("Erro ao atualizar pasta:", err);
+    });
+};
+
     return (
         <Page>
             <div className='btn-section'>
-                <button onClick={() => setShowPopup(true)}>+ Adicionar {btnLabel}</button>
+                <button onClick={() => setShowAddPopup(true)}>+ Adicionar {btnLabel}</button>
             </div>
 
             <Container>
@@ -243,6 +279,7 @@ export default function FoldersSection({
 
                 {!isLoading && !error && (!folders || folders.length === 0) &&
                     <LoadingMessage>Nenhuma pasta encontrada.</LoadingMessage>}
+
                 {!isLoading && !error && folders && folders.map((folder) => (
                     <FolderCard
                         key={folder[folderIdField]}
@@ -261,22 +298,34 @@ export default function FoldersSection({
                         <div className="folder-icon">
                             <FaFolder />
                         </div>
-                        <p>
-                            {folder[folderNameField]}
-                            <Edit>
-                                <MdOutlineEdit />
-                            </Edit>
-                        </p>
-                    </FolderCard>
+                        <p>{folder[folderNameField]}</p>
+                        <Edit>
+                            <MdOutlineEdit onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedFolder(folder); // guardamos a pasta clicada
+                                setPasta(folder[folderNameField]); // preenche o input com o nome atual
+                                setShowEditPopup(true);
+                            }} />
 
+                        </Edit>
+                    </FolderCard>
                 ))}
 
-                {showPopup && (
+                {showEditPopup && (
+                    <EditFolderPopup
+                        pasta={pasta}
+                        setPasta={setPasta}
+                        onSend={handleEditFolderName}
+                        onClose={() => setShowEditPopup(false)}
+                    />
+                )}
+
+                {showAddPopup && (
                     <AddFolderPopup
                         pasta={pasta}
                         setPasta={setPasta}
                         onSend={handleAddFolder}
-                        onClose={() => setShowPopup(false)}
+                        onClose={() => setShowAddPopup(false)}
                     />
                 )}
             </Container>
