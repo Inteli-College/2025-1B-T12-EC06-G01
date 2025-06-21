@@ -5,9 +5,40 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import AddFolderPopup from './AddFolderPopup';
 
+const Page = styled.div`
+    margin-left: 18vw;
+  .btn-section {
+    padding: 2rem 2.5rem 0 2.5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .btn-section button {
+    width: 20%;
+    height: 20px;
+    border-radius: 10px;
+    background-color: #629EBC;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 3px solid #145E7A;
+    color: #fff;
+    font-size: 16px;
+    padding: 1rem;
+    
+    transition: background-color 0.3s ease;
+  } 
+
+  button:hover {
+    background-color: #3D80A3; 
+    cursor: pointer; 
+  }
+`
+
 const Container = styled.div`
     width: 77vw;
-    margin-left: 18vw;
     padding: 2.5rem;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
@@ -35,6 +66,7 @@ const FolderCard = styled.div`
     p {
         margin: 0.5rem 0;
         font-weight: bold;
+        text-transform: capitalize;
     }
 `;
 
@@ -50,20 +82,6 @@ const ErrorMessage = styled.h2`
     color: #d32f2f;
 `;
 
-const AddButton = styled.button`
-    height: 70%;
-    border: 3px solid #0A3B4E;
-    border-radius: 15px;
-    background-color: #629EBC;
-    color: #fff;
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    
-    &:hover {
-        background-color: #3D80A3;
-    }
-`;
 
 /**
  * FoldersSection - Componente genérico para exibir pastas
@@ -81,7 +99,7 @@ export default function FoldersSection({
     folderNameField = "predio",
     folderIdField = "id",
     addUrl,
-    folderId, 
+    folderId,
     btnLabel
 }) {
     const [folders, setFolders] = useState([]);
@@ -104,9 +122,9 @@ export default function FoldersSection({
 
                 finalFolders = isStringList
                     ? data.fachadas.map((nome, index) => ({
-                    [folderIdField]: index,
-                    [folderNameField]: nome
-                }))
+                        [folderIdField]: index,
+                        [folderNameField]: nome
+                    }))
                     : data.fachadas.map((fachada) => ({
                         [folderIdField]: fachada.id,
                         [folderNameField]: fachada.name
@@ -198,44 +216,46 @@ export default function FoldersSection({
     };
 
     return (
-        <Container>
-            {isLoading && <LoadingMessage>Carregando pastas...</LoadingMessage>}
-            {error && <ErrorMessage>Erro ao carregar dados: {error.message}</ErrorMessage>}
+        <Page>
+            <div className='btn-section'>
+                <button onClick={() => setShowPopup(true)}>+ Adicionar {btnLabel}</button>
+            </div>
 
-            {!isLoading && !error && (!folders || folders.length === 0) &&
-                <LoadingMessage>Nenhuma pasta encontrada.</LoadingMessage>}
-            {!isLoading && !error && folders && folders.map((folder) => (
-                <FolderCard
-                    key={folder[folderIdField]}
-                    onClick={() => {
-                        const encodedName = encodeURIComponent(folder[folderNameField]);
+            <Container>
+                {isLoading && <LoadingMessage>Carregando pastas...</LoadingMessage>}
+                {error && <ErrorMessage>Erro ao carregar dados: {error.message}</ErrorMessage>}
 
-                        if (addUrl === "http://localhost:5000/facade/") {
-                            navigate(`${path}/${encodedName}`, {
-                                state: { fachadaId: folder[folderIdField], buildingId: folderId }
-                            });
-                        } else if (addUrl === "http://localhost:5000/building/") {
-                            navigate(`${path}/${encodedName}`);
-                        }
-                    }}
-                >
-                    <FaFolder />
-                    <p>{folder[folderNameField]}</p>
-                </FolderCard>
-            ))}
+                {!isLoading && !error && (!folders || folders.length === 0) &&
+                    <LoadingMessage>Nenhuma pasta encontrada.</LoadingMessage>}
+                {!isLoading && !error && folders && folders.map((folder) => (
+                    <FolderCard
+                        key={folder[folderIdField]}
+                        onClick={() => {
+                            const encodedName = encodeURIComponent(folder[folderNameField]);
 
+                            if (addUrl === "http://localhost:5000/facade/") {
+                                navigate(`${path}/${encodedName}`, {
+                                    state: { fachadaId: folder[folderIdField], buildingId: folderId }
+                                });
+                            } else if (addUrl === "http://localhost:5000/building/") {
+                                navigate(`${path}/${encodedName}`);
+                            }
+                        }}
+                    >
+                        <FaFolder />
+                        <p>{folder[folderNameField]}</p>
+                    </FolderCard>
+                ))}
 
-
-            <AddButton onClick={() => setShowPopup(true)}>+ Adicionar {btnLabel}</AddButton>
-
-            {showPopup && (
-                <AddFolderPopup
-                    pasta={pasta}
-                    setPasta={setPasta}
-                    onSend={handleAddFolder}
-                    onClose={() => setShowPopup(false)}
-                />
-            )}
-        </Container>
+                {showPopup && (
+                    <AddFolderPopup
+                        pasta={pasta}
+                        setPasta={setPasta}
+                        onSend={handleAddFolder}
+                        onClose={() => setShowPopup(false)}
+                    />
+                )}
+            </Container>
+        </Page>
     );
 }
