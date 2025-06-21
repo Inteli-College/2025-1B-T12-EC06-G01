@@ -81,7 +81,8 @@ export default function FoldersSection({
     folderNameField = "predio",
     folderIdField = "id",
     addUrl,
-    folderId
+    folderId, 
+    btnLabel
 }) {
     const [folders, setFolders] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -225,7 +226,7 @@ export default function FoldersSection({
 
 
 
-            <AddButton onClick={() => setShowPopup(true)}>+ Adicionar Pasta</AddButton>
+            <AddButton onClick={() => setShowPopup(true)}>+ Adicionar {btnLabel}</AddButton>
 
             {showPopup && (
                 <AddFolderPopup
