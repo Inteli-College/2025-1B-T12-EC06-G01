@@ -211,7 +211,7 @@ const Botoes = styled.div`
     }
 
     .send-button {
-        width: 12rem;
+        width: 16rem;
         display: flex;
         align-items: center;
         justify-content: space-around;
@@ -426,7 +426,7 @@ export default function NavHome() {
             <Botoes>
                 <button> <FaTrash /> </button>
                 <button> <FaPaintBrush /> </button>
-                <button className='send-button' onClick={() => setShowPopup(true)}> <span>Enviar</span> <IoSend /> </button>
+                <button className='send-button' onClick={() => setShowPopup(true)}> <span>Classificar</span> <IoSend /> </button>
                 <button className='report-button' onClick={() => setShowReportPopup(true)}>Gerar Relatório</button>
             </Botoes>
 
