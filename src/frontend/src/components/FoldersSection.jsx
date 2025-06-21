@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { FaFolder } from "react-icons/fa6";
+import { MdOutlineEdit } from "react-icons/md";
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import AddFolderPopup from './AddFolderPopup';
 
 const Page = styled.div`
     margin-left: 18vw;
+    
   .btn-section {
     padding: 2rem 2.5rem 0 2.5rem;
     display: flex;
@@ -51,22 +53,36 @@ const FolderCard = styled.div`
     align-items: center;
     text-align: center;
     cursor: pointer;
-    
-    svg {
+
+    .folder-icon svg {
         font-size: 5rem;
         color: #969FB0;
         transition: all 0.3s ease;
     }
-    
-    &:hover svg {
+
+    .folder-icon:hover svg {
         font-size: 6rem;
         color: #69758C;
     }
-    
+
     p {
+        display: flex;
         margin: 0.5rem 0;
         font-weight: bold;
         text-transform: capitalize;
+        align-items: center;
+        gap: .3rem;
+    }
+`;
+
+
+const Edit = styled.div`
+    svg {
+        font-size: 1.5rem;
+    }
+
+    &:hover svg {
+        font-size: 2rem;
     }
 `;
 
@@ -242,9 +258,17 @@ export default function FoldersSection({
                             }
                         }}
                     >
-                        <FaFolder />
-                        <p>{folder[folderNameField]}</p>
+                        <div className="folder-icon">
+                            <FaFolder />
+                        </div>
+                        <p>
+                            {folder[folderNameField]}
+                            <Edit>
+                                <MdOutlineEdit />
+                            </Edit>
+                        </p>
                     </FolderCard>
+
                 ))}
 
                 {showPopup && (
