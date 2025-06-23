@@ -7,6 +7,7 @@ import logo from '../logo.svg'
 import { useProject } from '../contexts/ProjectContext'
 import { useNavigate } from 'react-router-dom'
 import NovoProjetoPopup from './NovoProjetoPopup'
+import { useAuth } from '../contexts/AuthContext';
 
 const Container = styled.div`
   width: 18vw;
@@ -139,15 +140,14 @@ export default function Sidebar(props) {
   const { project, setProject } = useProject();
   const navigate = useNavigate();
 
-  const togglePopup = () => {
-    setShowPopup(!showPopup);
+  const { currentUser, logout } = useAuth();
+
+  const togglePopup = () => setShowPopup(!showPopup);
+  const handleClick = () => navigate("/projects");
+
+  const handleLogout = () => {
+    logout();
   };
-
-
-  const handleClick = () => {
-    navigate("/projects");
-  };
-
 
   return (
     <Container>
@@ -188,12 +188,17 @@ export default function Sidebar(props) {
 
       <Perfil>
         <FaRegUserCircle />
-        <p>
-          <strong>Nome do usuáro</strong>
-          <br />
-          ID:12345
-        </p>
-        <button><IoExitOutline /></button>
+        {/* ALTERADO: Exibindo dados reais do usuário */}
+        {currentUser ? (
+          <p>
+            <strong>{currentUser.name}</strong>
+            <br />
+            ID: {currentUser.id}
+          </p>
+        ) : (
+          <p>Carregando...</p>
+        )}
+        <button onClick={handleLogout}><IoExitOutline /></button>
       </Perfil>
     </Container>
   );

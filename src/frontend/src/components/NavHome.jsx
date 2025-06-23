@@ -257,15 +257,29 @@ export default function NavHome() {
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                // Usamos axios para consistência e o URL com a barra no final
-                const response = await axios.get('http://localhost:5000/projects/');
-                // A resposta (response.data) já é o array de projetos que queremos.
-                setProjects(response.data);
+                // Pega o token do localStorage
+                const token = localStorage.getItem('jwt_token');
+                if (!token) {
+                    console.error("Token não encontrado, não é possível buscar projetos.");
+                    // O PrivateRoute deve eventualmente lidar com isso, mas é uma boa verificação
+                    return;
+                }
+
+                // Configura o cabeçalho de autorização
+                const config = {
+                    headers: { Authorization: `Bearer ${token}` }
+                };
+
+                // Busca os projetos na API COM o token
+                const response = await axios.get('http://localhost:5000/projects/', config);
+                setProjects(response.data); // Popula o estado com os projetos
+
             } catch (err) {
                 console.error("Erro ao buscar projetos:", err);
+                // Você pode definir uma mensagem de erro aqui, se desejar
             }
         };
-    
+
         fetchProjects();
     }, []);
 
@@ -328,6 +342,10 @@ export default function NavHome() {
                 console.error("Erro ao classificar:", err);
                 alert("Ocorreu um erro ao enviar a classificação.");
             });
+    };
+
+    const handleOpenReportPopup = () => {
+        setShowReportPopup(true);
     };
 
     const handleDownloadReport = async () => {
