@@ -30,6 +30,7 @@ export default function ProjectPredios() {
           folderNameField="predio"
           folderIdField="id"
           addUrl={'http://localhost:5000/building/'}
+          btnLabel="Prédio"
         />
       </Body>
     </ProjectPrediosPage>

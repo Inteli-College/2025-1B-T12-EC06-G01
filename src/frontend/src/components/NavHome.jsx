@@ -143,7 +143,7 @@ const generatePDF = (data) => {
                     ['Fissuras por retração', fachada.resumo_quantitativo_fachada.fissura_retracao],
                 ]
             });
-            
+
             y = doc.lastAutoTable ? doc.lastAutoTable.finalY + 5 : y;
         });
     });
@@ -211,7 +211,7 @@ const Botoes = styled.div`
     }
 
     .send-button {
-        width: 12rem;
+        width: 16rem;
         display: flex;
         align-items: center;
         justify-content: space-around;
@@ -237,6 +237,34 @@ export default function NavHome() {
     const { project } = useProject();
     const location = useLocation();
     const navigate = useNavigate();
+
+    const pathParts = location.pathname.split('/').filter(Boolean); // remove strings vazias
+
+    let currentProjectId = '';
+    let currentBuildingId = '';
+    let currentFacadeId = '';
+
+    const projectIndex = pathParts.indexOf('project');
+    const predioIndex = pathParts.indexOf('predio');
+    const fachadaIndex = pathParts.indexOf('fachada');
+
+    if (projectIndex !== -1 && pathParts.length > projectIndex + 1) {
+        currentProjectId = pathParts[projectIndex + 1];
+    }
+
+    if (predioIndex !== -1 && pathParts.length > predioIndex + 1) {
+        currentBuildingId = pathParts[predioIndex + 1];
+    }
+
+    if (fachadaIndex !== -1 && pathParts.length > fachadaIndex + 1) {
+        currentFacadeId = pathParts[fachadaIndex + 1];
+    }
+
+    const currentBuildingIdFromState = location.state?.buildingId;
+    const finalBuildingId = currentBuildingIdFromState || currentBuildingId;
+
+
+
 
     const [dateFilter, setDateFilter] = useState(null)
     const [optionFilter, setOptionFilter] = useState('')
@@ -265,7 +293,7 @@ export default function NavHome() {
                 console.error("Erro ao buscar projetos:", err);
             }
         };
-    
+
         fetchProjects();
     }, []);
 
@@ -298,7 +326,6 @@ export default function NavHome() {
                 .catch(err => console.error("Erro ao buscar fachadas:", err));
         }
     }, [selectedBuilding]);
-
 
     const handleSendImages = () => {
         if (!selectedFacade) {
@@ -393,10 +420,8 @@ export default function NavHome() {
         } else if (path.includes('/predios')) {
             return 'Escolha um prédio';
         } else if (path.includes('/predio/') && path.split('/').length === 5) {
-            
             return 'Escolha uma fachada';
         } else if (path.includes('/predio/') && path.split('/').length === 6) {
-
             return 'Visualizando fachada';
         } else if (project.name === '') {
             return 'Adicione um projeto';
@@ -405,6 +430,13 @@ export default function NavHome() {
         }
     };
 
+    const openSendPopup = () => {
+        if (!currentProjectId) setSelectedProject('');
+        if (!currentBuildingId) setSelectedBuilding('');
+        if (!currentFacadeId) setSelectedFacade('');
+
+        setShowPopup(true);
+    };
 
     return (
         <Nav>
@@ -426,84 +458,10 @@ export default function NavHome() {
             <Botoes>
                 <button> <FaTrash /> </button>
                 <button> <FaPaintBrush /> </button>
-                <button className='send-button' onClick={() => setShowPopup(true)}> <span>Enviar</span> <IoSend /> </button>
+                <button className='send-button' onClick={openSendPopup}><span>Classificar</span> <IoSend /></button>
+
                 <button className='report-button' onClick={() => setShowReportPopup(true)}>Gerar Relatório</button>
             </Botoes>
-
-            {showReportPopup && (
-                <div style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    backgroundColor: 'rgba(0,0,0,0.5)',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    zIndex: 1000
-                }}>
-                    <div style={{
-                        backgroundColor: 'white',
-                        padding: '2rem',
-                        borderRadius: '10px',
-                        minWidth: '300px'
-                    }}>
-                        <h3>Gerar Relatório</h3>
-                        <div style={{ marginTop: '1rem' }}>
-                            <label>Selecione um projeto:</label>
-                            <select 
-                                value={selectedReportProject}
-                                onChange={(e) => setSelectedReportProject(e.target.value)}
-                                style={{
-                                    width: '100%',
-                                    padding: '0.5rem',
-                                    margin: '0.5rem 0',
-                                    border: '1px solid #ccc',
-                                    borderRadius: '5px'
-                                }}
-                            >
-                                <option value="">Selecione um projeto</option>
-                                {projects.map((project) => (
-                                    <option key={project.id} value={project.id}>
-                                        {project.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <div style={{ marginTop: '1rem', display: 'flex', gap: '1rem' }}>
-                            <button 
-                                onClick={handleDownloadReport}
-                                style={{
-                                    padding: '0.5rem 1rem',
-                                    backgroundColor: '#629EBC',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '5px',
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                Gerar Relatório
-                            </button>
-                            <button 
-                                onClick={() => {
-                                    setShowReportPopup(false);
-                                    setSelectedReportProject('');
-                                }}
-                                style={{
-                                    padding: '0.5rem 1rem',
-                                    backgroundColor: '#ccc',
-                                    border: 'none',
-                                    borderRadius: '5px',
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                Cancelar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
 
             {showPopup && (
                 <SendPopup
@@ -516,6 +474,9 @@ export default function NavHome() {
                     setSelectedProject={setSelectedProject}
                     setSelectedBuilding={setSelectedBuilding}
                     setSelectedFacade={setSelectedFacade}
+                    suggestedProject={currentProjectId ? parseInt(currentProjectId) : ''}
+                    suggestedBuilding={finalBuildingId ? parseInt(finalBuildingId) : ''}
+                    suggestedFacade={currentFacadeId ? parseInt(currentFacadeId) : ''}
                     onSend={handleSendImages}
                     onClose={() => setShowPopup(false)}
                 />

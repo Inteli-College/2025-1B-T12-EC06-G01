@@ -113,6 +113,7 @@ export default function Predio() {
             folderIdField="id"
             addUrl="http://localhost:5000/facade/"
             folderId={currentBuildingId}
+            btnLabel="Fachada"
           />
 
         )}
