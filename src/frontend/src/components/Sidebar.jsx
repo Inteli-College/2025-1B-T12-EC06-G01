@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { IoIosAdd } from "react-icons/io"
-import { FaRegUserCircle, FaFolder } from "react-icons/fa"
+import { FaRegUserCircle, FaFolder, FaQuestionCircle } from "react-icons/fa"
 import { IoExitOutline } from "react-icons/io5"
 import logo from '../logo.svg'
 import { useProject } from '../contexts/ProjectContext'
 import { useNavigate } from 'react-router-dom'
 import NovoProjetoPopup from './NovoProjetoPopup'
+import HelpGuide from './HelpGuide'
 
 const Container = styled.div`
   width: var(--sidebar-width, 280px);
@@ -180,12 +181,17 @@ const BtnMenor = styled.button`
   border: 5px solid var(--secondary-color);
   color: #fff;
   font-size: var(--font-size-lg);
+  gap: var(--spacing-xs);
   
   transition: background-color 0.3s ease; 
 
   &:hover {
     background-color: var(--primary-hover); 
     cursor: pointer; 
+  }
+
+  svg {
+    font-size: var(--font-size-lg);
   }
 
   @media (max-width: 768px) {
@@ -283,6 +289,7 @@ const Section = styled.section`
 
 export default function Sidebar(props) {
   const [showPopup, setShowPopup] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
   const { project, setProject } = useProject();
   const navigate = useNavigate();
 
@@ -295,52 +302,60 @@ export default function Sidebar(props) {
   };
 
   return (
-    <Container>
-      <Logo src={logo} alt='ovo com rachadura' />
+    <>
+      <Container>
+        <Logo src={logo} alt='ovo com rachadura' />
 
-      <BntMaior onClick={togglePopup}>
-        <span>Novo Projeto</span>
-        <IoIosAdd />
-      </BntMaior>
+        <BntMaior onClick={togglePopup}>
+          <span>Novo Projeto</span>
+          <IoIosAdd />
+        </BntMaior>
 
-      {showPopup && (
-        <NovoProjetoPopup onClose={togglePopup} onSubmit={(data) => setProject(data)} />
-      )}
+        {showPopup && (
+          <NovoProjetoPopup onClose={togglePopup} onSubmit={(data) => setProject(data)} />
+        )}
 
-      <Section>
-        <Recente>
-          <FaFolder />
-          <a href='/'>Lorem ipsum dolor sit amet</a>
-        </Recente>
+        <Section>
+          <Recente>
+            <FaFolder />
+            <a href='/'>Lorem ipsum dolor sit amet</a>
+          </Recente>
 
-        <Recente>
-          <FaFolder />
-          <a href='/'>Lorem ipsum dolor sit amet</a>
-        </Recente>
+          <Recente>
+            <FaFolder />
+            <a href='/'>Lorem ipsum dolor sit amet</a>
+          </Recente>
 
-        <Recente>
-          <FaFolder />
-          <a href='/'>Lorem ipsum dolor sit amet</a>
-        </Recente>
-      </Section>
+          <Recente>
+            <FaFolder />
+            <a href='/'>Lorem ipsum dolor sit amet</a>
+          </Recente>
+        </Section>
 
-      <Divider />
+        <Divider />
 
-      <Section>
-        <BtnMenor onClick={handleClick}>Projetos</BtnMenor>
-        <BtnMenor>Dashboard</BtnMenor>
-      </Section>
+        <Section>
+        <BtnMenor onClick={() => setShowHelp(true)}>
+            <FaQuestionCircle />
+            <span>Ajuda</span>
+          </BtnMenor>
+          <BtnMenor onClick={handleClick}>Projetos</BtnMenor>
+          <BtnMenor>Dashboard</BtnMenor>
+        </Section>
 
-      <Perfil>
-        <FaRegUserCircle />
-        <p>
-          <strong>Nome do usuáro</strong>
-          <br />
-          ID:12345
-        </p>
-        <button><IoExitOutline /></button>
-      </Perfil>
-    </Container>
+        <Perfil>
+          <FaRegUserCircle />
+          <p>
+            <strong>Nome do usuáro</strong>
+            <br />
+            ID:12345
+          </p>
+          <button><IoExitOutline /></button>
+        </Perfil>
+      </Container>
+      
+      <HelpGuide isOpen={showHelp} onClose={() => setShowHelp(false)} />
+    </>
   );
 }
 
