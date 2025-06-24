@@ -1,10 +1,12 @@
 from flask import Blueprint, request, jsonify
 from app.Controllers.FacadeController import FacadeController
+from app.auth_decorator import token_required
 
 controller = FacadeController()
 facade_bp = Blueprint("facade", __name__, url_prefix="/facade")
 
 @facade_bp.route("/building/<int:building_id>", methods=['GET'])
+@token_required
 def get_facades_by_building(building_id):
     """
     Rota RESTful para buscar fachadas de um prédio específico.
@@ -19,6 +21,7 @@ def get_facades_by_building(building_id):
         return jsonify({"code": 500, "message": "Erro interno no servidor"}), 500
 
 @facade_bp.route("/", methods=["POST"])
+@token_required
 def post_facade():
     try:
         data = request.json
@@ -31,6 +34,7 @@ def post_facade():
     return jsonify(result), code
 
 @facade_bp.route("/", methods=["PUT"])
+@token_required
 def put_new_facade_name():
     try:
         data = request.json

@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, current_app
 from app.Controllers.ImageCleanController import ImageCleanController
+from app.auth_decorator import token_required
 
 # Cria um Blueprint para as rotas de limpeza de imagem
 image_clean_blueprint = Blueprint('image_clean', __name__, url_prefix='/api/images')
@@ -8,6 +9,7 @@ image_clean_blueprint = Blueprint('image_clean', __name__, url_prefix='/api/imag
 image_clean_controller = ImageCleanController()
 
 @image_clean_blueprint.route('/<int:image_id>/clean', methods=['PUT'])
+@token_required
 def clean_image(image_id):
     """
     Limpa os dados de imagem (raw_image e fresh_img) para uma imagem específica
