@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+import { useAuth } from '../contexts/AuthContext';
 
 // Coloque este objeto dentro do seu componente NavHome.jsx, antes da declaração do return.
 const mockReportData = {
@@ -233,7 +234,7 @@ const Botoes = styled.div`
 `
 
 export default function NavHome() {
-
+    const { token } = useAuth(); // Pega o token do nosso contexto global
     const { project } = useProject();
     const location = useLocation();
     const navigate = useNavigate();
@@ -285,7 +286,17 @@ export default function NavHome() {
 
     useEffect(() => {
         if (selectedProject) {
-            fetch(`http://localhost:5000/building/project/${selectedProject}`)
+            // Pega o token do localStorage
+            const token = localStorage.getItem('jwt_token');
+    
+            const requestOptions = {
+                method: 'GET', // Embora GET seja o padrão, é bom ser explícito
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            };
+    
+            fetch(`http://localhost:5000/building/project/${selectedProject}`, requestOptions)
                 .then(res => res.json())
                 .then(data => {
                     setBuildings(data);
@@ -296,7 +307,16 @@ export default function NavHome() {
 
     useEffect(() => {
         if (selectedBuilding) {
-            fetch(`http://localhost:5000/facade/building/${selectedBuilding}`)
+            const token = localStorage.getItem('jwt_token');
+    
+            const requestOptions = {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            };
+    
+            fetch(`http://localhost:5000/facade/building/${selectedBuilding}`, requestOptions)
                 .then(res => {
                     if (!res.ok) throw new Error(`HTTP ${res.status}`);
                     return res.json();
@@ -322,7 +342,7 @@ export default function NavHome() {
 
         fetch(`http://localhost:5000/classify/facades/${selectedFacade}`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`}, 
             body: JSON.stringify({
                 // opcional: filtros de data aqui:
                 // start_date: "2025-06-01",
@@ -349,44 +369,45 @@ export default function NavHome() {
     };
 
     const handleDownloadReport = async () => {
-    // A seleção de projeto pode ser ignorada para o mock,
-    // mas vamos manter a validação para simular o fluxo completo.
-    if (!selectedReportProject) {
-        alert("Para a demo: Selecione qualquer projeto para continuar.");
-        //return; // Pode comentar o return para a demo funcionar mesmo sem seleção
-    }
-
-    console.log("Gerando relatório com dados MOCKADOS para apresentação...");
-
-    // 1. Chame a função generatePDF diretamente com os dados mockados
-    generatePDF(mockReportData);
-
-    // 2. Comente ou remova a chamada à API original
-    /*
-    try {
-        const response = await axios.get(`http://localhost:5000/projects/${selectedReportProject}/report`);
-        generatePDF(response.data);
-        setShowReportPopup(false);
-        setSelectedReportProject('');
-    } catch (error) {
-        console.error("Erro ao gerar relatório:", error);
-    }
-    */
-
-    // Opcional: pode fechar o popup após gerar o PDF de demo
-    setShowReportPopup(false);
-    setSelectedReportProject('');
-};
+        if (!selectedReportProject) {
+            alert("Selecione um projeto para gerar o relatório.");
+            return;
+        }
+    
+        try {
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            };
+    
+            const response = await axios.get(`http://localhost:5000/projects/${selectedReportProject}/report`, config);
+    
+            // Se a chamada for bem-sucedida, usa os dados recebidos para gerar o PDF
+            // (Assumindo que você tem uma função generatePDF(data) disponível)
+            generatePDF(response.data);
+    
+            setShowReportPopup(false); // Fecha o popup
+            setSelectedReportProject(''); // Limpa a seleção
+        } catch (error) {
+            console.error("Erro ao gerar relatório:", error);
+            // Exibe a mensagem de erro amigável do backend, se disponível
+            alert(error.response?.data?.message || "Ocorreu um erro ao gerar o relatório.");
+        }
+    };
 
     const handleSend = () => {
         if (!selectedProject) {
             alert("Selecione um projeto antes de enviar.");
             return;
         }
-
+    
         fetch('http://localhost:5000/classify/', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify({
                 project_id: selectedProject,
                 building_id: selectedBuilding,

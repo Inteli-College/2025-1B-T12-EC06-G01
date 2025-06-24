@@ -5,7 +5,7 @@ import { FaRegUserCircle, FaFolder } from "react-icons/fa"
 import { IoExitOutline } from "react-icons/io5"
 import logo from '../logo.svg'
 import { useProject } from '../contexts/ProjectContext'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom';
 import NovoProjetoPopup from './NovoProjetoPopup'
 import { useAuth } from '../contexts/AuthContext';
 
@@ -151,8 +151,10 @@ export default function Sidebar(props) {
 
   return (
     <Container>
-      <img src={logo} width='30%' alt='ovo com rachadura' />
-
+      <Link to="/projects" style={{ textAlign: 'center' }}>
+        <img src={logo} width='30%' alt='ovo com rachadura' />
+      </Link>
+      
       <BntMaior onClick={togglePopup}>
         <span>Novo Projeto</span>
         <IoIosAdd />

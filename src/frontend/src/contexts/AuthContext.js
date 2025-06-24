@@ -15,7 +15,12 @@ export const AuthProvider = ({ children }) => {
       // Se um token existe, busca os dados do usuário
       const fetchUserData = async () => {
         try {
-          const config = { headers: { Authorization: `Bearer ${token}` } };
+          const config = {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          };
+
           const response = await axios.get('http://localhost:5000/me', config);
           setCurrentUser(response.data);
         } catch (error) {
