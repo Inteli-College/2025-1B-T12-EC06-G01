@@ -28,16 +28,25 @@ class ImageRepository:
         except Exception as e:
             db.session.rollback()
             raise e
-        
+
     @staticmethod
-    def update_image(image):
+    def update_veredict(image_id: int, veredict: str):
         try:
-            update = cloudinary.uploader.upload(image, folder='raw-images')
-            url = update.get("secure_url")
-            return url if url else None
+            image = Image.query.get(image_id)
+
+            if image:
+                image.veredict = veredict
+                db.session.commit()
+                return image, 200
+
+            else:
+                print("[ImageRepository] Nenhuma imagem encontrada...")
+                return f"Nenhuma imagem encontrada", 404
+
         except Exception as e:
-            print("[ImageRepository] Erro ao enviar imagem para Cloudinary:", e)
-            return None
+            print("[ImageRepository] Erro ao atualizar a coluna veredict no banco de dados...:")
+            return f"Erro ao atualizar a coluna veredict no banco de dados...: {e}", 500
+
 
 
 
@@ -97,28 +106,6 @@ class ImageRepository:
         except Exception as e:
             print("[ImageRepository] Nenhuma imagem encontrada...")
             return {"code": 404, "message": "Nenhuma imagem encontrada..."}, 404      
-
-    @staticmethod
-    def update_veredict(image_id: int, veredict: str):
-        try:
-            image = Image.query.get(image_id)
-
-            if image.veredict:
-                return f"Veredito já dado nessa imagem...", 409
-
-            elif image:
-                image.veredict = veredict
-                db.session.commit()
-                return image, 204         
-
-
-            else:
-                print("[ImageRepository] Nenhuma imagem encontrada...")
-                return f"Nenhuma imagem encontrada", 404
-        
-        except Exception as e:
-            print("[ImageRepository] Erro ao atualizar a coluna veredict no banco de dados...:")
-            return f"Erro ao atualizar a coluna veredict no banco de dados...: {e}", 500
     
     @staticmethod
     def read_veredict_images_per_facade():
@@ -159,3 +146,27 @@ class ImageRepository:
         except Exception as e:
             print(f"[ImageRepository] Algo deu errado ao buscar as fissuras no banco de dados: {e}")
             return f"Algo deu errado ao buscar as fissuras no banco de dados: {e}", 404
+        
+    @staticmethod
+    def read_images_by_urls(url_list):
+        """
+        Retorna lista de imagens correspondentes às URLs fornecidas.
+        Espera uma lista de URLs (strings).
+        Retorna: lista de objetos (id, raw_img, veredict)
+        """
+        try:
+            if not url_list:
+                print("[ImageRepository] Nenhuma URL fornecida.")
+                return [], 200
+
+            rows = Image.query.filter(Image.raw_image.in_(url_list)).all()
+
+            print(f"[ImageRepository] Encontradas {len(rows)} imagens para URLs fornecidas.")
+
+            return rows, 200
+
+        except Exception as e:
+            print(f"[ImageRepository] Erro ao buscar imagens por URLs: {e}")
+            return [], 500
+
+

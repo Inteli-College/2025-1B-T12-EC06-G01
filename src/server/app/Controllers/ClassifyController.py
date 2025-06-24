@@ -29,11 +29,43 @@ class ClassifyController:
 
         try:
             results = self.classify_service.classify_facade_images(
-            facade_id, start, end
-        )
+                facade_id, start, end
+            )
 
             print(f"[DEBUG] Resultado retornado pela classificação:", results)
-            return jsonify(results), 200
+
+            urls_termica = results.get("termica", [])
+            urls_retracao = results.get("retracao", [])
+
+            termica_rows, code1 = self.image_repository.read_images_by_urls(urls_termica)
+            retracao_rows, code2 = self.image_repository.read_images_by_urls(urls_retracao)
+
+            termica = [
+                {
+                    "image_id": row.id,
+                    "url": row.raw_image,
+                    "veredict": row.veredict
+                }
+                for row in termica_rows
+            ]
+
+            retracao = [
+                {
+                    "image_id": row.id,
+                    "url": row.raw_image,
+                    "veredict": row.veredict
+                }
+                for row in retracao_rows
+            ]
+
+            response = {
+                "termica": termica,
+                "retracao": retracao
+            }
+
+            print(f"[DEBUG] Resposta final para frontend:", response)
+
+            return jsonify(response), 200
 
         except ValueError as e:
             print(f"[ERROR] Erro de valor:", e)
@@ -43,6 +75,7 @@ class ClassifyController:
             print(f"[ERROR] Erro interno ao classificar fachada {facade_id}: {e}")
             print_exc()  # Mostra o traceback completo no terminal
             return jsonify({"error": f"erro interno: {str(e)}"}), 500
+
 
     
 
