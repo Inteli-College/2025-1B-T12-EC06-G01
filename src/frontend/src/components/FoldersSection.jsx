@@ -6,12 +6,43 @@ import axios from 'axios';
 import AddFolderPopup from './AddFolderPopup';
 
 const Container = styled.div`
-    width: 77vw;
-    margin-left: 18vw;
-    padding: 2.5rem;
+    width: calc(100vw - var(--sidebar-width, 280px));
+    margin-left: var(--sidebar-width, 280px);
+    padding: var(--spacing-xl);
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-lg);
+    max-width: 100%;
+
+    @media (max-width: 480px) {
+        margin-left: 0;
+        width: 100vw;
+        padding: var(--spacing-md);
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: var(--spacing-md);
+    }
+
+    @media (min-width: 481px) and (max-width: 768px) {
+        margin-left: 200px;
+        width: calc(100vw - 200px);
+        padding: var(--spacing-lg);
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    @media (min-width: 1025px) and (max-width: 1440px) {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    @media (min-width: 1441px) {
+        margin-left: 320px;
+        width: calc(100vw - 320px);
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: var(--spacing-xl);
+    }
 `;
 
 const FolderCard = styled.div`
@@ -20,48 +51,118 @@ const FolderCard = styled.div`
     align-items: center;
     text-align: center;
     cursor: pointer;
+    padding: var(--spacing-md);
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    background-color: #f8f9fa;
+    border: 2px solid transparent;
+    
+    &:hover {
+        background-color: #e9ecef;
+        border-color: var(--primary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
     
     svg {
-        font-size: 5rem;
+        font-size: 4rem;
         color: #969FB0;
         transition: all 0.3s ease;
+        margin-bottom: var(--spacing-sm);
     }
     
     &:hover svg {
-        font-size: 6rem;
+        font-size: 4.5rem;
         color: #69758C;
     }
     
     p {
-        margin: 0.5rem 0;
+        margin: var(--spacing-xs) 0;
         font-weight: bold;
+        font-size: var(--font-size-base);
+        color: var(--text-color);
+    }
+
+    @media (max-width: 768px) {
+        padding: var(--spacing-sm);
+        
+        svg {
+            font-size: 3rem;
+        }
+        
+        &:hover svg {
+            font-size: 3.5rem;
+        }
+        
+        p {
+            font-size: var(--font-size-sm);
+        }
+    }
+
+    @media (min-width: 1441px) {
+        padding: var(--spacing-lg);
+        
+        svg {
+            font-size: 5rem;
+        }
+        
+        &:hover svg {
+            font-size: 5.5rem;
+        }
+        
+        p {
+            font-size: var(--font-size-lg);
+        }
     }
 `;
 
 const LoadingMessage = styled.h2`
-    grid-column: span 6;
+    grid-column: 1 / -1;
     text-align: center;
-    color: #666;
+    color: var(--text-muted);
+    font-size: var(--font-size-xl);
+    padding: var(--spacing-xl);
 `;
 
 const ErrorMessage = styled.h2`
-    grid-column: span 6;
+    grid-column: 1 / -1;
     text-align: center;
     color: #d32f2f;
+    font-size: var(--font-size-xl);
+    padding: var(--spacing-xl);
 `;
 
 const AddButton = styled.button`
-    height: 70%;
-    border: 3px solid #0A3B4E;
+    height: 100%;
+    min-height: 120px;
+    border: 3px solid var(--secondary-color);
     border-radius: 15px;
-    background-color: #629EBC;
+    background-color: var(--primary-color);
     color: #fff;
-    font-size: 1.5rem;
+    font-size: var(--font-size-lg);
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-md);
     
     &:hover {
-        background-color: #3D80A3;
+        background-color: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    @media (max-width: 768px) {
+        min-height: 100px;
+        font-size: var(--font-size-base);
+        padding: var(--spacing-sm);
+    }
+
+    @media (min-width: 1441px) {
+        min-height: 150px;
+        font-size: var(--font-size-xl);
+        padding: var(--spacing-lg);
     }
 `;
 
