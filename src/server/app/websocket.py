@@ -12,9 +12,9 @@ def handle_training(train_model):
     send_message("Treinamento iniciado!", "training_progress_fe", "progress")
 
 @socketio.on('backup_progress')
-def handle_progress():
+def handle_progress(_):
     msg = progress_queue.get_message()
-    socketio.emit("backup_progress_ef", msg)
+    socketio.emit("backup_progress_fe", msg)
 
 
 
