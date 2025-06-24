@@ -90,7 +90,7 @@ class ClassifyController:
         }    
     
     def get_model_version(self):
-        version_name, version_path = self.diretory_util.get_train_version()
+        version_name, version_path, acuracia = self.diretory_util.get_train_version()
         if version_path == 500:
             return {"code": 500, "message": version_name}
         
@@ -100,7 +100,7 @@ class ClassifyController:
             return {"code": code, "message": result_name}, code
 
         if not result_name:
-            result_version, code = self.classify_repository.create_new_version(version=version_name, train_directory=version_path)
+            result_version, code = self.classify_repository.create_new_version(version=version_name, train_directory=version_path, accuracy=acuracia)
             if code != 201:
                 return {"code": code, "message": result_name}, code
             else:
@@ -116,11 +116,11 @@ class ClassifyController:
                 resultados.append({
                     "id": registro.id,
                     "version": registro.version,
+                    "accuracy": registro.accuracy,
                     "created_at": registro.train_directory,
-                    # Adicione outros campos conforme sua model
                 })
 
-            return resultados  # Isso pode ser passado diretamente para jsonify()
+            return resultados, code
 
 
 

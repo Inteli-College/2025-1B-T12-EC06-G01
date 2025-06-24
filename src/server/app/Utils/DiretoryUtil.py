@@ -1,7 +1,8 @@
-import os, uuid, requests, re
+import os, uuid, requests, re, csv
 from app.Repositories.ImageRepository import ImageRepository
 from app.Repositories.ClassificationRepository import ClassificationRepository
 from app.websocket import send_message
+import pandas as pd
 
 
 class DiretoryUtil:
@@ -55,16 +56,27 @@ class DiretoryUtil:
         ]
 
         if not train_dirs:
-            return "Nenhuma pasta de treino encontrada.", 500
+            return "Nenhuma pasta de treino encontrada.", 500, 0
 
         train_dirs.sort(reverse=True)
 
         latest_dir_name = train_dirs[0]
         latest_dir_path = os.path.join(classify_runs_path, latest_dir_name)
 
+        csv_dir = os.path.join(latest_dir_path, "results.csv")
+
+
+        df = pd.read_csv(csv_dir)
+
+        if 'metrics/accuracy_top1' not in df.columns:
+            raise ValueError("Coluna 'metrics/accuracy_top1' não encontrada no CSV.")
+
+        ultima_acuracia = df['metrics/accuracy_top1'].iloc[-1]
+        ultima_acuracia = float(ultima_acuracia)
+
         match = re.search(r"2025-1B-T12-EC06-G01(.*)", latest_dir_path)
         if match:
             latest_dir_path = match.group(1)
 
         # Cria uma nova versão do modelo na tabela model_version no banco de dados
-        return latest_dir_name, latest_dir_path
+        return latest_dir_name, latest_dir_path, ultima_acuracia

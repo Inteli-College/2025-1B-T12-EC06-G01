@@ -64,15 +64,16 @@ class ClassificationRepository:
                     pass
 
         return results
+
     
     @staticmethod
-    def create_new_version(version: str, train_directory: str):
+    def create_new_version(version: str, train_directory: str, accuracy):
         try:
             modelo_real = ModelVersion.query.filter_by(real_model=True).first()
             if modelo_real:
                 modelo_real.real_model = False
 
-            new = ModelVersion(version=version, real_model=True, train_directory=train_directory)
+            new = ModelVersion(version=version, real_model=True, train_directory=train_directory, accuracy=accuracy)
             db.session.add(new)
             db.session.commit()
             return new, 201
