@@ -28,25 +28,16 @@ class ImageRepository:
         except Exception as e:
             db.session.rollback()
             raise e
-
+        
     @staticmethod
-    def update_veredict(image_id: int, veredict: str):
+    def update_image(image):
         try:
-            image = Image.query.get(image_id)
-
-            if image:
-                image.veredict = veredict
-                db.session.commit()
-                return image, 200
-
-            else:
-                print("[ImageRepository] Nenhuma imagem encontrada...")
-                return f"Nenhuma imagem encontrada", 404
-
+            update = cloudinary.uploader.upload(image, folder='raw-images')
+            url = update.get("secure_url")
+            return url if url else None
         except Exception as e:
-            print("[ImageRepository] Erro ao atualizar a coluna veredict no banco de dados...:")
-            return f"Erro ao atualizar a coluna veredict no banco de dados...: {e}", 500
-
+            print("[ImageRepository] Erro ao enviar imagem para Cloudinary:", e)
+            return None
 
 
 
@@ -106,6 +97,24 @@ class ImageRepository:
         except Exception as e:
             print("[ImageRepository] Nenhuma imagem encontrada...")
             return {"code": 404, "message": "Nenhuma imagem encontrada..."}, 404      
+
+    @staticmethod
+    def update_veredict(image_id: int, veredict: str):
+        try:
+            image = Image.query.get(image_id)
+
+            if image:
+                image.veredict = veredict
+                db.session.commit()
+                return image, 200
+
+            else:
+                print("[ImageRepository] Nenhuma imagem encontrada...")
+                return f"Nenhuma imagem encontrada", 404
+
+        except Exception as e:
+            print("[ImageRepository] Erro ao atualizar a coluna veredict no banco de dados...:")
+            return f"Erro ao atualizar a coluna veredict no banco de dados...: {e}", 500
     
     @staticmethod
     def read_veredict_images_per_facade():
@@ -168,5 +177,3 @@ class ImageRepository:
         except Exception as e:
             print(f"[ImageRepository] Erro ao buscar imagens por URLs: {e}")
             return [], 500
-
-
