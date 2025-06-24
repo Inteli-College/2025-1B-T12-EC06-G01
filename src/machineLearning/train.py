@@ -55,10 +55,16 @@ def train_detect():
     # Modelo de detecção (YOLOv8n)
     model = YOLO("yolov8n.pt")
     model.train(
-        data=str(data_yaml),  # YAML de detecção
-        model="yolov8n.pt",
-        epochs=50,            # pode manter 50 ou ajustar
-        imgsz=640,            # recomenda-se 640 para detecção; ajuste conforme necessidade
+        data=str(data_yaml),
+        epochs=50,
+        imgsz=224,             # Imagem menor (experimento seu)
+        batch=8,
+        lr0=0.001,
+        weight_decay=0.001,
+        patience=10,
+        label_smoothing=0.1,
+        cos_lr=True,
+        multi_scale=True,
         project=str(runs_dir),
         name="train"
     )
