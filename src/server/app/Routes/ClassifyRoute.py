@@ -25,3 +25,15 @@ def retrain_route():
 def get_model_versions():
     result, code = controller.get_model_version()
     return jsonify(result), code
+
+@classify_bp.route("/version", methods=["PUT"])
+def put_model_version_true():
+    try:
+        data = request.json
+
+    except Exception as e:
+        print("[ClassifyRoute] Erro ao receber requisição POST!")
+        return jsonify({"code": 400, "message": f"Erro ao receber requisição: {e}"})
+    
+    result, code = controller.put_model_version_true(data)
+    return jsonify(result), code

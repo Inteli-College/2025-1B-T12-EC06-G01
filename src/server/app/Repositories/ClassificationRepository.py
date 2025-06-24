@@ -99,3 +99,19 @@ class ClassificationRepository:
         except Exception as e:
             print(f"[ClassificationRepository] Algo deu errado ao procurar todas versões do modelo: {e}")
             return f"[ClassificationRepository] Algo deu errado ao procurar todas do modelo: {e}", 500
+        
+    @staticmethod
+    def update_version_true(version_id):
+        try:
+            old_version = ModelVersion.query.filter_by(real_model=True).first()
+            new_version = ModelVersion.query.filter_by(id=version_id).first()
+
+            if old_version and new_version:
+                old_version.real_model = False
+                new_version.real_model = True
+                db.session.commit()
+                return new_version, 201
+        
+        except Exception as e:
+            print(f"[ClassificationRepository] Algo deu errado ao procurar as versões do modelo no banco: {e}")
+            return f"[ClassificationRepository] Algo deu errado ao procurar as versões do modelo no banco: {e}", 500
