@@ -37,7 +37,7 @@ class DiretoryUtil:
                     f.write(response.content)
                 
                 msg, code = self.image_repo.put_image_name(image=image, new_name=file_name)
-                send_message(f"Baixando imagem {file_name}", "training_progress_fe")
+                send_message(f"Baixando imagem {file_name}", "training_progress_fe", "progress")
 
                 if not code == 204:
                     return msg, code
