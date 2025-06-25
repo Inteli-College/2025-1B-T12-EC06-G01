@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import AddFolderPopup from './AddFolderPopup';
 import EditFolderPopup from './EditFolderPopup';
+import { useAuth } from '../contexts/AuthContext';
 
 const Page = styled.div`
     margin-left: 18vw;
@@ -115,8 +116,10 @@ export default function FoldersSection({
     folderIdField = "id",
     addUrl,
     folderId,
-    btnLabel
+    btnLabel,
+    authToken 
 }) {
+    const { token } = useAuth();
     const [folders, setFolders] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -126,7 +129,11 @@ export default function FoldersSection({
         setIsLoading(true);
         setError(null);
         try {
-            const response = await axios.get(apiUrl);
+            const config = {
+                headers: { 'Authorization': `Bearer ${token}` }
+            };
+            
+            const response = await axios.get(apiUrl, config);
             const data = response.data;
 
             let finalFolders = [];
@@ -158,7 +165,7 @@ export default function FoldersSection({
         } finally {
             setIsLoading(false);
         }
-    }, [apiUrl, folderIdField, folderNameField]);
+    }, [apiUrl, folderIdField, folderNameField, token]);
 
     useEffect(() => {
         // Se recebemos folders como prop, usamos eles diretamente
@@ -179,11 +186,10 @@ export default function FoldersSection({
             return; // Não fazemos fetch se temos folders
         }
 
-        // Se não temos folders, mas temos URL da API, fazemos fetch
-        if (apiUrl) {
+        if (apiUrl && token) {
             fetchFolders();
         }
-    }, [propFolders, apiUrl, folderIdField, folderNameField, fetchFolders]);
+    }, [propFolders, apiUrl, fetchFolders, token]); 
 
     const [pasta, setPasta] = useState('');
     const { projectId } = useParams();
@@ -215,21 +221,25 @@ export default function FoldersSection({
             };
         }
 
-        axios.post(addUrl, folderInfos, {
+        const config = {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             }
-        })
+        };
+    
+        axios.post(addUrl, folderInfos, config)
             .then(res => {
                 alert("Pasta criada com sucesso!");
                 setShowAddPopup(false);
                 fetchFolders();
-                window.location.reload();
             })
             .catch(err => {
                 console.error("Erro ao criar pasta:", err);
+                // Melhora a mensagem de erro para o usuário
+                alert(err.response?.data?.message || "Não foi possível criar a pasta.");
             });
-    };
+        };
 
     const handleEditFolderName = () => {
     if (pasta === "") {

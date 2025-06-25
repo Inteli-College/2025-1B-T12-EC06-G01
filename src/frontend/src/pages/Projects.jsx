@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import Sidebar from '../components/Sidebar';
 import NavHome from '../components/NavHome';
 import { FaFolder } from "react-icons/fa6";
+import { useAuth } from '../contexts/AuthContext';
 
 const ProjectsPage = styled.div`
   display: flex;
@@ -86,24 +87,47 @@ const AddButton = styled.button`
 `;
 
 export default function Projects() {
+  const { isLoadingAuth } = useAuth();
   const [projects, setProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // ALTERADO: O estado de erro agora guardará uma string amigável
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchProjects = async () => {
       setIsLoading(true);
-      setError(null);
+      setError(''); // Limpa erros anteriores ao tentar buscar novamente
+      
       try {
-        // A resposta da API já é um array de projetos no formato correto
-        const response = await axios.get('http://localhost:5000/projects');
+        // Pega o token do localStorage, que foi salvo durante o login.
+        const token = localStorage.getItem('jwt_token');
+
+        console.log("Token que está sendo enviado para a API:", token);
+
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        };
         
-        // A response.data já é o array que queremos, não precisa de conversão!
+        // A requisição agora envia o token no cabeçalho
+        const response = await axios.get('http://localhost:5000/projects/', config);
+        
         setProjects(response.data);
     
       } catch (err) {
-        console.error('Erro ao buscar projetos:', err);
-        setError(err);
+        console.error('Erro detalhado ao buscar projetos:', err.response); // Mantém o log técnico para o dev
+
+        // --- ALTERADO: Lógica de tratamento de erro aprimorada ---
+        let errorMessage = 'Não foi possível carregar os projetos. Tente novamente mais tarde.';
+
+        // Verifica se a resposta do nosso backend contém a mensagem customizada
+        if (err.response && err.response.data && err.response.data.message) {
+          // Se sim, usa a mensagem amigável que definimos no backend!
+          errorMessage = err.response.data.message;
+        }
+        
+        setError(errorMessage); // Define a mensagem de erro para ser exibida na tela
       } finally {
         setIsLoading(false);
       }
@@ -111,6 +135,16 @@ export default function Projects() {
 
     fetchProjects();
   }, []);
+
+  // Você pode usar os estados para renderizar a UI:
+  if (isLoading) {
+    return <p>Carregando projetos...</p>;
+  }
+
+  if (error) {
+    return <p style={{ color: 'red' }}>Erro: {error}</p>;
+  }
+
 
   return (
     <ProjectsPage>

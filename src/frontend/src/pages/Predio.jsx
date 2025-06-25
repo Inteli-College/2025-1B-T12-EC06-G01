@@ -5,6 +5,7 @@ import styled from "styled-components";
 import FoldersSection from "../components/FoldersSection";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from '../contexts/AuthContext';
 
 const PredioPage = styled.div`
   display: flex;
@@ -19,6 +20,7 @@ const Body = styled.div`
 
 export default function Predio() {
   const { projectId, predioNome } = useParams();
+  const { token } = useAuth();
   const [fachadas, setFachadas] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,12 +28,23 @@ export default function Predio() {
 
 
   useEffect(() => {
+    if (!token) {
+      setIsLoading(false);
+      return;
+    }
+
     const fetchFachadas = async () => {
       setIsLoading(true);
       setError(null);
 
       try {
-        const buildingsResponse = await axios.get(`http://localhost:5000/building/project/${projectId}`);
+        const config = {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        };
+
+        const buildingsResponse = await axios.get(`http://localhost:5000/building/project/${projectId}`, config);
         const buildings = buildingsResponse.data;
 
         const currentBuilding = buildings.find(
@@ -39,23 +52,20 @@ export default function Predio() {
         );
 
         if (currentBuilding) {
+          // ALTERADO: Adiciona o 'config' com o token também à segunda chamada
           const facadesResponse = await axios.get(
-            `http://localhost:5000/facade/building/${currentBuilding.id}`
+            `http://localhost:5000/facade/building/${currentBuilding.id}`,
+            config
           );
 
-          console.log("Resposta da API de fachadas:", facadesResponse.data);
           setCurrentBuildingId(currentBuilding.id);
-
 
           if (facadesResponse.data && facadesResponse.data.fachadas) {
             setFachadas(facadesResponse.data.fachadas);
-            console.log("Fachadas recebidas do backend:", facadesResponse.data.fachadas);
           } else {
             setFachadas([]);
-            console.log("Nenhuma fachada recebida do backend.");
           }
         } else {
-          console.error(`Prédio "${predioNome}" não encontrado no projeto ${projectId}`);
           setError(new Error("Prédio não encontrado"));
           setFachadas([]);
         }
@@ -71,8 +81,8 @@ export default function Predio() {
     if (projectId && predioNome) {
       fetchFachadas();
     }
-  }, [projectId, predioNome]);
-
+  }, [projectId, predioNome, token]); 
+  
   //Formata as fachadas para exibir nome e passar id
   const fachadasFormatted = fachadas.map((fachada, index) => {
     if (typeof fachada === "string") {

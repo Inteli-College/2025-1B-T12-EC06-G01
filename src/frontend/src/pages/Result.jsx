@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import ResultSection from '../components/ResultSection'
 import { DragDropContext } from '@hello-pangea/dnd'
 import axios from 'axios'
+import { useAuth } from '../contexts/AuthContext';
 
 const ResultPage = styled.div`
   display: flex;
@@ -13,21 +14,25 @@ const ResultPage = styled.div`
 export default function Result() {
   const navigate = useNavigate()
   const { facadeId } = useParams()
+  const { token } = useAuth();
 
   const [termicas, setTermicas] = useState([])
   const [retracoes, setRetracoes] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!facadeId) {
-      alert("ID da fachada não encontrado.")
+    if (!facadeId || !token) {
+      setLoading(false); // Para de carregar se não puder fazer a busca
       navigate('/')
-      return
+      return;
     }
 
     fetch(`http://localhost:5000/classify/facades/${facadeId}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
       body: JSON.stringify({})
     })
       .then(res => {
@@ -75,8 +80,8 @@ export default function Result() {
         alert("Erro ao carregar os resultados da classificação.")
       })
       .finally(() => setLoading(false))
-  }, [facadeId])
-
+  }, [facadeId, token, navigate]); 
+  
   const handleVoltar = () => {
     navigate('/')
   }
