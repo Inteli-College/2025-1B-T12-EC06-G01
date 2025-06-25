@@ -54,28 +54,6 @@ const BntMaior = styled.button`
   }
 `
 
-const Recente = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-
-  svg {
-    font-size: 1.5rem;
-    color: #969FB0;
-  }
-
-  a {
-    margin: 0.3rem ;
-    text-decoration: none;
-    color: #000;
-    cursor: pointer;
-  }
-
-  a:hover {
-    text-decoration: underline;
-  }
-`
-
 const BtnMenor = styled.button`
   width: 80%;
   height: 123px;

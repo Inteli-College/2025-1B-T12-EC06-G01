@@ -6,7 +6,7 @@ const Container = styled.section`
   width: 50%;
   padding: 2rem;
   background-color: ${props =>
-    props.$classificacao === 'termica' ? '#DDDDDD' : '#BDBDBD'};
+    props.$classificacao === 'termica' ? '#D3E2EF' : '#BCCBD8'};
   text-align: center;
 
   h3 {
@@ -24,7 +24,6 @@ const Images = styled.div`
 `
 
 export default function ResultSection({ classificacao, imagens }) {
-  // cria objetos padrão com nome e url
   const imagensFiltradas = imagens.map((url, index) => ({
     img_name: `${classificacao}_${index + 1}`,
     url: url,
