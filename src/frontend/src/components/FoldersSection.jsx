@@ -41,42 +41,35 @@ const Page = styled.div`
 `;
 
 const Container = styled.div`
-    width: calc(100vw - var(--sidebar-width, 280px));
-    margin-left: var(--sidebar-width, 280px);
-    padding: var(--spacing-xl);
+    margin: 0 2rem;
+    padding: 0.5rem 1rem;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: var(--spacing-lg);
+    gap: 1.2rem;
     max-width: 100%;
 
-    @media (max-width: 480px) {
-        margin-left: 0;
+    @media (max-width: 768px) {
+        margin: 0;
         width: 100vw;
-        padding: var(--spacing-md);
+        padding: 0.5rem;
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: var(--spacing-md);
-    }
-
-    @media (min-width: 481px) and (max-width: 768px) {
-        margin-left: 200px;
-        width: calc(100vw - 200px);
-        padding: var(--spacing-lg);
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 0.7rem;
     }
 
     @media (min-width: 769px) and (max-width: 1024px) {
+        margin: 0 2rem;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     }
 
     @media (min-width: 1025px) and (max-width: 1440px) {
+        margin: 0 2rem;
         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     }
 
     @media (min-width: 1441px) {
-        margin-left: 320px;
-        width: calc(100vw - 320px);
+        margin: 0 2rem;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: var(--spacing-xl);
+        gap: 1.5rem;
     }
 `;
 

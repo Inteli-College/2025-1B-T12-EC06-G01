@@ -82,7 +82,7 @@ const Page = styled.div`
 `
 
 const Container = styled.div`
-    width: calc(100vw - var(--sidebar-width, 280px));
+    margin: 0 2rem;
     padding: var(--spacing-xl);
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -91,6 +91,7 @@ const Container = styled.div`
     max-width: 100%;
 
     @media (max-width: 480px) {
+        margin: 0;
         width: 100vw;
         padding: var(--spacing-md);
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -98,21 +99,24 @@ const Container = styled.div`
     }
 
     @media (min-width: 481px) and (max-width: 768px) {
-        width: calc(100vw - 200px);
+        margin: 0;
+        width: 100vw;
         padding: var(--spacing-lg);
         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     }
 
     @media (min-width: 769px) and (max-width: 1024px) {
+        margin: 0 2rem;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     }
 
     @media (min-width: 1025px) and (max-width: 1440px) {
+        margin: 0 2rem;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     }
 
     @media (min-width: 1441px) {
-        width: calc(100vw - 320px);
+        margin: 0 2rem;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: var(--spacing-xl);
     }
