@@ -101,6 +101,9 @@ const FolderCard = styled.div`
     
     svg {
         font-size: 4rem;
+
+    .folder-icon svg {
+        font-size: 5rem;
         color: #969FB0;
         transition: all 0.3s ease;
         margin-bottom: var(--spacing-sm);
@@ -108,6 +111,9 @@ const FolderCard = styled.div`
     
     &:hover svg {
         font-size: 4.5rem;
+
+    .folder-icon:hover svg {
+        font-size: 6rem;
         color: #69758C;
     }
 
@@ -117,6 +123,8 @@ const FolderCard = styled.div`
         font-size: var(--font-size-base);
         color: var(--text-color);
         display: flex;
+        margin: 0.5rem 0;
+        font-weight: bold;
         text-transform: capitalize;
         align-items: center;
         gap: .3rem;
