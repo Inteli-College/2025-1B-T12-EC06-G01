@@ -1,10 +1,12 @@
 from flask import Blueprint, request, jsonify
 from app.Controllers.ClassifyController import ClassifyController
+from app.auth_decorator import token_required
 
 controller = ClassifyController()
 classify_bp   = Blueprint("classify", __name__, url_prefix="/classify")
 
 @classify_bp.route("/facades/<int:facade_id>", methods=["POST"])
+@token_required
 def classify_route(facade_id):
     """
     Fluxo de dados:
@@ -17,6 +19,7 @@ def classify_route(facade_id):
     return controller.postClassify(facade_id, payload)
 
 @classify_bp.route("/retrain", methods=["POST"])
+@token_required
 def retrain_route():
     result, code = controller.retrain()
     return jsonify(result), code

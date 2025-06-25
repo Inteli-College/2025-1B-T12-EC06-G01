@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import CardImg from './CardImg'
+import { Droppable, Draggable } from '@hello-pangea/dnd'
 
 const Container = styled.section`
   width: 50%;
@@ -17,12 +18,11 @@ const Container = styled.section`
 const Images = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  align-items: center;
-  justify-items: center;
-  gap: 2rem;
-  padding: 2rem;
+  gap: 1rem;
+  padding: 1rem;
 `
 
+<<<<<<< feat/conexao-websocket
 export default function ResultSection({ classificacao, imagens }) {
   const imagensFiltradas = imagens.map((url, index) => ({
     img_name: `${classificacao}_${index + 1}`,
@@ -30,15 +30,54 @@ export default function ResultSection({ classificacao, imagens }) {
   }))
 
   console.log(`>>> [${classificacao}] imagens:`, imagens);
+=======
+export default function ResultSection({ classificacao, imagens, droppableId }) {
+  const imagensFiltradas = imagens.map((item, index) => {
+    if (typeof item === 'string') {
+      return {
+        id: `${droppableId}-${index}`,
+        img_name: `${classificacao}_${index + 1}`,
+        url: item
+      }
+    } else {
+      return {
+        id: `${droppableId}-${index}`,
+        img_name: `${classificacao}_${index + 1}`,
+        url: item.url || ''
+      }
+    }
+  })
+>>>>>>> help/merges
 
   return (
     <Container $classificacao={classificacao}>
       <h3>Fissura {classificacao}</h3>
-      <Images>
-        {imagensFiltradas.map((value, key) => (
-          <CardImg key={key} img_name={value.img_name} url={value.url} />
-        ))}
-      </Images>
+      <Droppable droppableId={droppableId}>
+        {(provided) => (
+          <Images
+            {...provided.droppableProps}
+            ref={provided.innerRef}
+          >
+            {imagensFiltradas.map((item, index) => (
+              <Draggable key={item.id} draggableId={item.id} index={index}>
+                {(provided, snapshot) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    style={{
+                      ...provided.draggableProps.style,
+                    }}
+                  >
+                    <CardImg img_name={item.img_name} url={item.url} />
+                  </div>
+                )}
+              </Draggable>
+            ))}
+            {provided.placeholder}
+          </Images>
+        )}
+      </Droppable>
     </Container>
   )
 }

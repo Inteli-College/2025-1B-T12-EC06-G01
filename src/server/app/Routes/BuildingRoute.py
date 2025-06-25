@@ -1,10 +1,12 @@
 from flask import Blueprint, request, jsonify
 from app.Controllers.BuildingController import BuildingController
+from app.auth_decorator import token_required
 
 controller = BuildingController()
 building_bp = Blueprint("building", __name__, url_prefix="/building")
 
 @building_bp.route("/", methods=["POST"]) 
+@token_required
 def create_building_route(): 
     try:
         data = request.json
@@ -16,6 +18,7 @@ def create_building_route():
     return jsonify(result), code
 
 @building_bp.route("/", methods=["GET"])
+@token_required
 def get_buildings_route():
     """
     Rota para buscar todos os prédios.
@@ -28,6 +31,7 @@ def get_buildings_route():
         return jsonify({"code": 500, "message": "Erro interno no servidor"}), 500
 
 @building_bp.route("/project/<int:project_id>", methods=["GET"])
+@token_required
 def get_buildings_by_project_route(project_id):
     """
     Rota para buscar todos os prédios de um projeto específico.
@@ -40,6 +44,7 @@ def get_buildings_by_project_route(project_id):
         return jsonify({"code": 500, "message": "Erro interno no servidor"}), 500
     
 @building_bp.route("/", methods=["PUT"])
+@token_required
 def put_new_building_name():
     try:
         data = request.json

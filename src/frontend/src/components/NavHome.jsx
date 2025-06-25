@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+import { useAuth } from '../contexts/AuthContext';
 
 // Coloque este objeto dentro do seu componente NavHome.jsx, antes da declaração do return.
 const mockReportData = {
@@ -143,7 +144,7 @@ const generatePDF = (data) => {
                     ['Fissuras por retração', fachada.resumo_quantitativo_fachada.fissura_retracao],
                 ]
             });
-            
+
             y = doc.lastAutoTable ? doc.lastAutoTable.finalY + 5 : y;
         });
     });
@@ -184,7 +185,25 @@ const Infos = styled.div`
         padding: .5rem;
         font-size: 40px;
     }
-`
+    .clear-filter-button {
+    padding: 0.2rem 0.4rem;
+    font-size: 12px;
+    font-weight: 500;
+    background-color: transparent; /* Fundo transparente */
+    color: #629EBC;                /* Cor do texto igual à dos botões principais */
+    border: 1px solid #629EBC;      /* Borda com a cor principal */
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-left: 1rem;
+
+    &:hover {
+        background-color: #629EBC; /* Fundo preenche no hover */
+        color: white;             /* Texto fica branco no hover */
+    }
+}
+`   
+    
 
 const Botoes = styled.div`
     display: flex;
@@ -211,7 +230,7 @@ const Botoes = styled.div`
     }
 
     .send-button {
-        width: 12rem;
+        width: 16rem;
         display: flex;
         align-items: center;
         justify-content: space-around;
@@ -233,15 +252,44 @@ const Botoes = styled.div`
 `
 
 export default function NavHome() {
-
+    const { token } = useAuth(); // Pega o token do nosso contexto global
     const { project } = useProject();
     const location = useLocation();
     const navigate = useNavigate();
 
-    const [dateFilter, setDateFilter] = useState(null)
-    const [optionFilter, setOptionFilter] = useState('')
-    const [latitudeFilter, setLatitudeFilter] = useState('')
-    const [longitudeFilter, setLongitudeFilter] = useState('')
+    const pathParts = location.pathname.split('/').filter(Boolean); // remove strings vazias
+
+    let currentProjectId = '';
+    let currentBuildingId = '';
+    let currentFacadeId = '';
+
+    const projectIndex = pathParts.indexOf('project');
+    const predioIndex = pathParts.indexOf('predio');
+    const fachadaIndex = pathParts.indexOf('fachada');
+
+    if (projectIndex !== -1 && pathParts.length > projectIndex + 1) {
+        currentProjectId = pathParts[projectIndex + 1];
+    }
+
+    if (predioIndex !== -1 && pathParts.length > predioIndex + 1) {
+        currentBuildingId = pathParts[predioIndex + 1];
+    }
+
+    if (fachadaIndex !== -1 && pathParts.length > fachadaIndex + 1) {
+        currentFacadeId = pathParts[fachadaIndex + 1];
+    }
+
+    const currentBuildingIdFromState = location.state?.buildingId;
+    const finalBuildingId = currentBuildingIdFromState || currentBuildingId;
+
+    const {
+        contractors,
+        orderFilter, setOrderFilter,
+        contractorFilter, setContractorFilter,
+        startDateFilter, setStartDateFilter,
+        endDateFilter, setEndDateFilter,
+        clearFilters 
+      } = useProject();
 
     const [showPopup, setShowPopup] = useState(false)
     const [showReportPopup, setShowReportPopup] = useState(false)
@@ -257,21 +305,45 @@ export default function NavHome() {
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                // Usamos axios para consistência e o URL com a barra no final
-                const response = await axios.get('http://localhost:5000/projects/');
-                // A resposta (response.data) já é o array de projetos que queremos.
-                setProjects(response.data);
+                // Pega o token do localStorage
+                const token = localStorage.getItem('jwt_token');
+                if (!token) {
+                    console.error("Token não encontrado, não é possível buscar projetos.");
+                    // O PrivateRoute deve eventualmente lidar com isso, mas é uma boa verificação
+                    return;
+                }
+
+                // Configura o cabeçalho de autorização
+                const config = {
+                    headers: { Authorization: `Bearer ${token}` }
+                };
+
+                // Busca os projetos na API COM o token
+                const response = await axios.get('http://localhost:5000/projects', config);
+                setProjects(response.data); // Popula o estado com os projetos
+
             } catch (err) {
                 console.error("Erro ao buscar projetos:", err);
+                // Você pode definir uma mensagem de erro aqui, se desejar
             }
         };
-    
+
         fetchProjects();
     }, []);
 
     useEffect(() => {
         if (selectedProject) {
-            fetch(`http://localhost:5000/building/project/${selectedProject}`)
+            // Pega o token do localStorage
+            const token = localStorage.getItem('jwt_token');
+    
+            const requestOptions = {
+                method: 'GET', // Embora GET seja o padrão, é bom ser explícito
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            };
+    
+            fetch(`http://localhost:5000/building/project/${selectedProject}`, requestOptions)
                 .then(res => res.json())
                 .then(data => {
                     setBuildings(data);
@@ -282,7 +354,16 @@ export default function NavHome() {
 
     useEffect(() => {
         if (selectedBuilding) {
-            fetch(`http://localhost:5000/facade/building/${selectedBuilding}`)
+            const token = localStorage.getItem('jwt_token');
+    
+            const requestOptions = {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            };
+    
+            fetch(`http://localhost:5000/facade/building/${selectedBuilding}`, requestOptions)
                 .then(res => {
                     if (!res.ok) throw new Error(`HTTP ${res.status}`);
                     return res.json();
@@ -299,7 +380,6 @@ export default function NavHome() {
         }
     }, [selectedBuilding]);
 
-
     const handleSendImages = () => {
         if (!selectedFacade) {
             alert("Selecione uma fachada antes de enviar.");
@@ -308,7 +388,7 @@ export default function NavHome() {
 
         fetch(`http://localhost:5000/classify/facades/${selectedFacade}`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`}, 
             body: JSON.stringify({
                 // opcional: filtros de data aqui:
                 // start_date: "2025-06-01",
@@ -330,45 +410,50 @@ export default function NavHome() {
             });
     };
 
+    const handleOpenReportPopup = () => {
+        setShowReportPopup(true);
+    };
+
     const handleDownloadReport = async () => {
-    // A seleção de projeto pode ser ignorada para o mock,
-    // mas vamos manter a validação para simular o fluxo completo.
-    if (!selectedReportProject) {
-        alert("Para a demo: Selecione qualquer projeto para continuar.");
-        //return; // Pode comentar o return para a demo funcionar mesmo sem seleção
-    }
-
-    console.log("Gerando relatório com dados MOCKADOS para apresentação...");
-
-    // 1. Chame a função generatePDF diretamente com os dados mockados
-    generatePDF(mockReportData);
-
-    // 2. Comente ou remova a chamada à API original
-    /*
-    try {
-        const response = await axios.get(`http://localhost:5000/projects/${selectedReportProject}/report`);
-        generatePDF(response.data);
-        setShowReportPopup(false);
-        setSelectedReportProject('');
-    } catch (error) {
-        console.error("Erro ao gerar relatório:", error);
-    }
-    */
-
-    // Opcional: pode fechar o popup após gerar o PDF de demo
-    setShowReportPopup(false);
-    setSelectedReportProject('');
-};
+        if (!selectedReportProject) {
+            alert("Selecione um projeto para gerar o relatório.");
+            return;
+        }
+    
+        try {
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            };
+    
+            const response = await axios.get(`http://localhost:5000/projects/${selectedReportProject}/report`, config);
+    
+            // Se a chamada for bem-sucedida, usa os dados recebidos para gerar o PDF
+            // (Assumindo que você tem uma função generatePDF(data) disponível)
+            generatePDF(response.data);
+    
+            setShowReportPopup(false); // Fecha o popup
+            setSelectedReportProject(''); // Limpa a seleção
+        } catch (error) {
+            console.error("Erro ao gerar relatório:", error);
+            // Exibe a mensagem de erro amigável do backend, se disponível
+            alert(error.response?.data?.message || "Ocorreu um erro ao gerar o relatório.");
+        }
+    };
 
     const handleSend = () => {
         if (!selectedProject) {
             alert("Selecione um projeto antes de enviar.");
             return;
         }
-
+    
         fetch('http://localhost:5000/classify/', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify({
                 project_id: selectedProject,
                 building_id: selectedBuilding,
@@ -393,10 +478,8 @@ export default function NavHome() {
         } else if (path.includes('/predios')) {
             return 'Escolha um prédio';
         } else if (path.includes('/predio/') && path.split('/').length === 5) {
-            
             return 'Escolha uma fachada';
         } else if (path.includes('/predio/') && path.split('/').length === 6) {
-
             return 'Visualizando fachada';
         } else if (project.name === '') {
             return 'Adicione um projeto';
@@ -405,105 +488,70 @@ export default function NavHome() {
         }
     };
 
+    const openSendPopup = () => {
+        if (!currentProjectId) setSelectedProject('');
+        if (!currentBuildingId) setSelectedBuilding('');
+        if (!currentFacadeId) setSelectedFacade('');
+
+        setShowPopup(true);
+    };
 
     return (
         <Nav>
             <Infos>
                 <h3>{getPageTitle()}</h3>
 
-                <div className='filtros'>
-                    <input type='date' onChange={(e) => setDateFilter(e.target.value)} />
-                    <select onChange={(e) => setOptionFilter(e.target.value)} >
-                        <option>Selecione uma opção</option>
-                        <option>Outra opção</option>
-                    </select>
+                {/* Renderização condicional dos filtros */}
+                {location.pathname === '/projects' && (
+                    <div className='filtros'>
+                                
+                                {/* Input de Data de Início Corrigido */}
+                                <div className="filtro-item">
+                    <label htmlFor="start-date">A partir de:</label>
+                    <input 
+                        id="start-date"
+                        type='date'
+                        value={startDateFilter} // de volta para 'value'
+                        onChange={(e) => setStartDateFilter(e.target.value)} // de volta para 'onChange'
+                    />
+                    </div>
+                    
+                    <div className="filtro-item">
+                    <label htmlFor="end-date">Até:</label>
+                    <input 
+                        id="end-date"
+                        type='date'
+                        value={endDateFilter} // de volta para 'value'
+                        onChange={(e) => setEndDateFilter(e.target.value)} // de volta para 'onChange'
+                    />
+                    </div>
 
-                    <input type='text' placeholder='longitude' onChange={(e) => setLongitudeFilter(e.target.value)} />
-                    <input type='text' placeholder='latitude' onChange={(e) => setLatitudeFilter(e.target.value)} />
-                </div>
+                        {/* Os selects podem continuar com onChange, pois a seleção é uma ação única */}
+                        <select value={contractorFilter} onChange={(e) => setContractorFilter(e.target.value)}>
+                            <option value="">Todos Contratantes</option>
+                            {contractors.map(c => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                        
+                        <select value={orderFilter} onChange={(e) => setOrderFilter(e.target.value)}>
+                            <option value="asc">Ordem A-Z</option>
+                            <option value="desc">Ordem Z-A</option>
+                        </select>
+
+                        <button onClick={clearFilters} className="clear-filter-button">
+                            Limpar Filtros
+                        </button>
+                        
+                    </div>
+                )}
             </Infos>
 
             <Botoes>
                 <button> <FaTrash /> </button>
                 <button> <FaPaintBrush /> </button>
-                <button className='send-button' onClick={() => setShowPopup(true)}> <span>Enviar</span> <IoSend /> </button>
+                <button className='send-button' onClick={openSendPopup}><span>Classificar</span> <IoSend /></button>
+
                 <button className='report-button' onClick={() => setShowReportPopup(true)}>Gerar Relatório</button>
             </Botoes>
-
-            {showReportPopup && (
-                <div style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    backgroundColor: 'rgba(0,0,0,0.5)',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    zIndex: 1000
-                }}>
-                    <div style={{
-                        backgroundColor: 'white',
-                        padding: '2rem',
-                        borderRadius: '10px',
-                        minWidth: '300px'
-                    }}>
-                        <h3>Gerar Relatório</h3>
-                        <div style={{ marginTop: '1rem' }}>
-                            <label>Selecione um projeto:</label>
-                            <select 
-                                value={selectedReportProject}
-                                onChange={(e) => setSelectedReportProject(e.target.value)}
-                                style={{
-                                    width: '100%',
-                                    padding: '0.5rem',
-                                    margin: '0.5rem 0',
-                                    border: '1px solid #ccc',
-                                    borderRadius: '5px'
-                                }}
-                            >
-                                <option value="">Selecione um projeto</option>
-                                {projects.map((project) => (
-                                    <option key={project.id} value={project.id}>
-                                        {project.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <div style={{ marginTop: '1rem', display: 'flex', gap: '1rem' }}>
-                            <button 
-                                onClick={handleDownloadReport}
-                                style={{
-                                    padding: '0.5rem 1rem',
-                                    backgroundColor: '#629EBC',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '5px',
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                Gerar Relatório
-                            </button>
-                            <button 
-                                onClick={() => {
-                                    setShowReportPopup(false);
-                                    setSelectedReportProject('');
-                                }}
-                                style={{
-                                    padding: '0.5rem 1rem',
-                                    backgroundColor: '#ccc',
-                                    border: 'none',
-                                    borderRadius: '5px',
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                Cancelar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
 
             {showPopup && (
                 <SendPopup
@@ -516,6 +564,9 @@ export default function NavHome() {
                     setSelectedProject={setSelectedProject}
                     setSelectedBuilding={setSelectedBuilding}
                     setSelectedFacade={setSelectedFacade}
+                    suggestedProject={currentProjectId ? parseInt(currentProjectId) : ''}
+                    suggestedBuilding={finalBuildingId ? parseInt(finalBuildingId) : ''}
+                    suggestedFacade={currentFacadeId ? parseInt(currentFacadeId) : ''}
                     onSend={handleSendImages}
                     onClose={() => setShowPopup(false)}
                 />
