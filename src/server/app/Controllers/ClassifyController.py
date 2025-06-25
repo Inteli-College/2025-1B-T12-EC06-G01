@@ -62,7 +62,6 @@ class ClassifyController:
         self.diretory_util.all_fissures(fissures=fissures)
 
         # Faz o download das imagens pegadas do banco de dados
-        print(f"CODIGOS PAPAI CODIGO1: {code}, CODIGO2: {code2}")
         if code == 200 and code2 == 200:
             result4, code = self.diretory_util.download_images(result=result) 
             if code != 201:
