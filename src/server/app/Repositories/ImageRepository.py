@@ -103,19 +103,15 @@ class ImageRepository:
         try:
             image = Image.query.get(image_id)
 
-            if image.veredict:
-                return f"Veredito já dado nessa imagem...", 409
-
-            elif image:
+            if image:
                 image.veredict = veredict
                 db.session.commit()
-                return image, 204         
-
+                return image, 200
 
             else:
                 print("[ImageRepository] Nenhuma imagem encontrada...")
                 return f"Nenhuma imagem encontrada", 404
-        
+
         except Exception as e:
             print("[ImageRepository] Erro ao atualizar a coluna veredict no banco de dados...:")
             return f"Erro ao atualizar a coluna veredict no banco de dados...: {e}", 500
@@ -159,3 +155,25 @@ class ImageRepository:
         except Exception as e:
             print(f"[ImageRepository] Algo deu errado ao buscar as fissuras no banco de dados: {e}")
             return f"Algo deu errado ao buscar as fissuras no banco de dados: {e}", 404
+        
+    @staticmethod
+    def read_images_by_urls(url_list):
+        """
+        Retorna lista de imagens correspondentes às URLs fornecidas.
+        Espera uma lista de URLs (strings).
+        Retorna: lista de objetos (id, raw_img, veredict)
+        """
+        try:
+            if not url_list:
+                print("[ImageRepository] Nenhuma URL fornecida.")
+                return [], 200
+
+            rows = Image.query.filter(Image.raw_image.in_(url_list)).all()
+
+            print(f"[ImageRepository] Encontradas {len(rows)} imagens para URLs fornecidas.")
+
+            return rows, 200
+
+        except Exception as e:
+            print(f"[ImageRepository] Erro ao buscar imagens por URLs: {e}")
+            return [], 500

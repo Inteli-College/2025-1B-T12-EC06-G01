@@ -3,6 +3,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import CardImg from './CardImg';
 import axios from 'axios';
+import { useAuth } from '../contexts/AuthContext';
 
 const Page = styled.div`
   margin-left: var(--sidebar-width, 280px);
@@ -205,6 +206,7 @@ const Popup = styled.div`
 `
 
 export default function ImgSection() {
+  const { token } = useAuth();
   const { fachadaNome } = useParams();
   const location = useLocation();
   const fachadaId = location.state?.fachadaId;
@@ -235,7 +237,15 @@ export default function ImgSection() {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/images/', formData);
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      };
+
+      // Adiciona o objeto 'config' à chamada axios.post
+      const response = await axios.post('http://localhost:5000/images/', formData, config);
+      
       console.log("Upload realizado com sucesso:", response.data);
 
       togglePopup();
@@ -247,6 +257,10 @@ export default function ImgSection() {
   };
 
   useEffect(() => {
+    if (!token) {
+      console.log("Aguardando token para buscar imagens...");
+      return;
+  }
     const fetchImagens = async () => {
       if (fachadaId === undefined || fachadaId === null) {
         console.error("Fachada ID não encontrado no state.", { fachadaId });
@@ -255,7 +269,16 @@ export default function ImgSection() {
       }
 
       try {
-        const response = await axios.get(`http://localhost:5000/images/facade/${fachadaId}`);
+        const config = {
+          headers: {
+              'Authorization': `Bearer ${token}`
+          }
+        };
+
+        // ALTERADO: Adiciona o objeto 'config' à chamada axios.get
+        const response = await axios.get(`http://localhost:5000/images/facade/${fachadaId}`, config);
+      
+
         console.log("Resposta da API:", response.data);
         console.log("fachadaId:", fachadaId);
 
@@ -279,7 +302,7 @@ export default function ImgSection() {
     };
 
     fetchImagens();
-  }, [fachadaId]);
+  }, [fachadaId, token]);
 
   if (loading) {
     return <p style={{ marginLeft: "18vw", padding: "2.5rem" }}>Carregando imagens da fachada: {fachadaNome}</p>;

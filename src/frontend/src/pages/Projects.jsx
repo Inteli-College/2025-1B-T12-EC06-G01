@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import Sidebar from '../components/Sidebar';
 import NavHome from '../components/NavHome';
 import { FaFolder } from "react-icons/fa6";
+import { useAuth } from '../contexts/AuthContext';
+import { useProject } from '../contexts/ProjectContext'; // NOVO: Importa o contexto
 
 const ProjectsPage = styled.div`
   display: flex;
@@ -32,6 +34,9 @@ const Container = styled.div`
   gap: var(--spacing-lg);
   max-width: 100%;
   box-sizing: border-box;
+  transition: opacity 0.3s ease-in-out;
+  opacity: ${props => props.isLoading ? 0.5 : 1};
+  pointer-events: ${props => props.isLoading ? 'none' : 'auto'};
 
   @media (max-width: 480px) {
     margin-left: 0;
@@ -203,31 +208,72 @@ const AddButton = styled.button`
 `;
 
 export default function Projects() {
+  const { isLoadingAuth } = useAuth();
   const [projects, setProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // O estado de erro agora guardará uma string amigável
+  const [error, setError] = useState('');
+  const { 
+    contractorFilter, 
+    orderFilter,
+    startDateFilter,
+    endDateFilter
+  } = useProject();
+
+  const { token } = useAuth(); // Pega o token para autenticação
 
   useEffect(() => {
+    if (!token) return;
+
     const fetchProjects = async () => {
       setIsLoading(true);
-      setError(null);
+      setError('');
+      
       try {
-        // A resposta da API já é um array de projetos no formato correto
-        const response = await axios.get('http://localhost:5000/projects');
+        const params = new URLSearchParams();
+        // Adiciona os filtros à query apenas se eles tiverem um valor
+        if (contractorFilter) params.append('contractor', contractorFilter);
+        if (startDateFilter) params.append('start_date', startDateFilter);
+        if (endDateFilter) params.append('end_date', endDateFilter);
+        // O filtro de ordem sempre terá um valor ('asc' ou 'desc')
+        params.append('order', orderFilter);
         
-        // A response.data já é o array que queremos, não precisa de conversão!
+        const queryString = params.toString();
+        const config = { headers: { Authorization: `Bearer ${token}` } };
+        
+        const response = await axios.get(`http://localhost:5000/projects/?${queryString}`, config);
         setProjects(response.data);
     
       } catch (err) {
-        console.error('Erro ao buscar projetos:', err);
-        setError(err);
+        console.error('Erro detalhado ao buscar projetos:', err.response); // Mantém o log técnico para o dev
+
+        // Lógica de tratamento de erro aprimorada ---
+        let errorMessage = 'Não foi possível carregar os projetos. Tente novamente mais tarde.';
+
+        // Verifica se a resposta do nosso backend contém a mensagem customizada
+        if (err.response && err.response.data && err.response.data.message) {
+          // Se sim, usa a mensagem amigável que definimos no backend!
+          errorMessage = err.response.data.message;
+        }
+        
+        setError(errorMessage); // Define a mensagem de erro para ser exibida na tela
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchProjects();
-  }, []);
+  }, [token, contractorFilter, orderFilter, startDateFilter, endDateFilter]);
+
+  // Você pode usar os estados para renderizar a UI:
+  // if (isLoading) {
+  //   return <p>Carregando projetos...</p>;
+  // }
+
+  if (error) {
+    return <p style={{ color: 'red' }}>Erro: {error}</p>;
+  }
+
 
   return (
     <ProjectsPage>
@@ -235,7 +281,7 @@ export default function Projects() {
       <Body>
         <NavHome />
         
-        <Container>
+        <Container isLoading={isLoading}>
           {isLoading && <LoadingMessage>Carregando projetos...</LoadingMessage>}
           {error && <ErrorMessage>Erro ao carregar projetos: {error.message}</ErrorMessage>}
           

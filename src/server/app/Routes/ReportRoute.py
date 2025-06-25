@@ -1,11 +1,13 @@
 from flask import Blueprint
 from app.Controllers.ReportController import ReportController
+from app.auth_decorator import token_required
 
 # Cria um Blueprint para as rotas de relatório
 report_bp = Blueprint('report', __name__, url_prefix='/projects/<int:project_id>/report')
 controller = ReportController()
 
 @report_bp.route('/', methods=['GET'])
+@token_required
 def get_report(project_id):
     """
     Endpoint para gerar e retornar o relatório consolidado de um projeto.

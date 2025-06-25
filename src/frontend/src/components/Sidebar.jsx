@@ -5,8 +5,9 @@ import { FaRegUserCircle, FaFolder } from "react-icons/fa"
 import { IoExitOutline } from "react-icons/io5"
 import logo from '../logo.svg'
 import { useProject } from '../contexts/ProjectContext'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom';
 import NovoProjetoPopup from './NovoProjetoPopup'
+import { useAuth } from '../contexts/AuthContext';
 
 const Container = styled.div`
   width: var(--sidebar-width, 280px);
@@ -284,20 +285,24 @@ const Section = styled.section`
 export default function Sidebar(props) {
   const [showPopup, setShowPopup] = useState(false);
   const { project, setProject } = useProject();
+
+  const { currentUser, logout, isLoadingAuth } = useAuth();
   const navigate = useNavigate();
 
-  const togglePopup = () => {
-    setShowPopup(!showPopup);
+  const handleLogout = () => {
+      logout(); // Chama a função de logout do contexto
+      navigate('/'); // Navega para a página de login
   };
 
-  const handleClick = () => {
-    navigate("/projects");
-  };
+  const togglePopup = () => setShowPopup(!showPopup);
+  const handleClick = () => navigate("/projects");
 
   return (
     <Container>
-      <Logo src={logo} alt='ovo com rachadura' />
-
+      <Link to="/projects" style={{ textAlign: 'center' }}>
+        <img src={logo} width='30%' alt='ovo com rachadura' />
+      </Link>
+      
       <BntMaior onClick={togglePopup}>
         <span>Novo Projeto</span>
         <IoIosAdd />
@@ -333,12 +338,19 @@ export default function Sidebar(props) {
 
       <Perfil>
         <FaRegUserCircle />
-        <p>
-          <strong>Nome do usuáro</strong>
-          <br />
-          ID:12345
-        </p>
-        <button><IoExitOutline /></button>
+        {/* ALTERADO: Exibindo dados reais do usuário */}
+        {isLoadingAuth ? (
+          <p>Carregando...</p>
+        ) : currentUser ? (
+          <p>
+            <strong>{currentUser.name}</strong>
+            <br />
+            ID: {currentUser.id}
+          </p>
+        ) : (
+          <p>Não conectado</p>
+        )}
+        <button onClick={handleLogout}><IoExitOutline /></button>
       </Perfil>
     </Container>
   );
