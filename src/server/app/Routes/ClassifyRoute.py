@@ -20,3 +20,8 @@ def classify_route(facade_id):
 def retrain_route():
     result, code = controller.retrain()
     return jsonify(result), code
+
+@classify_bp.route("/version", methods=["POST"])
+def get_model_versions():
+    result, code = controller.get_model_version()
+    return jsonify(result), code

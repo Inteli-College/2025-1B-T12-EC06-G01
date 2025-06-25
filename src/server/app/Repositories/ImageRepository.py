@@ -148,14 +148,3 @@ class ImageRepository:
         except Exception as e:
             print(f"[ImageRepository] Erro ao alterar nome de imagem: {e}")
             return f"Erro ao alterar nome de imagem: {e}", 404
-
-    def read_fissure_types():
-        try: 
-            fissure_types = (
-                db.session.query(Image.fissure_type)
-                .distinct()
-                .all()
-            )
-        except Exception as e:
-            print(f"[ImageRepository] Algo deu errado ao buscar as fissuras no banco de dados: {e}")
-            return f"Algo deu errado ao buscar as fissuras no banco de dados: {e}", 404

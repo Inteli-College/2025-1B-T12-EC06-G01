@@ -64,15 +64,16 @@ class ClassificationRepository:
                     pass
 
         return results
+
     
     @staticmethod
-    def create_new_version(version: str, train_directory: str):
+    def create_new_version(version: str, train_directory: str, accuracy):
         try:
             modelo_real = ModelVersion.query.filter_by(real_model=True).first()
             if modelo_real:
                 modelo_real.real_model = False
 
-            new = ModelVersion(version=version, real_model=True, train_directory=train_directory)
+            new = ModelVersion(version=version, real_model=True, train_directory=train_directory, accuracy=accuracy)
             db.session.add(new)
             db.session.commit()
             return new, 201
@@ -80,3 +81,21 @@ class ClassificationRepository:
         except Exception as e:
             print(f"[ClassificationRepository] Algo deu errado ao consultar o banco de dados: {e}")
             return f"Algo deu errado ao consultar o banco de dados... {e}", 500
+        
+    @staticmethod
+    def read_version_name(name: str):
+        try:
+            version = ModelVersion.query.filter_by(version=name).all()
+            return version, 200
+        except Exception as e:
+            print(f"[ClassificationRepository] Algo deu errado ao procurar nomes de versões do modelo: {e}")
+            return f"[ClassificationRepository] Algo deu errado ao procurar nomes de versões do modelo: {e}", 500
+    
+    @staticmethod
+    def read_all_version():
+        try:
+            registros = ModelVersion.query.all()
+            return registros, 200
+        except Exception as e:
+            print(f"[ClassificationRepository] Algo deu errado ao procurar todas versões do modelo: {e}")
+            return f"[ClassificationRepository] Algo deu errado ao procurar todas do modelo: {e}", 500
