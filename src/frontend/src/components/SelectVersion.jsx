@@ -50,7 +50,20 @@ export default function SelectVersion() {
         const contentType = response.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
           const data = await response.json();
-          setVersoes(data);
+          const ordenado = data.sort((a, b) => {
+            const extractTimestamp = path => {
+                const match = path.match(/train_(\d{8})_(\d{6})/);
+                return match ? `${match[1]}${match[2]}` : '';
+            };
+
+            const timeA = extractTimestamp(a.created_at);
+            const timeB = extractTimestamp(b.created_at);
+
+            return timeB.localeCompare(timeA); 
+            });
+
+            setVersoes(ordenado);
+
         } else {
           const txt = await response.text();
           throw new Error(`Resposta inesperada: ${txt}`);
