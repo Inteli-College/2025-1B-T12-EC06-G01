@@ -9,10 +9,10 @@ import EditFolderPopup from './EditFolderPopup';
 import { useAuth } from '../contexts/AuthContext';
 
 const Page = styled.div`
-    margin-left: 18vw;
+    margin-left: var(--sidebar-width, 280px);
     
     .btn-section {
-        padding: 2rem 2.5rem 0 2.5rem;
+        padding: var(--spacing-lg) var(--spacing-xl) 0 var(--spacing-xl);
         display: flex;
         flex-direction: row;
         justify-content: center;
@@ -21,22 +21,60 @@ const Page = styled.div`
 
     .btn-section button {
         width: 20%;
-        height: 20px;
+        min-width: 150px;
+        min-height: 50px;
         border-radius: 10px;
-        background-color: #629EBC;
+        background-color: var(--primary-color);
         display: flex;
         justify-content: center;
         align-items: center;
-        border: 3px solid #145E7A;
+        border: 3px solid var(--secondary-color);
         color: #fff;
-        font-size: 16px;
-        padding: 1rem;
-        transition: background-color 0.3s ease;
+        font-size: var(--font-size-base);
+        padding: var(--spacing-sm);
+        transition: all 0.3s ease;
     } 
 
     button:hover {
-        background-color: #3D80A3; 
+        background-color: var(--primary-hover); 
         cursor: pointer; 
+        transform: translateY(-1px);
+    }
+
+    @media (max-width: 480px) {
+        margin-left: 0;
+        .btn-section {
+            padding: var(--spacing-md);
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+        .btn-section button {
+            width: 100%;
+            min-width: auto;
+        }
+    }
+
+    @media (min-width: 481px) and (max-width: 768px) {
+        margin-left: 200px;
+        .btn-section {
+            padding: var(--spacing-md);
+        }
+        .btn-section button {
+            width: 30%;
+            min-width: 120px;
+        }
+    }
+
+    @media (min-width: 1441px) {
+        margin-left: 320px;
+        .btn-section {
+            padding: var(--spacing-xl) var(--spacing-xl) 0 var(--spacing-xl);
+        }
+        .btn-section button {
+            width: 15%;
+            min-width: 180px;
+            font-size: var(--font-size-lg);
+        }
     }
 `;
 
