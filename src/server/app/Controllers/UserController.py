@@ -54,7 +54,7 @@ class UserController:
 
         # Se as credenciais estiverem corretas, gera o token
         token = jwt.encode({
-            'sub': user.id, # 'subject' do token é o ID do usuário
+            'sub': str(user.id), # 'subject' do token é o ID do usuário
             'iat': datetime.datetime.utcnow(), # 'issued at' (quando foi criado)
             'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24) # 'expiration' (tempo de vida)
         }, current_app.config['SECRET_KEY'], algorithm="HS256")

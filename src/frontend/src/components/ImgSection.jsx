@@ -3,6 +3,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import CardImg from './CardImg';
 import axios from 'axios';
+import { useAuth } from '../contexts/AuthContext';
 
 const Page = styled.div`
   margin-left: var(--sidebar-width, 280px);
@@ -81,7 +82,7 @@ const Page = styled.div`
 `
 
 const Container = styled.div`
-    width: calc(100vw - var(--sidebar-width, 280px));
+    margin: 0 2rem;
     padding: var(--spacing-xl);
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -90,6 +91,7 @@ const Container = styled.div`
     max-width: 100%;
 
     @media (max-width: 480px) {
+        margin: 0;
         width: 100vw;
         padding: var(--spacing-md);
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -97,21 +99,24 @@ const Container = styled.div`
     }
 
     @media (min-width: 481px) and (max-width: 768px) {
-        width: calc(100vw - 200px);
+        margin: 0;
+        width: 100vw;
         padding: var(--spacing-lg);
         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     }
 
     @media (min-width: 769px) and (max-width: 1024px) {
+        margin: 0 2rem;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     }
 
     @media (min-width: 1025px) and (max-width: 1440px) {
+        margin: 0 2rem;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     }
 
     @media (min-width: 1441px) {
-        width: calc(100vw - 320px);
+        margin: 0 2rem;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: var(--spacing-xl);
     }
@@ -205,6 +210,7 @@ const Popup = styled.div`
 `
 
 export default function ImgSection() {
+  const { token } = useAuth();
   const { fachadaNome } = useParams();
   const location = useLocation();
   const fachadaId = location.state?.fachadaId;
@@ -235,7 +241,15 @@ export default function ImgSection() {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/images/', formData);
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      };
+
+      // Adiciona o objeto 'config' à chamada axios.post
+      const response = await axios.post('http://localhost:5000/images/', formData, config);
+      
       console.log("Upload realizado com sucesso:", response.data);
 
       togglePopup();
@@ -247,6 +261,10 @@ export default function ImgSection() {
   };
 
   useEffect(() => {
+    if (!token) {
+      console.log("Aguardando token para buscar imagens...");
+      return;
+  }
     const fetchImagens = async () => {
       if (fachadaId === undefined || fachadaId === null) {
         console.error("Fachada ID não encontrado no state.", { fachadaId });
@@ -255,7 +273,16 @@ export default function ImgSection() {
       }
 
       try {
-        const response = await axios.get(`http://localhost:5000/images/facade/${fachadaId}`);
+        const config = {
+          headers: {
+              'Authorization': `Bearer ${token}`
+          }
+        };
+
+        // ALTERADO: Adiciona o objeto 'config' à chamada axios.get
+        const response = await axios.get(`http://localhost:5000/images/facade/${fachadaId}`, config);
+      
+
         console.log("Resposta da API:", response.data);
         console.log("fachadaId:", fachadaId);
 
@@ -279,7 +306,7 @@ export default function ImgSection() {
     };
 
     fetchImagens();
-  }, [fachadaId]);
+  }, [fachadaId, token]);
 
   if (loading) {
     return <p style={{ marginLeft: "18vw", padding: "2.5rem" }}>Carregando imagens da fachada: {fachadaNome}</p>;
