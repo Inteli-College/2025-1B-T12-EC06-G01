@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+import { useSelectedImages } from '../contexts/SelectedImagesContext';
 
 // Coloque este objeto dentro do seu componente NavHome.jsx, antes da declaração do return.
 const mockReportData = {
@@ -237,6 +238,7 @@ export default function NavHome() {
     const { project } = useProject();
     const location = useLocation();
     const navigate = useNavigate();
+    const { selectedImages, setSelectedImages } = useSelectedImages();
 
     const [dateFilter, setDateFilter] = useState(null)
     const [optionFilter, setOptionFilter] = useState('')
@@ -405,6 +407,25 @@ export default function NavHome() {
         }
     };
 
+    // Função para deletar imagens selecionadas
+    const handleDeleteSelectedImages = async () => {
+        if (selectedImages.length === 0) {
+            console.log('veio de NavHome');
+            alert('Selecione ao menos uma imagem para deletar.');
+            return;
+        }
+        try {
+            await axios.delete('http://localhost:5000/images/', {
+                data: { image_ids: selectedImages }
+            });
+            alert('Imagens deletadas com sucesso!');
+            setSelectedImages([]);
+            // Você pode emitir um evento ou usar outro contexto para atualizar a lista de imagens no ImgSection, se necessário
+        } catch (err) {
+            console.error('Erro ao deletar imagens:', err);
+            alert('Erro ao deletar imagens.');
+        }
+    };
 
     return (
         <Nav>
@@ -424,7 +445,7 @@ export default function NavHome() {
             </Infos>
 
             <Botoes>
-                <button> <FaTrash /> </button>
+                <button onClick={handleDeleteSelectedImages}> <FaTrash /> </button>
                 <button> <FaPaintBrush /> </button>
                 <button className='send-button' onClick={() => setShowPopup(true)}> <span>Enviar</span> <IoSend /> </button>
                 <button className='report-button' onClick={() => setShowReportPopup(true)}>Gerar Relatório</button>

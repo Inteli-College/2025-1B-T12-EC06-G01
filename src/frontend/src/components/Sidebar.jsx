@@ -165,17 +165,17 @@ export default function Sidebar(props) {
       <section>
         <Recente>
           <FaFolder />
-          <a href='/'>Lorem ipsum dolor sit amet</a>
+          <a href='/'>Projeto 1</a>
         </Recente>
 
         <Recente>
           <FaFolder />
-          <a href='/'>Lorem ipsum dolor sit amet</a>
+          <a href='/'>Projeto 2</a>
         </Recente>
 
         <Recente>
           <FaFolder />
-          <a href='/'>Lorem ipsum dolor sit amet</a>
+          <a href='/'>Projeto 3</a>
         </Recente>
       </section>
 

@@ -6,23 +6,26 @@ import Predio from './pages/Predio';
 import Fachada from './pages/Fachada'; 
 import { ProjectProvider } from './contexts/ProjectContext';
 import Result from './pages/Result';
+import { SelectedImagesProvider } from './contexts/SelectedImagesContext';
 
 function App() {
   return (
     <ProjectProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Projects />} />
-          <Route path="/projects" element={<Projects />} />
-          <Route path="/project/:projectId/predios" element={<ProjectPredios />} />
-          <Route path="/project/:projectId/predio/:predioNome" element={<Predio />} />
-          <Route path="/project/:projectId/predio/:predioNome/:fachadaNome" element={<Fachada />} />
-          {/* Rotas antigas mantidas para compatibilidade */}
-          <Route path="/predio/:predioNome" element={<Predio />} />
-          <Route path="/predio/:predioNome/:fachadaNome" element={<Fachada />} />
-          <Route path="/result/:facadeId" element={<Result />} />
-        </Routes>
-      </Router>
+      <SelectedImagesProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Projects />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/project/:projectId/predios" element={<ProjectPredios />} />
+            <Route path="/project/:projectId/predio/:predioNome" element={<Predio />} />
+            <Route path="/project/:projectId/predio/:predioNome/:fachadaNome" element={<Fachada />} />
+            {/* Rotas antigas mantidas para compatibilidade */}
+            <Route path="/predio/:predioNome" element={<Predio />} />
+            <Route path="/predio/:predioNome/:fachadaNome" element={<Fachada />} />
+            <Route path="/result/:facadeId" element={<Result />} />
+          </Routes>
+        </Router>
+      </SelectedImagesProvider>
     </ProjectProvider>
   );
 }
