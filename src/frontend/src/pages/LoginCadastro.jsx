@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import logo from '../logo.svg'
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -154,8 +155,9 @@ const LoadingSpinner = styled.div`
 `;
 
 export default function LoginRegister() {
-    const navigate = useNavigate(); // NOVO: Inicialize o hook
-    const [activeTab, setActiveTab] = useState('login');
+  const navigate = useNavigate(); // Inicialize o hook
+  const { login } = useAuth();
+  const [activeTab, setActiveTab] = useState('login');
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   
@@ -177,32 +179,24 @@ export default function LoginRegister() {
     setMessage({ type: '', text: '' });
 
     try {
-      const response = await fetch('http://localhost:5000/login', { 
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: loginData.email,
-          password: loginData.password
-        })
-      });
+      const result = await login(loginData.email, loginData.password);
 
-      const data = await response.json();
-
-      if (response.ok && data.token) {
-        // 1. Salve o token no localStorage para ser usado em outras requisições
-        localStorage.setItem('jwt_token', data.token); 
-        
+      if (result.success) {
+        // A navegação continua aqui, pois é uma responsabilidade do componente de UI.
         setMessage({ type: 'success', text: 'Login realizado com sucesso! Redirecionando...' });
         
-        // 2. Redirecione o usuário para a página de projetos após um pequeno atraso
+        // O redirecionamento acontece após o sucesso ser confirmado pelo contexto.
         setTimeout(() => {
-          navigate('/projects'); // Usa o navigate para ir para a página de projetos
+          navigate('/projects');
         }, 1500);
       } else {
-        setMessage({ type: 'error', text: data.message || 'Erro ao fazer login' }); // Usando data.message para a msg do backend
+        // Se a função 'login' do contexto retornar um erro, usamos a mensagem dela.
+        setMessage({ type: 'error', text: result.message });
       }
     } catch (error) {
-      setMessage({ type: 'error', text: 'Erro de conexão com o servidor' });
+        // Este catch agora lida com erros inesperados no processo
+        setMessage({ type: 'error', text: 'Ocorreu um erro inesperado.'});
+        console.error("Erro no componente de login:", error);
     } finally {
       setIsLoading(false);
     }

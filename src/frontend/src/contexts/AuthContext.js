@@ -6,60 +6,65 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('jwt_token'));
-  const navigate = useNavigate();
+  const [token, setToken] = useState(() => localStorage.getItem('jwt_token'));
+  const [isLoadingAuth, setIsLoadingAuth] = useState(true);
 
-  // Este useEffect roda quando a aplicação carrega
   useEffect(() => {
-    if (token) {
-      // Se um token existe, busca os dados do usuário
-      const fetchUserData = async () => {
-        try {
-          const config = {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          };
-
-          const response = await axios.get('http://localhost:5000/me', config);
-          setCurrentUser(response.data);
-        } catch (error) {
-          // Se o token for inválido/expirado, limpa tudo
-          console.error("Falha ao buscar usuário com token:", error);
-          logout();
-        }
-      };
-      fetchUserData();
-    }
-  }, [token]); // Roda sempre que o token mudar
+    const verifyUserToken = async () => {
+      if (!token) {
+        setIsLoadingAuth(false);
+        return;
+      }
+      try {
+        const config = { headers: { Authorization: `Bearer ${token}` } };
+        const response = await axios.get('http://localhost:5000/me', config);
+        setCurrentUser(response.data);
+      } catch (error) {
+        console.error("Token inválido na verificação inicial, limpando sessão.", error);
+        localStorage.removeItem('jwt_token');
+        setToken(null);
+        setCurrentUser(null);
+      } finally {
+        setIsLoadingAuth(false);
+      }
+    };
+    verifyUserToken();
+  }, [token]);
 
   const login = async (email, password) => {
-    const response = await fetch('http://localhost:5000/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-    const data = await response.json();
+    try {
+      // A correção está aqui: especificamos o método POST e enviamos os dados
+      const response = await fetch('http://localhost:5000/login', {
+        method: 'POST', // <-- GARANTE QUE A REQUISIÇÃO SEJA POST
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
 
-    if (response.ok && data.token) {
-      localStorage.setItem('jwt_token', data.token);
-      setToken(data.token); // Atualiza o estado do token, disparando o useEffect
-      navigate('/projects');
-      return { success: true };
-    } else {
-      return { success: false, message: data.message || "Erro no login." };
+      const data = await response.json();
+
+      if (response.ok && data.token) {
+        localStorage.setItem('jwt_token', data.token);
+        setToken(data.token);
+        // O navigate foi removido daqui para ser controlado pelo componente, o que está correto.
+        return { success: true };
+      } else {
+        return { success: false, message: data.message || "Erro no login." };
+      }
+    } catch (error) {
+      console.error("Erro de conexão na função de login:", error);
+      return { success: false, message: "Erro de conexão." };
     }
   };
 
   const logout = () => {
     localStorage.removeItem('jwt_token');
-    setCurrentUser(null);
     setToken(null);
-    navigate('/');
+    setCurrentUser(null);
   };
 
-  const value = { currentUser, token, login, logout };
-
+  const value = { currentUser, token, login, logout, isLoadingAuth };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 

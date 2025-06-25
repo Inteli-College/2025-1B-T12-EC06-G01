@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import Sidebar from '../components/Sidebar';
 import NavHome from '../components/NavHome';
 import { FaFolder } from "react-icons/fa6";
+import { useAuth } from '../contexts/AuthContext';
 
 const ProjectsPage = styled.div`
   display: flex;
@@ -86,6 +87,7 @@ const AddButton = styled.button`
 `;
 
 export default function Projects() {
+  const { isLoadingAuth } = useAuth();
   const [projects, setProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   // ALTERADO: O estado de erro agora guardará uma string amigável

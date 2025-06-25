@@ -138,16 +138,18 @@ const Perfil = styled.div`
 export default function Sidebar(props) {
   const [showPopup, setShowPopup] = useState(false);
   const { project, setProject } = useProject();
+
+  const { currentUser, logout, isLoadingAuth } = useAuth();
   const navigate = useNavigate();
 
-  const { currentUser, logout } = useAuth();
+  const handleLogout = () => {
+      logout(); // Chama a função de logout do contexto
+      navigate('/'); // Navega para a página de login
+  };
 
   const togglePopup = () => setShowPopup(!showPopup);
   const handleClick = () => navigate("/projects");
 
-  const handleLogout = () => {
-    logout();
-  };
 
   return (
     <Container>
@@ -191,14 +193,16 @@ export default function Sidebar(props) {
       <Perfil>
         <FaRegUserCircle />
         {/* ALTERADO: Exibindo dados reais do usuário */}
-        {currentUser ? (
+        {isLoadingAuth ? (
+          <p>Carregando...</p>
+        ) : currentUser ? (
           <p>
             <strong>{currentUser.name}</strong>
             <br />
             ID: {currentUser.id}
           </p>
         ) : (
-          <p>Carregando...</p>
+          <p>Não conectado</p>
         )}
         <button onClick={handleLogout}><IoExitOutline /></button>
       </Perfil>
