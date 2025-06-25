@@ -11,8 +11,9 @@ class ImageRepository:
     @staticmethod
     def delete_images_by_ids(image_ids):
         try:
+            print ('\n OITUDOBEM')
             # Acha as imagens
-            existing_images = Image.query.filter(Image.id.in_(image_ids)).all()
+            existing_images = Image.query.filter(Image.name.in_(image_ids)).all()
             if not existing_images:
                 return 0  # Retorna 0 caso não ache as imagens
             
@@ -21,6 +22,7 @@ class ImageRepository:
             # Deleta todas imagens achadas pelo query.filter
             for image in existing_images:
                 db.session.delete(image)
+                print (f"[ImageRepository] Deletando imagem: {image} - {image.name}")
                 
             db.session.commit()
             
