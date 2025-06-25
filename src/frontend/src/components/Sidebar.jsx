@@ -144,9 +144,14 @@ export default function Sidebar(props) {
   };
 
 
-  const handleClick = () => {
+  const handleClickProjects = () => {
     navigate("/projects");
   };
+
+  const handleClickActions = () => {
+    navigate("/actions");
+  };
+
 
 
   return (
@@ -182,8 +187,8 @@ export default function Sidebar(props) {
       <hr style={{ width: '80%' }} />
 
       <section style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.8rem' }}>
-        <BtnMenor onClick={handleClick}>Projetos</BtnMenor>
-        <BtnMenor>Dashboard</BtnMenor>
+        <BtnMenor onClick={handleClickProjects}>Projetos</BtnMenor>
+        <BtnMenor onClick={handleClickActions} >Ações</BtnMenor>
       </section>
 
       <Perfil>
