@@ -189,8 +189,8 @@ export default function FoldersSection({
         if (apiUrl && token) {
             fetchFolders();
         }
-    }, [propFolders, apiUrl, fetchFolders, token]); 
-
+    }, [propFolders, apiUrl, folderIdField, folderNameField, fetchFolders, token]);
+    
     const [pasta, setPasta] = useState('');
     const { projectId } = useParams();
     const [showAddPopup, setShowAddPopup] = useState(false);
