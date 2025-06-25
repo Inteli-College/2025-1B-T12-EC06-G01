@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { IoIosAdd } from "react-icons/io"
-import { FaRegUserCircle, FaFolder } from "react-icons/fa"
+import { FaRegUserCircle } from "react-icons/fa"
 import { IoExitOutline } from "react-icons/io5"
 import logo from '../logo.svg'
 import { useProject } from '../contexts/ProjectContext'
@@ -166,23 +166,6 @@ export default function Sidebar(props) {
       {showPopup && (
         <NovoProjetoPopup onClose={togglePopup} onSubmit={(data) => setProject(data)} />
       )}
-
-      <section>
-        <Recente>
-          <FaFolder />
-          <a href='/'>Lorem ipsum dolor sit amet</a>
-        </Recente>
-
-        <Recente>
-          <FaFolder />
-          <a href='/'>Lorem ipsum dolor sit amet</a>
-        </Recente>
-
-        <Recente>
-          <FaFolder />
-          <a href='/'>Lorem ipsum dolor sit amet</a>
-        </Recente>
-      </section>
 
       <hr style={{ width: '80%' }} />
 
