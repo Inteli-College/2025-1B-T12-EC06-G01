@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { FaTrash, FaPaintBrush } from 'react-icons/fa'
+import { FaTrash } from 'react-icons/fa'
 import { IoSend } from 'react-icons/io5'
 import { useProject } from '../contexts/ProjectContext'
 import SendPopup from '../components/SendPopup'
@@ -155,35 +155,95 @@ const generatePDF = (data) => {
 };
 
 const Nav = styled.div`
-    margin-left: 18vw;
-    width: 81.2vw;
-    height: 18vh;
+    margin-left: var(--sidebar-width, 280px);
+    width: calc(100vw - var(--sidebar-width, 280px));
+    min-height: 18vh;
     display: flex;
     flex-direction: row;
+    align-items: center;
+    padding: var(--spacing-md);
+
+    @media (max-width: 480px) {
+        margin-left: 0;
+        width: 100vw;
+        flex-direction: column;
+        gap: var(--spacing-sm);
+        padding: var(--spacing-sm);
+    }
+
+    @media (min-width: 481px) and (max-width: 768px) {
+        margin-left: 200px;
+        width: calc(100vw - 200px);
+        padding: var(--spacing-sm);
+    }
+
+    @media (min-width: 1441px) {
+        margin-left: 320px;
+        width: calc(100vw - 320px);
+        padding: var(--spacing-lg);
+    }
 `
 
 const Infos = styled.div`
     display: flex;
     flex-direction: column;
     width: 70%;
-    padding-left: 2vw;
+    padding-left: var(--spacing-md);
 
     .filtros {
         display: flex;
         flex-direction: row;
-        gap: .8rem;
+        gap: var(--spacing-sm);
+        flex-wrap: wrap;
     }
 
     .filtros input, select {
         border: 1px solid lightgray;
-        padding: .5rem;
+        padding: var(--spacing-xs);
         border-radius: 12px;
+        font-size: var(--font-size-sm);
     }
 
     h3 {
         width: 80%;
-        padding: .5rem;
-        font-size: 40px;
+        padding: var(--spacing-xs);
+        font-size: var(--font-size-3xl);
+        margin: 0 0 var(--spacing-sm) 0;
+    }
+
+    @media (max-width: 480px) {
+        width: 100%;
+        padding-left: 0;
+        
+        .filtros {
+            flex-direction: column;
+            gap: var(--spacing-xs);
+        }
+        
+        h3 {
+            width: 100%;
+            font-size: var(--font-size-2xl);
+            text-align: center;
+        }
+    }
+
+    @media (min-width: 481px) and (max-width: 768px) {
+        width: 60%;
+        padding-left: var(--spacing-sm);
+        
+        .filtros {
+            gap: var(--spacing-xs);
+        }
+        
+        h3 {
+            font-size: var(--font-size-2xl);
+        }
+    }
+
+    @media (min-width: 1441px) {
+        h3 {
+            font-size: var(--font-size-4xl);
+        }
     }
     .clear-filter-button {
     padding: 0.2rem 0.4rem;
@@ -208,25 +268,46 @@ const Infos = styled.div`
 const Botoes = styled.div`
     display: flex;
     flex-direction: row;
-    padding: 2rem;
-    gap: 2rem;
+    flex-wrap: wrap;
+    padding: var(--spacing-md);
+    gap: var(--spacing-md);
+    align-items: center;
+    margin-right: var(--spacing-xl);
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow-x: auto;
 
     button {
         height: 70%;
-        width: 5rem;
-        border: 3px solid #0A3B4E;
+        min-height: 44px;
+        border: 3px solid var(--secondary-color);
         border-radius: 15px;
-        background-color: #629EBC;
+        background-color: var(--primary-color);
         color: #fff;
+        transition: background-color 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--spacing-xs) var(--spacing-md);
+        margin-right: var(--spacing-sm);
+        font-size: var(--font-size-base);
+        min-width: 120px;
+        max-width: 100%;
+        box-sizing: border-box;
+        white-space: nowrap;
+    }
+
+    button:last-child {
+        margin-right: 0;
     }
 
     button:hover {
-        background-color: #3D80A3;
+        background-color: var(--primary-hover);
         cursor: pointer;
     }
 
     svg {
-        font-size: 1.5rem;
+        font-size: var(--font-size-lg);
     }
 
     .send-button {
@@ -234,20 +315,87 @@ const Botoes = styled.div`
         display: flex;
         align-items: center;
         justify-content: space-around;
-        padding: 1rem;
+        padding: var(--spacing-xs) var(--spacing-md);
     }
 
     .send-button span {
-        font-size: 36px;
+        font-size: var(--font-size-xl);
     }
 
     .report-button {
-        width: 12rem;
+        width: 10rem;
+        min-width: 140px;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 1rem;
-        font-size: 30px;
+        padding: var(--spacing-xs) var(--spacing-md);
+        font-size: var(--font-size-lg);
+        box-sizing: border-box;
+        white-space: nowrap;
+    }
+
+    @media (max-width: 480px) {
+        flex-direction: column;
+        padding: var(--spacing-xs);
+        gap: var(--spacing-xs);
+        width: 100%;
+        margin-right: 0;
+
+        button {
+            width: 100%;
+            min-height: 44px;
+            margin-right: 0;
+        }
+
+        .send-button, .report-button {
+            width: 100%;
+            min-width: 120px;
+        }
+
+        .send-button span {
+            font-size: var(--font-size-base);
+        }
+
+        .report-button {
+            font-size: var(--font-size-base);
+        }
+    }
+
+    @media (min-width: 481px) and (max-width: 768px) {
+        padding: var(--spacing-xs);
+        gap: var(--spacing-xs);
+        margin-right: var(--spacing-lg);
+
+        .send-button, .report-button {
+            width: 8rem;
+            min-width: 120px;
+        }
+
+        .send-button span {
+            font-size: var(--font-size-lg);
+        }
+
+        .report-button {
+            font-size: var(--font-size-base);
+        }
+    }
+
+    @media (min-width: 1441px) {
+        gap: var(--spacing-lg);
+        margin-right: var(--spacing-2xl, 3.5rem);
+
+        .send-button, .report-button {
+            width: 12rem;
+            min-width: 140px;
+        }
+
+        .send-button span {
+            font-size: var(--font-size-2xl);
+        }
+
+        .report-button {
+            font-size: var(--font-size-xl);
+        }
     }
 `
 
@@ -547,7 +695,6 @@ export default function NavHome() {
 
             <Botoes>
                 <button> <FaTrash /> </button>
-                <button> <FaPaintBrush /> </button>
                 <button className='send-button' onClick={openSendPopup}><span>Classificar</span> <IoSend /></button>
 
                 <button className='report-button' onClick={() => setShowReportPopup(true)}>Gerar Relatório</button>
