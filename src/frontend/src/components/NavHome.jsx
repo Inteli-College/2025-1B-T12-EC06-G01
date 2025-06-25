@@ -185,7 +185,25 @@ const Infos = styled.div`
         padding: .5rem;
         font-size: 40px;
     }
-`
+    .clear-filter-button {
+    padding: 0.2rem 0.4rem;
+    font-size: 12px;
+    font-weight: 500;
+    background-color: transparent; /* Fundo transparente */
+    color: #629EBC;                /* Cor do texto igual à dos botões principais */
+    border: 1px solid #629EBC;      /* Borda com a cor principal */
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-left: 1rem;
+
+    &:hover {
+        background-color: #629EBC; /* Fundo preenche no hover */
+        color: white;             /* Texto fica branco no hover */
+    }
+}
+`   
+    
 
 const Botoes = styled.div`
     display: flex;
@@ -264,13 +282,14 @@ export default function NavHome() {
     const currentBuildingIdFromState = location.state?.buildingId;
     const finalBuildingId = currentBuildingIdFromState || currentBuildingId;
 
-
-
-
-    const [dateFilter, setDateFilter] = useState(null)
-    const [optionFilter, setOptionFilter] = useState('')
-    const [latitudeFilter, setLatitudeFilter] = useState('')
-    const [longitudeFilter, setLongitudeFilter] = useState('')
+    const {
+        contractors,
+        orderFilter, setOrderFilter,
+        contractorFilter, setContractorFilter,
+        startDateFilter, setStartDateFilter,
+        endDateFilter, setEndDateFilter,
+        clearFilters 
+      } = useProject();
 
     const [showPopup, setShowPopup] = useState(false)
     const [showReportPopup, setShowReportPopup] = useState(false)
@@ -300,7 +319,7 @@ export default function NavHome() {
                 };
 
                 // Busca os projetos na API COM o token
-                const response = await axios.get('http://localhost:5000/projects/', config);
+                const response = await axios.get('http://localhost:5000/projects', config);
                 setProjects(response.data); // Popula o estado com os projetos
 
             } catch (err) {
@@ -482,16 +501,48 @@ export default function NavHome() {
             <Infos>
                 <h3>{getPageTitle()}</h3>
 
-                <div className='filtros'>
-                    <input type='date' onChange={(e) => setDateFilter(e.target.value)} />
-                    <select onChange={(e) => setOptionFilter(e.target.value)} >
-                        <option>Selecione uma opção</option>
-                        <option>Outra opção</option>
-                    </select>
+                {/* Renderização condicional dos filtros */}
+                {location.pathname === '/projects' && (
+                    <div className='filtros'>
+                                
+                                {/* Input de Data de Início Corrigido */}
+                                <div className="filtro-item">
+                    <label htmlFor="start-date">A partir de:</label>
+                    <input 
+                        id="start-date"
+                        type='date'
+                        value={startDateFilter} // de volta para 'value'
+                        onChange={(e) => setStartDateFilter(e.target.value)} // de volta para 'onChange'
+                    />
+                    </div>
+                    
+                    <div className="filtro-item">
+                    <label htmlFor="end-date">Até:</label>
+                    <input 
+                        id="end-date"
+                        type='date'
+                        value={endDateFilter} // de volta para 'value'
+                        onChange={(e) => setEndDateFilter(e.target.value)} // de volta para 'onChange'
+                    />
+                    </div>
 
-                    <input type='text' placeholder='longitude' onChange={(e) => setLongitudeFilter(e.target.value)} />
-                    <input type='text' placeholder='latitude' onChange={(e) => setLatitudeFilter(e.target.value)} />
-                </div>
+                        {/* Os selects podem continuar com onChange, pois a seleção é uma ação única */}
+                        <select value={contractorFilter} onChange={(e) => setContractorFilter(e.target.value)}>
+                            <option value="">Todos Contratantes</option>
+                            {contractors.map(c => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                        
+                        <select value={orderFilter} onChange={(e) => setOrderFilter(e.target.value)}>
+                            <option value="asc">Ordem A-Z</option>
+                            <option value="desc">Ordem Z-A</option>
+                        </select>
+
+                        <button onClick={clearFilters} className="clear-filter-button">
+                            Limpar Filtros
+                        </button>
+                        
+                    </div>
+                )}
             </Infos>
 
             <Botoes>
