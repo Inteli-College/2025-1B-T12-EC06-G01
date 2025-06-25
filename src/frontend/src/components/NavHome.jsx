@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { FaTrash, FaPaintBrush } from 'react-icons/fa'
+import { FaTrash } from 'react-icons/fa'
 import { IoSend } from 'react-icons/io5'
 import { useProject } from '../contexts/ProjectContext'
 import SendPopup from '../components/SendPopup'
@@ -695,7 +695,6 @@ export default function NavHome() {
 
             <Botoes>
                 <button> <FaTrash /> </button>
-                <button> <FaPaintBrush /> </button>
                 <button className='send-button' onClick={openSendPopup}><span>Classificar</span> <IoSend /></button>
 
                 <button className='report-button' onClick={() => setShowReportPopup(true)}>Gerar Relatório</button>
