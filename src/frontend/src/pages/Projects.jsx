@@ -279,7 +279,7 @@ export default function Projects() {
     <ProjectsPage>
       <Sidebar />
       <Body>
-        <NavHome />
+        <NavHome/>
         
         <Container isLoading={isLoading}>
           {isLoading && <LoadingMessage>Carregando projetos...</LoadingMessage>}

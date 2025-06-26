@@ -630,6 +630,8 @@ export default function NavHome() {
             console.error('Erro ao deletar imagens:', err);
             alert('Erro ao deletar imagens.');
         }
+    };
+
     const openSendPopup = () => {
         if (!currentProjectId) setSelectedProject('');
         if (!currentBuildingId) setSelectedBuilding('');
@@ -747,5 +749,4 @@ export default function NavHome() {
             )}
         </Nav>
     );
-}
 }
