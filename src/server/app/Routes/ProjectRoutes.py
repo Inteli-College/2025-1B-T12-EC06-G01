@@ -73,3 +73,10 @@ def get_projects():
     """
     result, code = project_controller.get_projects()
     return jsonify(result), code
+
+@project_blueprint.route('/reportable', methods=['GET'])
+@token_required
+def get_reportable_projects():
+    """Retorna apenas projetos que possuem imagens com fissuras classificadas."""
+    result, code = project_controller.get_reportable_projects()
+    return jsonify(result), code

@@ -4,78 +4,12 @@ import { FaTrash } from 'react-icons/fa'
 import { IoSend } from 'react-icons/io5'
 import { useProject } from '../contexts/ProjectContext'
 import SendPopup from '../components/SendPopup'
+import ReportPopup from '../components/ReportPopup';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import { useAuth } from '../contexts/AuthContext';
-
-// Coloque este objeto dentro do seu componente NavHome.jsx, antes da declaração do return.
-const mockReportData = {
-    informacoes_gerais: {
-      id_relatorio: "REL-2025-001",
-      nome_projeto: "Projeto Demo Shopping Center",
-      nome_contratante: "IPT - Instituto de Pesquisas Tecnológicas",
-      data_emissao_relatorio: new Date().toISOString(),
-      modelo_utilizado: "Modelo de Fissuras v2.1"
-    },
-    resumo_quantitativo_projeto: {
-      total_imagens_analisadas: 350,
-      total_imagens_com_fissura: 85,
-      total_fissuras_por_tipo: {
-        fissura_termica: 40,
-        fissura_retracao: 45
-      }
-    },
-    detalhamento_por_predio: [
-      {
-        nome_predio: "Bloco A - Lojas",
-        resumo_quantitativo_predio: {
-          total_imagens: 200,
-          total_imagens_com_fissura: 50,
-          fissura_termica: 25,
-          fissura_retracao: 25
-        },
-        fachadas: [
-          {
-            nome_fachada: "Fachada Norte",
-            resumo_quantitativo_fachada: {
-              total_imagens: 100,
-              fissura_termica: 15,
-              fissura_retracao: 10
-            }
-          },
-          {
-            nome_fachada: "Fachada Leste",
-            resumo_quantitativo_fachada: {
-              total_imagens: 100,
-              fissura_termica: 10,
-              fissura_retracao: 15
-            }
-          }
-        ]
-      },
-      {
-        nome_predio: "Bloco B - Estacionamento",
-        resumo_quantitativo_predio: {
-          total_imagens: 150,
-          total_imagens_com_fissura: 35,
-          fissura_termica: 15,
-          fissura_retracao: 20
-        },
-        fachadas: [
-          {
-            nome_fachada: "Fachada Sul",
-            resumo_quantitativo_fachada: {
-              total_imagens: 150,
-              fissura_termica: 15,
-              fissura_retracao: 20
-            }
-          }
-        ]
-      }
-    ]
-  };
 
 const generatePDF = (data) => {
     const doc = new jsPDF();
@@ -98,8 +32,8 @@ const generatePDF = (data) => {
         body: [
             ['Total de imagens analisadas', data.resumo_quantitativo_projeto.total_imagens_analisadas],
             ['Total de imagens com fissura', data.resumo_quantitativo_projeto.total_imagens_com_fissura],
-            ['Fissuras térmicas', data.resumo_quantitativo_projeto.total_fissuras_por_tipo.fissura_termica],
-            ['Fissuras por retração', data.resumo_quantitativo_projeto.total_fissuras_por_tipo.fissura_retracao]
+            ['Fissuras térmicas', data.resumo_quantitativo_projeto.total_fissuras_por_tipo.fissura_termica || 0],
+            ['Fissuras por retração', data.resumo_quantitativo_projeto.total_fissuras_por_tipo.fissura_retracao || 0]
         ],
     });
 
@@ -109,7 +43,7 @@ const generatePDF = (data) => {
 
     // 3. Itera sobre cada prédio, aplicando a mesma lógica segura
     data.detalhamento_por_predio.forEach((predio) => {
-        if (y > 260) { doc.addPage(); y = 20; } // Adiciona nova página se necessário
+        if (y > 260) { doc.addPage(); y = 20; }
         doc.setFontSize(14);
         doc.text(`Prédio: ${predio.nome_predio}`, 14, y);
         y += 6;
@@ -120,15 +54,15 @@ const generatePDF = (data) => {
             body: [
                 ['Total de imagens', predio.resumo_quantitativo_predio.total_imagens],
                 ['Com fissuras', predio.resumo_quantitativo_predio.total_imagens_com_fissura],
-                ['Fissuras térmicas', predio.resumo_quantitativo_predio.fissura_termica],
-                ['Fissuras por retração', predio.resumo_quantitativo_predio.fissura_retracao],
+                ['Fissuras térmicas', predio.resumo_quantitativo_predio.fissura_termica || 0],
+                ['Fissuras por retração', predio.resumo_quantitativo_predio.fissura_retracao || 0],
             ]
         });
         
         y = doc.lastAutoTable ? doc.lastAutoTable.finalY + 5 : y;
 
         // 4. Itera sobre cada fachada, com a mesma lógica segura
-        predio.fachadas?.forEach((fachada) => {
+        predio.fachadas_list?.forEach((fachada) => {
             if (y > 260) { doc.addPage(); y = 20; }
             doc.setFontSize(12);
             doc.text(`Fachada: ${fachada.nome_fachada}`, 16, y);
@@ -140,16 +74,15 @@ const generatePDF = (data) => {
                 head: [['Métrica', 'Valor']],
                 body: [
                     ['Total de imagens', fachada.resumo_quantitativo_fachada.total_imagens],
-                    ['Fissuras térmicas', fachada.resumo_quantitativo_fachada.fissura_termica],
-                    ['Fissuras por retração', fachada.resumo_quantitativo_fachada.fissura_retracao],
+                    // ALTERADO: Adicionado '|| 0'
+                    ['Fissuras térmicas', fachada.resumo_quantitativo_fachada.fissura_termica || 0],
+                    ['Fissuras por retração', fachada.resumo_quantitativo_fachada.fissura_retracao || 0],
                 ]
             });
 
             y = doc.lastAutoTable ? doc.lastAutoTable.finalY + 5 : y;
         });
     });
-
-    // --- FIM DA CORREÇÃO ---
 
     doc.save(`${data.informacoes_gerais.nome_projeto}.pdf`);
 };
@@ -402,6 +335,7 @@ const Botoes = styled.div`
 export default function NavHome() {
     const { token } = useAuth(); // Pega o token do nosso contexto global
     const { project } = useProject();
+    const [reportableProjects, setReportableProjects] = useState([]);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -451,33 +385,31 @@ export default function NavHome() {
     const [selectedReportProject, setSelectedReportProject] = useState('')
 
     useEffect(() => {
-        const fetchProjects = async () => {
-            try {
-                // Pega o token do localStorage
-                const token = localStorage.getItem('jwt_token');
-                if (!token) {
-                    console.error("Token não encontrado, não é possível buscar projetos.");
-                    // O PrivateRoute deve eventualmente lidar com isso, mas é uma boa verificação
-                    return;
+        // Só executa a função se o token existir.
+        if (token) {
+            const fetchProjects = async () => {
+                try {
+                    // A configuração do cabeçalho agora usa o token reativo do contexto.
+                    const config = {
+                        headers: { Authorization: `Bearer ${token}` }
+                    };
+
+                    // Busca os projetos na API COM o token
+                    const response = await axios.get('http://localhost:5000/projects/', config);
+                    setProjects(response.data); // Popula o estado com os projetos
+
+                } catch (err) {
+                    console.error("Erro ao buscar projetos:", err);
+                    setProjects([]); // Limpa os projetos em caso de erro
                 }
+            };
 
-                // Configura o cabeçalho de autorização
-                const config = {
-                    headers: { Authorization: `Bearer ${token}` }
-                };
-
-                // Busca os projetos na API COM o token
-                const response = await axios.get('http://localhost:5000/projects', config);
-                setProjects(response.data); // Popula o estado com os projetos
-
-            } catch (err) {
-                console.error("Erro ao buscar projetos:", err);
-                // Você pode definir uma mensagem de erro aqui, se desejar
-            }
-        };
-
-        fetchProjects();
-    }, []);
+            fetchProjects();
+        } else {
+            // Se não há token (ex: após logout), limpa a lista de projetos.
+            setProjects([]);
+        }
+    }, [token]); 
 
     useEffect(() => {
         if (selectedProject) {
@@ -558,9 +490,18 @@ export default function NavHome() {
             });
     };
 
-    const handleOpenReportPopup = () => {
-        setShowReportPopup(true);
-    };
+    const handleOpenReportPopup = async () => {
+        try {
+          const config = { headers: { Authorization: `Bearer ${token}` } };
+          // Chama a nova rota /projects/reportable
+          const response = await axios.get('http://localhost:5000/projects/reportable', config);
+          setReportableProjects(response.data); // Salva a lista filtrada no novo estado
+          setShowReportPopup(true); // Abre o popup
+        } catch (error) {
+          console.error("Erro ao buscar projetos para relatório:", error);
+          alert(error.response?.data?.message || "Não foi possível carregar a lista de projetos.");
+        }
+      };
 
     const handleDownloadReport = async () => {
         if (!selectedReportProject) {
@@ -575,7 +516,7 @@ export default function NavHome() {
                 }
             };
     
-            const response = await axios.get(`http://localhost:5000/projects/${selectedReportProject}/report`, config);
+            const response = await axios.get(`http://localhost:5000/projects/${selectedReportProject}/report/`, config);
     
             // Se a chamada for bem-sucedida, usa os dados recebidos para gerar o PDF
             // (Assumindo que você tem uma função generatePDF(data) disponível)
@@ -697,7 +638,7 @@ export default function NavHome() {
                 <button> <FaTrash /> </button>
                 <button className='send-button' onClick={openSendPopup}><span>Classificar</span> <IoSend /></button>
 
-                <button className='report-button' onClick={() => setShowReportPopup(true)}>Gerar Relatório</button>
+                <button className='report-button' onClick={handleOpenReportPopup}>Gerar Relatório</button>
             </Botoes>
 
             {showPopup && (
@@ -717,6 +658,17 @@ export default function NavHome() {
                     onSend={handleSendImages}
                     onClose={() => setShowPopup(false)}
                 />
+            )}
+            
+            {/* Renderização do Popup de Relatório */}
+            {showReportPopup && (
+                <ReportPopup
+                    projects={reportableProjects}
+                    selectedProject={selectedReportProject}
+                    setSelectedProject={setSelectedReportProject}
+                    onDownload={handleDownloadReport}
+                    onClose={() => setShowReportPopup(false)}
+            />
             )}
         </Nav>
     );
