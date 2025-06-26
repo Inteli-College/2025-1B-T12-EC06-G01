@@ -139,6 +139,14 @@ const sidebars = {
         // Adicione outros documentos da Sprint 4 aqui
       ],
     },
+    {
+      type: 'category',
+      label: 'Sprint 5',
+      link: { type: 'generated-index' },
+      items: [
+        'sprint5/backend'
+      ]
+    },
     // Se houver uma Sprint 5, adicione-a também:
     // {
     //   type: 'category',
