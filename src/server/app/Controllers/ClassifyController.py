@@ -95,7 +95,6 @@ class ClassifyController:
         self.diretory_util.all_fissures(fissures=fissures)
 
         # Faz o download das imagens pegadas do banco de dados
-        print(f"CODIGOS PAPAI CODIGO1: {code}, CODIGO2: {code2}")
         if code == 200 and code2 == 200:
             result4, code = self.diretory_util.download_images(result=result) 
             if code != 201:
@@ -154,6 +153,25 @@ class ClassifyController:
                 })
 
             return resultados, code
+
+    def put_model_version_true(self, data):
+        try:
+            id_versao = data['version_id']
+        
+        except Exception as e:
+            print("[ClassifyController] Os conteúdos do json não são suficientes...")
+            return {"code": 400, "message": "Os conteúdos do json não são suficientes..."}, 400
+        
+        result, code = self.classify_repository.update_version_true(version_id=id_versao)
+
+        if code == 201:
+            return {
+                "version": result.version,
+                "real_model": result.real_model
+            }, 201
+        
+        else:
+            return {"code": code, "message": result}, code
 
 
 

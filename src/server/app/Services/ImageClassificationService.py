@@ -3,11 +3,13 @@ from app.Services.ImageFilterService import ImageFilterService
 from app.Repositories.ClassificationRepository import ClassificationRepository
 from app import db
 from app.Models.image import Image
+from app.Repositories.FissureRepository import FissureRepository
 
 class ImageClassificationService:
     def __init__(self):
         self.filter_svc    = ImageFilterService()
         self.classify_repo = ClassificationRepository()
+        self.fissure_repo = FissureRepository()
 
     def classify_facade_images(
         self,
@@ -20,14 +22,14 @@ class ImageClassificationService:
         urls   = [img["raw_image"] for img in images]
 
         # 2) chama o modelo
+        path = self.classify_repo.read_version_path()
         results = self.classify_repo.classify_urls(urls)
 
+        """
+        Mostrar na apresentação todas as partes onde está modulado
+        """
 
-                # 3) grava resultados em cada Image do banco
-        classificadas = {
-            "termica": [],
-            "retracao": [],
-        }
+        classificadas, objetos = self.fissure_repo.read_fissures()
 
         for serialized in images:
             raw_url = serialized["raw_image"]
@@ -47,14 +49,19 @@ class ImageClassificationService:
                 continue  # ignora classes irrelevantes
 
             classificadas[class_key].append(raw_url)
+            print("\n Aqui papai: ", classificadas)
 
             if fissure_class in classificadas:
                 classificadas[fissure_class].append(raw_url)
 
             img_obj = Image.query.filter_by(raw_image=raw_url).first()
             if img_obj:
-                img_obj.fissure_id = 1 if fissure_class == "termica" else 2
-                img_obj.veredict = fissure_class
+                for fiss in objetos:
+                    if str(fiss.fissure_name) == str(class_key):
+                        real_id = int(fiss.id)
+
+                img_obj.fissure_id = real_id
+
                 db.session.add(img_obj)
 
         db.session.commit()
