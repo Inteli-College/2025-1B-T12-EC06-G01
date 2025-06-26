@@ -146,9 +146,15 @@ const sidebars = {
       items: [
         'sprint5/backend',
         'sprint5/requisitos',
+<<<<<<< deteccao/docs
         'sprint5/modelo-deteccao'
       ]
     },
+=======
+      ]
+    },
+    
+>>>>>>> develop
     'Guia de execução do sistema'
   ],
 };

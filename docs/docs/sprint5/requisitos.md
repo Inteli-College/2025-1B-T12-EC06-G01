@@ -34,7 +34,7 @@ Após o ciclo completo de desenvolvimento, todos os requisitos previamente defin
 | RNF 04 | Falsos Negativos < 15% | ✅ Atendido | Resultados consistentes em diferentes conjuntos de teste. |
 | RNF 05 | Comunicação Segura via HTTPS | ❌ Não atendido | Sistema rodou apenas localmente em ambiente de desenvolvimento. |
 | RNF 06 | 100% de imagens armazenadas | ✅ Atendido | Testes confirmaram que todas as imagens capturadas foram armazenadas com sucesso. |
-| RNF 07 | Notificação de erros | ⚠️ Parcialmente atendido | Logs de erro são gerados no backend, mas não há alerta visual no frontend. |
+| RNF 07 | Notificação de erros | ✅ Atendido | Logs de erro são gerados no backend e há alerta visual no frontend. |
 | RNF 08 | Padronização do pré-processamento | ✅ Atendido | Todas as imagens passaram pelos mesmos passos definidos no pipeline. |
 
 ---

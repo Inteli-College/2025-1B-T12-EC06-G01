@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import styled from 'styled-components';
+import { useAuth } from '../contexts/AuthContext';
 
 const socket = io('http://localhost:5000');  
 
@@ -24,20 +25,32 @@ const RetrainSection = styled.div`
 `
 
 export default function RetrainProgress() {
+  const { token } = useAuth();
   const [progresso, setProgresso] = useState(0);
   const [mensagem, setMensagem] = useState('');
   const [treinando, setTreinando] = useState(false);
 
   useEffect(() => {
+    // Só tenta se conectar se o token existir
+    if (!token) return;
+
+    // Conecta ao socket enviando o token para autenticação
+    const socket = io('http://localhost:5000', {
+      auth: {
+        token: `Bearer ${token}`
+      }
+    });
+
+    socket.on('connect', () => {
+      console.log('Conectado ao servidor de Socket.IO com sucesso!');
+    });
+
     socket.on('training_progress_fe', (msg) => {
       console.log('PROGRESSO RECEBIDO:', msg);
-
       const valor = typeof msg.message === 'number'
         ? msg.message
         : parseInt(msg.message.toString().replace('%', '')) || 0;
-
       setProgresso(valor);
-
       if (valor >= 100) {
         setMensagem('Treinamento concluído!');
         setTreinando(false);
@@ -45,9 +58,10 @@ export default function RetrainProgress() {
     });
 
     return () => {
-      socket.off('training_progress_fe');
+      console.log('Desconectando do socket...');
+      socket.disconnect();
     };
-  }, []);
+  }, [token]);
 
   const iniciarTreinamento = async () => {
     setTreinando(true);
@@ -56,7 +70,10 @@ export default function RetrainProgress() {
 
     try {
       const response = await fetch('http://localhost:5000/classify/retrain', {
-        method: 'POST'
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
       const data = await response.json();
       setMensagem(data.message);

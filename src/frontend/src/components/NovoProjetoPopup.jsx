@@ -85,7 +85,7 @@ export default function NovoProjetoPopup({ onClose, onSubmit }) {
         .then(res => {
           alert("Projeto criado com sucesso!");
           onClose();
-          navigate('/');
+          navigate('/projects');
           window.location.reload();
         })
         .catch(err => {
