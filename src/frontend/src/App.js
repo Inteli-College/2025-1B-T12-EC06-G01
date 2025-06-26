@@ -7,7 +7,7 @@ import Fachada from './pages/Fachada';
 import { ProjectProvider } from './contexts/ProjectContext';
 import Result from './pages/Result';
 import { SelectedImagesProvider } from './contexts/SelectedImagesContext';
-
+import DetectResult from './pages/DetectResult'
 import LoginRegister from './pages/LoginCadastro';
 import PrivateRoute from './components/PrivateRoute';
 import { AuthProvider } from './contexts/AuthContext';
