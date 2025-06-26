@@ -388,6 +388,7 @@ export default function FoldersSection({
                 alert("Pasta criada com sucesso!");
                 setShowAddPopup(false);
                 fetchFolders();
+                window.location.reload();
             })
             .catch(err => {
                 console.error("Erro ao criar pasta:", err);
