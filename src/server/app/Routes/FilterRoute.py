@@ -1,10 +1,12 @@
 from flask import Blueprint, request
 from app.Controllers.ImageReviewController import ImageReviewController
+from app.auth_decorator import token_required
 
 controller = ImageReviewController()
 filter_bp = Blueprint("filter", __name__, url_prefix="/facades/<int:facade_id>/filter")
 
 @filter_bp.route("/images", methods=["GET"])
+@token_required
 def filter_images_route(facade_id):
     """
     GET //facades/<int:facade_id>/filter/images

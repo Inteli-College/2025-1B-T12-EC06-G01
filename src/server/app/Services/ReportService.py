@@ -1,5 +1,3 @@
-# Em app/Services/ReportService.py
-
 from datetime import datetime
 import uuid
 from app.Repositories.ReportRepository import ReportRepository
@@ -14,12 +12,16 @@ class ReportService:
         if not project:
             return None
 
+        # --- ESTRUTURA DE AGREGAÇÃO CORRIGIDA ---
         report = {
             "informacoes_gerais": {},
             "resumo_quantitativo_projeto": {
                 "total_imagens_analisadas": 0,
                 "total_imagens_com_fissura": 0,
-                "total_fissuras_por_tipo": {}
+                "total_fissuras_por_tipo": {
+                    "fissura_termica": 0, # Inicializa com as chaves corretas
+                    "fissura_retracao": 0
+                }
             },
             "detalhamento_por_predio": []
         }
@@ -27,24 +29,30 @@ class ReportService:
         buildings_map = {}
 
         for image, facade, building in raw_data:
+            # Agregação geral do projeto
             report["resumo_quantitativo_projeto"]["total_imagens_analisadas"] += 1
-
-            if image.fissure: # Verifica se existe uma fissura associada
+            if image.fissure:
                 report["resumo_quantitativo_projeto"]["total_imagens_com_fissura"] += 1
-                
-                fissure_name = image.fissure.fissure_name # Pega o nome da fissura pela relação
-                
-                report["resumo_quantitativo_projeto"]["total_fissuras_por_tipo"][fissure_name] = \
-                    report["resumo_quantitativo_projeto"]["total_fissuras_por_tipo"].get(fissure_name, 0) + 1
+                fissure_name = image.fissure.fissure_name
+                # Lógica para incrementar a chave correta
+                if fissure_name == 'termica':
+                    report["resumo_quantitativo_projeto"]["total_fissuras_por_tipo"]["fissura_termica"] += 1
+                elif fissure_name == 'retracao':
+                    report["resumo_quantitativo_projeto"]["total_fissuras_por_tipo"]["fissura_retracao"] += 1
 
+            # --- LÓGICA DE AGREGAÇÃO POR PRÉDIO CORRIGIDA ---
             if building.id not in buildings_map:
                 buildings_map[building.id] = {
                     "id_predio": building.id,
-                    "nome_predio": building.predio, #
+                    "nome_predio": building.predio,
                     "resumo_quantitativo_predio": {
-                        "total_imagens": 0, "total_imagens_com_fissura": 0
+                        "total_imagens": 0,
+                        "total_imagens_com_fissura": 0,
+                        "fissura_termica": 0, # Inicializa com as chaves corretas
+                        "fissura_retracao": 0
                     },
-                    "fachadas": {}, "fachadas_list": []
+                    "fachadas": {},
+                    "fachadas_list": []
                 }
             
             b_summary = buildings_map[building.id]["resumo_quantitativo_predio"]
@@ -52,22 +60,33 @@ class ReportService:
             if image.fissure:
                 b_summary["total_imagens_com_fissura"] += 1
                 fissure_name = image.fissure.fissure_name
-                b_summary[fissure_name] = b_summary.get(fissure_name, 0) + 1
+                if fissure_name == 'termica':
+                    b_summary["fissura_termica"] += 1
+                elif fissure_name == 'retracao':
+                    b_summary["fissura_retracao"] += 1
             
+            # --- LÓGICA DE AGREGAÇÃO POR FACHADA CORRIGIDA ---
             facades_map = buildings_map[building.id]["fachadas"]
             if facade.id not in facades_map:
                 facades_map[facade.id] = {
                     "id_fachada": facade.id,
                     "nome_fachada": facade.name,
-                    "resumo_quantitativo_fachada": {"total_imagens": 0}
+                    "resumo_quantitativo_fachada": {
+                        "total_imagens": 0,
+                        "fissura_termica": 0, # Inicializa com as chaves corretas
+                        "fissura_retracao": 0
+                    }
                 }
             
             f_summary = facades_map[facade.id]["resumo_quantitativo_fachada"]
             f_summary["total_imagens"] += 1
             if image.fissure:
                 fissure_name = image.fissure.fissure_name
-                f_summary[fissure_name] = f_summary.get(fissure_name, 0) + 1
-
+                if fissure_name == 'termica':
+                    f_summary["fissura_termica"] += 1
+                elif fissure_name == 'retracao':
+                    f_summary["fissura_retracao"] += 1
+                    
         for building_id, building_data in buildings_map.items():
             building_data["fachadas_list"] = list(building_data["fachadas"].values())
             del building_data["fachadas"]

@@ -4,15 +4,23 @@ import { useState } from 'react'
 
 const Card = styled.div`
     position: relative;
-    width: 80%;
+    width: 100%;
+    max-width: 300px;
     height: 245px;
     background-color: #D0D4DC;
-    padding: 1rem;
+    padding: var(--spacing-sm);
     border-radius: 20px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    }
 
     .topo-card-img {
       display: flex;
@@ -23,11 +31,17 @@ const Card = styled.div`
       position: relative;
     }
 
-    input[type=checkbox] {
-      border: none;
-      padding: 62px;
+    @media (max-width: 768px) {
+        height: 200px;
+        padding: var(--spacing-xs);
+        max-width: 250px;
     }
 
+    @media (min-width: 1441px) {
+        height: 280px;
+        padding: var(--spacing-md);
+        max-width: 350px;
+    }
 `
 
 const CheckboxWrapper = styled.label`
@@ -35,7 +49,7 @@ const CheckboxWrapper = styled.label`
     align-items: center;
     cursor: pointer;
     gap: 8px;
-    margin-bottom: .5rem;
+    margin-bottom: var(--spacing-xs);
     position: absolute;
     top: 10px;
     right: 10px;
@@ -44,19 +58,20 @@ const CheckboxWrapper = styled.label`
     input[type="checkbox"] {
       display: none;
     }
+    
     .custom-checkbox {
       width: 20px;
       height: 20px;
       border: 3px solid #3D4451;
       border-radius: 4px;
-      background-color: white;
-      position: relative;
       background-color: #69758C;
       position: relative;
+      transition: all 0.3s ease;
     }
 
     input[type="checkbox"]:checked + .custom-checkbox {
       background-color: #BDE0EE;
+      border-color: var(--primary-color);
     }
 
     input[type="checkbox"]:checked + .custom-checkbox::after {
@@ -67,6 +82,38 @@ const CheckboxWrapper = styled.label`
       font-size: 18px;
       color: white;
     }
+
+    @media (max-width: 768px) {
+        top: 8px;
+        right: 8px;
+        
+        .custom-checkbox {
+            width: 18px;
+            height: 18px;
+        }
+        
+        input[type="checkbox"]:checked + .custom-checkbox::after {
+            font-size: 16px;
+            left: 2px;
+            top: -2px;
+        }
+    }
+
+    @media (min-width: 1441px) {
+        top: 12px;
+        right: 12px;
+        
+        .custom-checkbox {
+            width: 24px;
+            height: 24px;
+        }
+        
+        input[type="checkbox"]:checked + .custom-checkbox::after {
+            font-size: 20px;
+            left: 4px;
+            top: 0px;
+        }
+    }
 `
 
 const ImagemCard = styled.div`
@@ -75,14 +122,19 @@ const ImagemCard = styled.div`
   background-color: #fff;
   z-index: 1;
   overflow: hidden;
+  border-radius: 15px;
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  &:hover img {
+    transform: scale(1.05);
   }
 `
-
 
 export default function CardImg({ url }) {
   const [checked, setChecked] = useState(false);
@@ -101,7 +153,7 @@ export default function CardImg({ url }) {
       </div>
 
       <ImagemCard>
-        <img src={url} alt="sim" />
+        <img src={url} alt="Imagem da fachada" />
       </ImagemCard>
 
     </Card>
