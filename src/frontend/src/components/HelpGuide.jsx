@@ -174,6 +174,12 @@ const helpTopics = [
     title: 'Como criar e visualizar relatórios',
     description: 'Acesse e interprete os relatórios de análise',
     video: '/videos/Guia relatorio.mp4'
+  },
+  {
+    id: 'retreinamento',
+    title: 'Como retreinar o modelo',
+    description: 'Retreine o modelo para melhorar a precisão da análise',
+    video: '/videos/Guia Retreinamento.mp4'
   }
 ];
 
