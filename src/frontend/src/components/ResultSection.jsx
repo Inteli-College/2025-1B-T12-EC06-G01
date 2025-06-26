@@ -22,15 +22,6 @@ const Images = styled.div`
   padding: 1rem;
 `
 
-<<<<<<< feat/conexao-websocket
-export default function ResultSection({ classificacao, imagens }) {
-  const imagensFiltradas = imagens.map((url, index) => ({
-    img_name: `${classificacao}_${index + 1}`,
-    url: url,
-  }))
-
-  console.log(`>>> [${classificacao}] imagens:`, imagens);
-=======
 export default function ResultSection({ classificacao, imagens, droppableId }) {
   const imagensFiltradas = imagens.map((item, index) => {
     if (typeof item === 'string') {
@@ -47,7 +38,6 @@ export default function ResultSection({ classificacao, imagens, droppableId }) {
       }
     }
   })
->>>>>>> help/merges
 
   return (
     <Container $classificacao={classificacao}>

@@ -144,39 +144,3 @@ class ImageRepository:
         except Exception as e:
             print(f"[ImageRepository] Erro ao alterar nome de imagem: {e}")
             return f"Erro ao alterar nome de imagem: {e}", 404
-<<<<<<< feat/conexao-websocket
-=======
-
-    def read_fissure_types():
-        try: 
-            fissure_types = (
-                db.session.query(Image.fissure_type)
-                .distinct()
-                .all()
-            )
-        except Exception as e:
-            print(f"[ImageRepository] Algo deu errado ao buscar as fissuras no banco de dados: {e}")
-            return f"Algo deu errado ao buscar as fissuras no banco de dados: {e}", 404
-        
-    @staticmethod
-    def read_images_by_urls(url_list):
-        """
-        Retorna lista de imagens correspondentes às URLs fornecidas.
-        Espera uma lista de URLs (strings).
-        Retorna: lista de objetos (id, raw_img, veredict)
-        """
-        try:
-            if not url_list:
-                print("[ImageRepository] Nenhuma URL fornecida.")
-                return [], 200
-
-            rows = Image.query.filter(Image.raw_image.in_(url_list)).all()
-
-            print(f"[ImageRepository] Encontradas {len(rows)} imagens para URLs fornecidas.")
-
-            return rows, 200
-
-        except Exception as e:
-            print(f"[ImageRepository] Erro ao buscar imagens por URLs: {e}")
-            return [], 500
->>>>>>> help/merges

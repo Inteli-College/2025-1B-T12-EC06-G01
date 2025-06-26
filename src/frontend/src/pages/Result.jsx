@@ -2,13 +2,10 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useNavigate, useParams } from 'react-router-dom'
 import ResultSection from '../components/ResultSection'
-<<<<<<< feat/conexao-websocket
 import logo from '../logo.svg'
-=======
 import { DragDropContext } from '@hello-pangea/dnd'
 import axios from 'axios'
 import { useAuth } from '../contexts/AuthContext';
->>>>>>> help/merges
 
 const ResultPage = styled.div`
   display: flex;
@@ -162,23 +159,18 @@ export default function Result() {
     <div>
       <Navbar>
         <button onClick={handleVoltar}>Voltar</button>
-<<<<<<< feat/conexao-websocket
         <h1>Visualização de Resultados</h1>
         <img src={logo} alt='logo' width="2%" />
       </Navbar>
-      <ResultPage>
-        <ResultSection classificacao="termica" imagens={termicas} />
-        <ResultSection classificacao="retracao" imagens={retracoes} />
-      </ResultPage>
-=======
-      </nav>
+
+      {/* Adicionamos o DragDropContext da outra branch, que envolve a área de resultados. */}
       <DragDropContext onDragEnd={handleDragEnd}>
         <ResultPage>
+          {/* Usamos a versão do ResultSection que tem as props para o Drag and Drop. */}
           <ResultSection droppableId="termica" classificacao="termica" imagens={termicas} />
           <ResultSection droppableId="retracao" classificacao="retracao" imagens={retracoes} />
         </ResultPage>
       </DragDropContext>
->>>>>>> help/merges
     </div>
   )
 }
