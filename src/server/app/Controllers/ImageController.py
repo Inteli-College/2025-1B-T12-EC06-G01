@@ -8,6 +8,7 @@ class ImageController:
         self.image_repository = ImageRepository()
 
     def delete_images(self, image_ids):
+        print("Recebido para deletar:", image_ids)
         try:
             if not image_ids:
                 return {"error": "No image IDs provided"}, 400

@@ -136,23 +136,19 @@ const sidebars = {
         'sprint4/projetos-e-recursos',
         'sprint4/relatorio',
 
-        // Adicione outros documentos da Sprint 4 aqui
       ],
     },
-    // Se houver uma Sprint 5, adicione-a também:
-    // {
-    //   type: 'category',
-    //   label: 'Sprint 5',
-    //   link: { type: 'generated-index' },
-    //   items: [
-    //     'sprint5/intro', // Conforme "Available document ids"
-    //     // Adicione outros documentos da Sprint 5 aqui
-    //   ],
-    // },
-    // O arquivo 'intro' que aparece sozinho na lista de "Available document ids"
-    // pode ser um arquivo na raiz do seu diretório 'docs'.
-    // Se quiser adicioná-lo à sidebar, pode ser assim:
-    // 'intro', // Se ele estiver em docs/intro.md'
+    {
+      type: 'category',
+      label: 'Sprint 5',
+      link: { type: 'generated-index' },
+      items: [
+        'sprint5/backend',
+        'sprint5/requisitos',
+        'sprint5/modelo-deteccao',
+        'sprint5/aplicacao',
+      ]
+    },
     'Guia de execução do sistema'
   ],
 };

@@ -11,7 +11,7 @@ class Image(db.Model):
     veredict = db.Column(db.String, nullable=True)
 
     facade_id = db.Column(db.Integer, db.ForeignKey('facade.id'), nullable=False)
-    fissure_id = db.Column(db.Integer, db.ForeignKey('fissure.id'), nullable=False)
+    fissure_id = db.Column(db.Integer, db.ForeignKey('fissure.id'), nullable=True)
 
     facade = db.relationship('Facade', back_populates='images')
     fissure = db.relationship('Fissure', back_populates='images')

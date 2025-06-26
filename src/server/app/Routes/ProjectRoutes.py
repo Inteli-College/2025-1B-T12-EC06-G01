@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.Controllers.ProjectController import ProjectController
+from app.auth_decorator import token_required
 
 # Crie um Blueprint para as rotas de projeto
 project_blueprint = Blueprint('project', __name__, url_prefix='/projects')
@@ -8,6 +9,7 @@ project_blueprint = Blueprint('project', __name__, url_prefix='/projects')
 project_controller = ProjectController()
 
 @project_blueprint.route('/<int:project_id>/name', methods=['PUT'])
+@token_required
 def update_project_name(project_id):
     """
     Atualiza o nome de um projeto específico
@@ -52,12 +54,14 @@ def update_project_name(project_id):
         return jsonify({"code": 500, "message": str(e)}), 500
   
 @project_blueprint.route("/", methods=["POST"])
+@token_required
 def post_project():
     data = request.json
     result, code = project_controller.post_project(data)
     return jsonify(result), code
 
 @project_blueprint.route('/', methods=['GET'])
+@token_required
 def get_projects():
     """
     Busca uma lista de projetos.
@@ -68,4 +72,11 @@ def get_projects():
     - order (string 'asc'|'desc'): Ordena pelo nome do projeto.
     """
     result, code = project_controller.get_projects()
+    return jsonify(result), code
+
+@project_blueprint.route('/reportable', methods=['GET'])
+@token_required
+def get_reportable_projects():
+    """Retorna apenas projetos que possuem imagens com fissuras classificadas."""
+    result, code = project_controller.get_reportable_projects()
     return jsonify(result), code

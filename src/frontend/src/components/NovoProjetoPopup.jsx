@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { useAuth } from '../contexts/AuthContext';
 
 const Popup = styled.div`
   background-color: #3D80A3;
@@ -57,6 +58,7 @@ const Popup = styled.div`
 `;
 
 export default function NovoProjetoPopup({ onClose, onSubmit }) {
+  const { token } = useAuth();
   const nameRef = useRef();
   const contractorRef = useRef();
   const dateRef = useRef();
@@ -76,13 +78,14 @@ export default function NovoProjetoPopup({ onClose, onSubmit }) {
         date: dateRef.current.value
       }, {
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         }
       })
         .then(res => {
           alert("Projeto criado com sucesso!");
           onClose();
-          navigate('/');
+          navigate('/projects');
           window.location.reload();
         })
         .catch(err => {

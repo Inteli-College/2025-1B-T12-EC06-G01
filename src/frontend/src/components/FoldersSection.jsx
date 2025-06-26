@@ -1,17 +1,114 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { FaFolder } from "react-icons/fa6";
+import { MdOutlineEdit } from "react-icons/md";
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import AddFolderPopup from './AddFolderPopup';
+import EditFolderPopup from './EditFolderPopup';
+import { useAuth } from '../contexts/AuthContext';
+
+const Page = styled.div`
+    margin-left: var(--sidebar-width, 280px);
+    
+    .btn-section {
+        padding: var(--spacing-lg) var(--spacing-xl) 0 var(--spacing-xl);
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .btn-section button {
+        width: 20%;
+        min-width: 150px;
+        min-height: 50px;
+        border-radius: 10px;
+        background-color: var(--primary-color);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 3px solid var(--secondary-color);
+        color: #fff;
+        font-size: var(--font-size-base);
+        padding: var(--spacing-sm);
+        transition: all 0.3s ease;
+    } 
+
+    button:hover {
+        background-color: var(--primary-hover); 
+        cursor: pointer; 
+        transform: translateY(-1px);
+    }
+
+    @media (max-width: 480px) {
+        margin-left: 0;
+        .btn-section {
+            padding: var(--spacing-md);
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+        .btn-section button {
+            width: 100%;
+            min-width: auto;
+        }
+    }
+
+    @media (min-width: 481px) and (max-width: 768px) {
+        margin-left: 200px;
+        .btn-section {
+            padding: var(--spacing-md);
+        }
+        .btn-section button {
+            width: 30%;
+            min-width: 120px;
+        }
+    }
+
+    @media (min-width: 1441px) {
+        margin-left: 320px;
+        .btn-section {
+            padding: var(--spacing-xl) var(--spacing-xl) 0 var(--spacing-xl);
+        }
+        .btn-section button {
+            width: 15%;
+            min-width: 180px;
+            font-size: var(--font-size-lg);
+        }
+    }
+`;
 
 const Container = styled.div`
-    width: 77vw;
-    margin-left: 18vw;
-    padding: 2.5rem;
+    margin: 0 2rem;
+    padding: 0.5rem 1rem;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.2rem;
+    max-width: 100%;
+
+    @media (max-width: 768px) {
+        margin: 0;
+        width: 100vw;
+        padding: 0.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 0.7rem;
+    }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+        margin: 0 2rem;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    @media (min-width: 1025px) and (max-width: 1440px) {
+        margin: 0 2rem;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    @media (min-width: 1441px) {
+        margin: 0 2rem;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
 `;
 
 const FolderCard = styled.div`
@@ -20,48 +117,140 @@ const FolderCard = styled.div`
     align-items: center;
     text-align: center;
     cursor: pointer;
+    padding: var(--spacing-md);
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    background-color: #f8f9fa;
+    border: 2px solid transparent;
+    
+    &:hover {
+        background-color: #e9ecef;
+        border-color: var(--primary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
     
     svg {
+        font-size: 4rem;
+
+    .folder-icon svg {
         font-size: 5rem;
         color: #969FB0;
         transition: all 0.3s ease;
+        margin-bottom: var(--spacing-sm);
     }
     
     &:hover svg {
+        font-size: 4.5rem;
+
+    .folder-icon:hover svg {
         font-size: 6rem;
         color: #69758C;
     }
-    
+
     p {
+        margin: var(--spacing-xs) 0;
+        font-weight: bold;
+        font-size: var(--font-size-base);
+        color: var(--text-color);
+        display: flex;
         margin: 0.5rem 0;
         font-weight: bold;
+        text-transform: capitalize;
+        align-items: center;
+        gap: .3rem;
+    }
+
+    @media (max-width: 768px) {
+        padding: var(--spacing-sm);
+        
+        svg {
+            font-size: 3rem;
+        }
+        
+        &:hover svg {
+            font-size: 3.5rem;
+        }
+        
+        p {
+            font-size: var(--font-size-sm);
+        }
+    }
+
+    @media (min-width: 1441px) {
+        padding: var(--spacing-lg);
+        
+        svg {
+            font-size: 5rem;
+        }
+        
+        &:hover svg {
+            font-size: 5.5rem;
+        }
+        
+        p {
+            font-size: var(--font-size-lg);
+        }
+    }
+`;
+
+const Edit = styled.div`
+    svg {
+        font-size: 1.5rem;
+    }
+
+    &:hover svg {
+        font-size: 2rem;
     }
 `;
 
 const LoadingMessage = styled.h2`
-    grid-column: span 6;
+    grid-column: 1 / -1;
     text-align: center;
-    color: #666;
+    color: var(--text-muted);
+    font-size: var(--font-size-xl);
+    padding: var(--spacing-xl);
 `;
 
 const ErrorMessage = styled.h2`
-    grid-column: span 6;
+    grid-column: 1 / -1;
     text-align: center;
     color: #d32f2f;
+    font-size: var(--font-size-xl);
+    padding: var(--spacing-xl);
 `;
 
 const AddButton = styled.button`
-    height: 70%;
-    border: 3px solid #0A3B4E;
+    height: 100%;
+    min-height: 120px;
+    border: 3px solid var(--secondary-color);
     border-radius: 15px;
-    background-color: #629EBC;
+    background-color: var(--primary-color);
     color: #fff;
-    font-size: 1.5rem;
+    font-size: var(--font-size-lg);
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-md);
     
     &:hover {
-        background-color: #3D80A3;
+        background-color: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    @media (max-width: 768px) {
+        min-height: 100px;
+        font-size: var(--font-size-base);
+        padding: var(--spacing-sm);
+    }
+
+    @media (min-width: 1441px) {
+        min-height: 150px;
+        font-size: var(--font-size-xl);
+        padding: var(--spacing-lg);
     }
 `;
 
@@ -81,8 +270,11 @@ export default function FoldersSection({
     folderNameField = "predio",
     folderIdField = "id",
     addUrl,
-    folderId
+    folderId,
+    btnLabel,
+    authToken 
 }) {
+    const { token } = useAuth();
     const [folders, setFolders] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -92,7 +284,11 @@ export default function FoldersSection({
         setIsLoading(true);
         setError(null);
         try {
-            const response = await axios.get(apiUrl);
+            const config = {
+                headers: { 'Authorization': `Bearer ${token}` }
+            };
+            
+            const response = await axios.get(apiUrl, config);
             const data = response.data;
 
             let finalFolders = [];
@@ -103,9 +299,9 @@ export default function FoldersSection({
 
                 finalFolders = isStringList
                     ? data.fachadas.map((nome, index) => ({
-                    [folderIdField]: index,
-                    [folderNameField]: nome
-                }))
+                        [folderIdField]: index,
+                        [folderNameField]: nome
+                    }))
                     : data.fachadas.map((fachada) => ({
                         [folderIdField]: fachada.id,
                         [folderNameField]: fachada.name
@@ -124,8 +320,7 @@ export default function FoldersSection({
         } finally {
             setIsLoading(false);
         }
-    }, [apiUrl, folderIdField, folderNameField]);
-
+    }, [apiUrl, folderIdField, folderNameField, token]);
 
     useEffect(() => {
         // Se recebemos folders como prop, usamos eles diretamente
@@ -146,16 +341,17 @@ export default function FoldersSection({
             return; // Não fazemos fetch se temos folders
         }
 
-        // Se não temos folders, mas temos URL da API, fazemos fetch
-        if (apiUrl) {
+        if (apiUrl && token) {
             fetchFolders();
         }
-    }, [propFolders, apiUrl, folderIdField, folderNameField, fetchFolders]);
-
-
+    }, [propFolders, apiUrl, folderIdField, folderNameField, fetchFolders, token]);
+    
     const [pasta, setPasta] = useState('');
     const { projectId } = useParams();
-    const [showPopup, setShowPopup] = useState(false)
+    const [showAddPopup, setShowAddPopup] = useState(false);
+    const [showEditPopup, setShowEditPopup] = useState(false);
+    const [selectedFolder, setSelectedFolder] = useState(null);
+
 
     //Lógica para adição de uma nova pasta
     const handleAddFolder = () => {
@@ -180,61 +376,125 @@ export default function FoldersSection({
             };
         }
 
-        axios.post(addUrl, folderInfos, {
+        const config = {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             }
-        })
+        };
+    
+        axios.post(addUrl, folderInfos, config)
             .then(res => {
                 alert("Pasta criada com sucesso!");
-                setShowPopup(false);
+                setShowAddPopup(false);
                 fetchFolders();
                 window.location.reload();
             })
             .catch(err => {
                 console.error("Erro ao criar pasta:", err);
+                // Melhora a mensagem de erro para o usuário
+                alert(err.response?.data?.message || "Não foi possível criar a pasta.");
             });
-    };
+        };
+
+    const handleEditFolderName = () => {
+    if (pasta === "") {
+        alert("Dê um nome para a pasta.");
+        return;
+    }
+
+    let folderInfos = {};
+
+    if (addUrl === "http://localhost:5000/building/") {
+        folderInfos = {
+            building_id: selectedFolder[folderIdField],
+            building_name: pasta
+        };
+    } else if (addUrl === "http://localhost:5000/facade/") {
+        folderInfos = {
+            facade_id: selectedFolder[folderIdField],
+            facade_name: pasta
+        };
+    }
+
+    axios.put(addUrl, folderInfos, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => {
+        alert("Pasta atualizada com sucesso!");
+        setShowEditPopup(false);
+        fetchFolders();
+        window.location.reload();
+    })
+    .catch(err => {
+        console.error("Erro ao atualizar pasta:", err);
+    });
+};
 
     return (
-        <Container>
-            {isLoading && <LoadingMessage>Carregando pastas...</LoadingMessage>}
-            {error && <ErrorMessage>Erro ao carregar dados: {error.message}</ErrorMessage>}
+        <Page>
+            <div className='btn-section'>
+                <button onClick={() => setShowAddPopup(true)}>+ Adicionar {btnLabel}</button>
+            </div>
 
-            {!isLoading && !error && (!folders || folders.length === 0) &&
-                <LoadingMessage>Nenhuma pasta encontrada.</LoadingMessage>}
-            {!isLoading && !error && folders && folders.map((folder) => (
-                <FolderCard
-                    key={folder[folderIdField]}
-                    onClick={() => {
-                        const encodedName = encodeURIComponent(folder[folderNameField]);
+            <Container>
+                {isLoading && <LoadingMessage>Carregando pastas...</LoadingMessage>}
+                {error && <ErrorMessage>Erro ao carregar dados: {error.message}</ErrorMessage>}
 
-                        if (addUrl === "http://localhost:5000/facade/") {
-                            navigate(`${path}/${encodedName}`, {
-                                state: { fachadaId: folder[folderIdField], buildingId: folderId }
-                            });
-                        } else if (addUrl === "http://localhost:5000/building/") {
-                            navigate(`${path}/${encodedName}`);
-                        }
-                    }}
-                >
-                    <FaFolder />
-                    <p>{folder[folderNameField]}</p>
-                </FolderCard>
-            ))}
+                {!isLoading && !error && (!folders || folders.length === 0) &&
+                    <LoadingMessage>Nenhuma pasta encontrada.</LoadingMessage>}
 
+                {!isLoading && !error && folders && folders.map((folder) => (
+                    <FolderCard
+                        key={folder[folderIdField]}
+                        onClick={() => {
+                            const encodedName = encodeURIComponent(folder[folderNameField]);
 
+                            if (addUrl === "http://localhost:5000/facade/") {
+                                navigate(`${path}/${encodedName}`, {
+                                    state: { fachadaId: folder[folderIdField], buildingId: folderId }
+                                });
+                            } else if (addUrl === "http://localhost:5000/building/") {
+                                navigate(`${path}/${encodedName}`);
+                            }
+                        }}
+                    >
+                        <div className="folder-icon">
+                            <FaFolder />
+                        </div>
+                        <p>{folder[folderNameField]}</p>
+                        <Edit>
+                            <MdOutlineEdit onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedFolder(folder); // guardamos a pasta clicada
+                                setPasta(folder[folderNameField]); // preenche o input com o nome atual
+                                setShowEditPopup(true);
+                            }} />
 
-            <AddButton onClick={() => setShowPopup(true)}>+ Adicionar Pasta</AddButton>
+                        </Edit>
+                    </FolderCard>
+                ))}
 
-            {showPopup && (
-                <AddFolderPopup
-                    pasta={pasta}
-                    setPasta={setPasta}
-                    onSend={handleAddFolder}
-                    onClose={() => setShowPopup(false)}
-                />
-            )}
-        </Container>
+                {showEditPopup && (
+                    <EditFolderPopup
+                        pasta={pasta}
+                        setPasta={setPasta}
+                        onSend={handleEditFolderName}
+                        onClose={() => setShowEditPopup(false)}
+                    />
+                )}
+
+                {showAddPopup && (
+                    <AddFolderPopup
+                        pasta={pasta}
+                        setPasta={setPasta}
+                        onSend={handleAddFolder}
+                        onClose={() => setShowAddPopup(false)}
+                    />
+                )}
+            </Container>
+        </Page>
     );
 }

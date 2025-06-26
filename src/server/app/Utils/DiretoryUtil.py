@@ -1,7 +1,8 @@
-import os, uuid, requests, re
+import os, uuid, requests, re, csv
 from app.Repositories.ImageRepository import ImageRepository
 from app.Repositories.ClassificationRepository import ClassificationRepository
 from app.websocket import send_message
+import pandas as pd
 
 
 class DiretoryUtil:
@@ -37,17 +38,17 @@ class DiretoryUtil:
                     f.write(response.content)
                 
                 msg, code = self.image_repo.put_image_name(image=image, new_name=file_name)
-                send_message(f"Baixando imagem {file_name}", "training_progress_fe")
+                send_message(f"Baixando imagem {file_name}", "training_progress_fe", "progress")
 
                 if not code == 204:
                     return msg, code
 
-                print("Imagem baixada com sucesso!")
+                print("\nImagem baixada com sucesso!")
 
         return "Imagens baixadas com sucesso!", 201
 
     def get_train_version(self):
-        classify_runs_path = os.path.join(self.__root_dir, "runs", "classify")
+        classify_runs_path = os.path.join(self.__root_dir, "machineLearning", "runs", "classify")
         
         train_dirs = [
             d for d in os.listdir(classify_runs_path)
@@ -55,16 +56,27 @@ class DiretoryUtil:
         ]
 
         if not train_dirs:
-            return {"code": 500, "message": "Nenhuma pasta de treino encontrada."}, 500
+            return "Nenhuma pasta de treino encontrada.", 500, 0
 
         train_dirs.sort(reverse=True)
 
         latest_dir_name = train_dirs[0]
         latest_dir_path = os.path.join(classify_runs_path, latest_dir_name)
 
+        csv_dir = os.path.join(latest_dir_path, "results.csv")
+
+
+        df = pd.read_csv(csv_dir)
+
+        if 'metrics/accuracy_top1' not in df.columns:
+            raise ValueError("Coluna 'metrics/accuracy_top1' não encontrada no CSV.")
+
+        ultima_acuracia = df['metrics/accuracy_top1'].iloc[-1]
+        ultima_acuracia = float(ultima_acuracia)
+
         match = re.search(r"2025-1B-T12-EC06-G01(.*)", latest_dir_path)
         if match:
             latest_dir_path = match.group(1)
 
         # Cria uma nova versão do modelo na tabela model_version no banco de dados
-        result1, code3 =self.classify_repository.create_new_version(version=latest_dir_name, train_directory=latest_dir_path)
+        return latest_dir_name, latest_dir_path, ultima_acuracia
