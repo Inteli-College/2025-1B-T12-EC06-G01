@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.Controllers.ImageController import ImageController
+from app.auth_decorator import token_required
 
 # Cria um Blueprint para as rotas das imagens
 image_bp = Blueprint('image', __name__, url_prefix="/images")
@@ -10,6 +11,7 @@ image_controller = ImageController()
 # Define as rotas para cada operação básica relacionada às imagens 
 
 @image_bp.route("/facade/<int:facade_id>", methods=['GET'])
+@token_required
 def get_images_by_facade(facade_id):
     """
     Rota RESTful para buscar imagens de uma fachada específica.
@@ -23,6 +25,7 @@ def get_images_by_facade(facade_id):
         return jsonify({"code": 500, "message": "Erro interno no servidor"}), 500
     
 @image_bp.route('/', methods=['DELETE'])
+@token_required
 def delete_images():
     data = request.get_json()
     image_ids = data.get('image_ids', [])
@@ -31,6 +34,7 @@ def delete_images():
     return jsonify(response), status_code 
 
 @image_bp.route('/', methods=['POST'])
+@token_required
 def post_images():
     data = request.form.to_dict()
     files = request.files.getlist('images')
@@ -42,18 +46,21 @@ def post_images():
     return jsonify(result), code
 
 @image_bp.route('/facade', methods=['PUT'])
+@token_required
 def get_images():
     data = request.json
     result, code = image_controller.get_images_per_fachada(data)
     return jsonify(result), code
 
 @image_bp.route('/classified', methods=['PUT'])
+@token_required
 def get_images_classified_per_building():
     data = request.json
     result, code = image_controller.get_images_classified_per_building(data)
     return jsonify(result), code
 
 @image_bp.route('/veredict', methods=['PUT'])
+@token_required
 def put_veredict():
     data = request.json
     result, code = image_controller.put_veredict(data)

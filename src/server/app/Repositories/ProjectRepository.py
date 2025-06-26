@@ -1,4 +1,7 @@
 from app.Models.project import Project
+from app.Models.building import Building
+from app.Models.facade import Facade
+from app.Models.image import Image
 from app import db
 from sqlalchemy import asc, desc
 
@@ -74,3 +77,22 @@ class ProjectRepository:
             db.session.rollback() # Adicionado rollback em caso de erro
             return f"{e}", 500
         
+
+    @staticmethod
+    def get_projects_with_fissures():
+        try:
+            # Esta query busca projetos que têm uma cadeia completa até uma imagem com fissure_id preenchido
+            reportable_projects = Project.query.join(
+                Project.building
+            ).join(
+                Building.facade
+            ).join(
+                Facade.images
+            ).filter(
+                Image.fissure_id.isnot(None)
+            ).distinct().all()
+
+            return reportable_projects, 200
+        except Exception as e:
+            print(f"[ProjectRepository] Erro ao buscar projetos relatáveis: {e}")
+            return str(e), 500

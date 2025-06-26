@@ -105,19 +105,15 @@ class ImageRepository:
         try:
             image = Image.query.get(image_id)
 
-            if image.veredict:
-                return f"Veredito já dado nessa imagem...", 409
-
-            elif image:
+            if image:
                 image.veredict = veredict
                 db.session.commit()
-                return image, 204         
-
+                return image, 200
 
             else:
                 print("[ImageRepository] Nenhuma imagem encontrada...")
                 return f"Nenhuma imagem encontrada", 404
-        
+
         except Exception as e:
             print("[ImageRepository] Erro ao atualizar a coluna veredict no banco de dados...:")
             return f"Erro ao atualizar a coluna veredict no banco de dados...: {e}", 500
@@ -150,14 +146,3 @@ class ImageRepository:
         except Exception as e:
             print(f"[ImageRepository] Erro ao alterar nome de imagem: {e}")
             return f"Erro ao alterar nome de imagem: {e}", 404
-
-    def read_fissure_types():
-        try: 
-            fissure_types = (
-                db.session.query(Image.fissure_type)
-                .distinct()
-                .all()
-            )
-        except Exception as e:
-            print(f"[ImageRepository] Algo deu errado ao buscar as fissuras no banco de dados: {e}")
-            return f"Algo deu errado ao buscar as fissuras no banco de dados: {e}", 404
