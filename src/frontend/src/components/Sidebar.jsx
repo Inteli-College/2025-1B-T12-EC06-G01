@@ -329,7 +329,7 @@ export default function Sidebar(props) {
 
       <section style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.8rem' }}>
         <BtnMenor onClick={handleClickProjects}>Projetos</BtnMenor>
-        <BtnMenor onClick={handleClickActions} >Ações</BtnMenor>
+        <BtnMenor onClick={handleClickActions} >Retreinamento</BtnMenor>
         <BtnMenor onClick={() => setShowHelp(true)}>
             <FaQuestionCircle />
             <span>Ajuda</span>

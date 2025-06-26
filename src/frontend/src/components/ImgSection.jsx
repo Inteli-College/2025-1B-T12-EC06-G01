@@ -257,6 +257,7 @@ export default function ImgSection() {
       togglePopup();
       setImages([]);
       setLoading(true);
+      window.location.reload()
     } catch (err) {
       console.error("Erro ao enviar imagens:", err);
     }
