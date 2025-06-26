@@ -11,6 +11,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+import { useSelectedImages } from '../contexts/SelectedImagesContext';
 import { useAuth } from '../contexts/AuthContext';
 
 const generatePDF = (data) => {
@@ -340,6 +341,7 @@ export default function NavHome() {
     const [reportableProjects, setReportableProjects] = useState([]);
     const location = useLocation();
     const navigate = useNavigate();
+    const { selectedImages, setSelectedImages } = useSelectedImages();
 
     const pathParts = location.pathname.split('/').filter(Boolean); // remove strings vazias
 
@@ -610,6 +612,24 @@ export default function NavHome() {
         }
     };
 
+    // Função para deletar imagens selecionadas
+    const handleDeleteSelectedImages = async () => {
+        if (selectedImages.length === 0) {
+            console.log('veio de NavHome');
+            alert('Selecione ao menos uma imagem para deletar.');
+            return;
+        }
+        try {
+            await axios.delete('http://localhost:5000/images/', {
+                data: { image_ids: selectedImages }
+            });
+            alert('Imagens deletadas com sucesso!');
+            setSelectedImages([]);
+            // Você pode emitir um evento ou usar outro contexto para atualizar a lista de imagens no ImgSection, se necessário
+        } catch (err) {
+            console.error('Erro ao deletar imagens:', err);
+            alert('Erro ao deletar imagens.');
+        }
     const openSendPopup = () => {
         if (!currentProjectId) setSelectedProject('');
         if (!currentBuildingId) setSelectedBuilding('');
@@ -666,9 +686,9 @@ export default function NavHome() {
                 )}
             </Infos>
 
-<Botoes>
-                <button> <FaTrash /> </button>
-                
+            <Botoes>
+                <button onClick={handleDeleteSelectedImages}> <FaTrash /> </button>
+
                 <button> <FaPaintBrush /> </button>
                 
                 <button className='send-button' onClick={openSendPopup}><span>Classificar</span> <IoSend /></button>

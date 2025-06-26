@@ -6,6 +6,7 @@ import Predio from './pages/Predio';
 import Fachada from './pages/Fachada'; 
 import { ProjectProvider } from './contexts/ProjectContext';
 import Result from './pages/Result';
+import { SelectedImagesProvider } from './contexts/SelectedImagesContext';
 
 import LoginRegister from './pages/LoginCadastro';
 import PrivateRoute from './components/PrivateRoute';
@@ -14,9 +15,11 @@ import Actions from './pages/Actions';
 
 function App() {
   return (
+
     <Router>
       <AuthProvider>
         <ProjectProvider>
+         <SelectedImagesProvider>
           <Routes>
             <Route path="/" element={<LoginRegister />} /> 
 
@@ -32,7 +35,8 @@ function App() {
               <Route path='/actions' element={<Actions />} />
             </Route>
           </Routes>
-          </ProjectProvider>
+         </SelectedImagesProvider>
+        </ProjectProvider>
       </AuthProvider>
     </Router>
   );

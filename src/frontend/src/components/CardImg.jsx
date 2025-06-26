@@ -136,8 +136,8 @@ const ImagemCard = styled.div`
   }
 `
 
-export default function CardImg({ url }) {
-  const [checked, setChecked] = useState(false);
+export default function CardImg({ url, img_name, checked = false, onSelect }) {
+  // O estado local não é mais necessário, pois o controle vem do pai
 
   return (
     <Card>
@@ -146,14 +146,15 @@ export default function CardImg({ url }) {
           <input
             type="checkbox"
             checked={checked}
-            onChange={() => setChecked(!checked)}
+            onChange={() => onSelect && onSelect(!checked)}
           />
           <span className="custom-checkbox" />
         </CheckboxWrapper>
       </div>
 
       <ImagemCard>
-        <img src={url} alt="Imagem da fachada" />
+        <img src={url} alt={img_name || 'imagem'} />
+
       </ImagemCard>
 
     </Card>

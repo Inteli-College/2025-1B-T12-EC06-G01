@@ -3,6 +3,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import CardImg from './CardImg';
 import axios from 'axios';
+import { useSelectedImages } from '../contexts/SelectedImagesContext';
 import { useAuth } from '../contexts/AuthContext';
 
 const Page = styled.div`
@@ -219,6 +220,7 @@ export default function ImgSection() {
   const [imagens, setImagens] = useState([]);
   const [loading, setLoading] = useState(true);
   const [images, setImages] = useState([]);
+  const { selectedImages, setSelectedImages } = useSelectedImages();
 
   const [showPopup, setShowPopup] = useState(false);
 
@@ -279,7 +281,7 @@ export default function ImgSection() {
           }
         };
 
-        // ALTERADO: Adiciona o objeto 'config' à chamada axios.get
+        // Adiciona o objeto 'config' à chamada axios.get
         const response = await axios.get(`http://localhost:5000/images/facade/${fachadaId}`, config);
       
 
@@ -307,6 +309,24 @@ export default function ImgSection() {
 
     fetchImagens();
   }, [fachadaId, token]);
+
+  // Função para lidar com seleção/deseleção de imagens
+  const handleSelectImage = (img_id, checked) => {
+    if (checked) {
+      setSelectedImages(prev => {
+        const newArr = [...prev, img_id];
+        console.log('Selecionadas:', newArr);
+        return newArr;
+      });
+    } else {
+      setSelectedImages(prev => {
+        const newArr = prev.filter(id => id !== img_id);
+        console.log('Selecionadas:', newArr);
+        return newArr;
+      });
+    }
+  };
+
 
   if (loading) {
     return <p style={{ marginLeft: "18vw", padding: "2.5rem" }}>Carregando imagens da fachada: {fachadaNome}</p>;
@@ -347,7 +367,6 @@ export default function ImgSection() {
         <button onClick={togglePopup}>+ Adicionar imagens</button>
       </div>
       <Container>
-
         {showPopup && (
           <Popup>
             <div className='popup-inner'>
@@ -364,7 +383,13 @@ export default function ImgSection() {
           </Popup>
         )}
         {imagens.map((img, index) => (
-          <CardImg key={index} img_name={img.img_name} url={img.raw_img} />
+          <CardImg
+            key={img.img_name}
+            img_name={img.img_name}
+            url={img.raw_img}
+            checked={selectedImages.includes(img.img_name)}
+            onSelect={checked => handleSelectImage(img.img_name, checked)}
+          />
         ))}
       </Container>
     </Page>
