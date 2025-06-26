@@ -6,6 +6,7 @@ import Predio from './pages/Predio';
 import Fachada from './pages/Fachada'; 
 import { ProjectProvider } from './contexts/ProjectContext';
 import Result from './pages/Result';
+
 import LoginRegister from './pages/LoginCadastro';
 import PrivateRoute from './components/PrivateRoute';
 import { AuthProvider } from './contexts/AuthContext';
@@ -27,6 +28,7 @@ function App() {
               <Route path="/predio/:predioNome" element={<Predio />} />
               <Route path="/predio/:predioNome/:fachadaNome" element={<Fachada />} />
               <Route path="/result/:facadeId" element={<Result />} />
+              <Route path="/detect/:facadeId" element={<DetectResult />} />
               <Route path='/actions' element={<Actions />} />
             </Route>
           </Routes>

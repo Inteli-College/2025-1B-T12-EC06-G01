@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { FaTrash } from 'react-icons/fa'
+import { FaTrash, FaPaintBrush } from 'react-icons/fa'
+import { FaSearch } from 'react-icons/fa';
 import { IoSend } from 'react-icons/io5'
 import { useProject } from '../contexts/ProjectContext'
 import SendPopup from '../components/SendPopup'
+import DetectPopup from '../components/DetectPopup'
 import ReportPopup from '../components/ReportPopup';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from "axios";
@@ -374,6 +376,7 @@ export default function NavHome() {
       } = useProject();
 
     const [showPopup, setShowPopup] = useState(false)
+    const [showDetectPopup, setShowDetectPopup] = useState(false);
     const [showReportPopup, setShowReportPopup] = useState(false)
     const [projects, setProjects] = useState([])
     const [buildings, setBuildings] = useState([])
@@ -557,6 +560,36 @@ export default function NavHome() {
             })
             .catch(err => console.error("Erro ao classificar:", err));
     };
+    
+    // dentro de NavHome.jsx
+    // dentro de NavHome.jsx
+    const handleDetectImages = () => {
+        if (!selectedFacade) {
+            alert("Selecione uma fachada antes de detectar.");
+            return;
+        }
+
+        fetch(`http://localhost:5000/detect/facades/${selectedFacade}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ /* opcional: start_date, end_date */ })
+        })
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return res.json();
+            })
+            .then(data => {
+                // data = { url1: "data:image/jpeg;base64,...", url2: "...", … }
+                setShowDetectPopup(false);
+                navigate(`/detect/${selectedFacade}`, { state: { detected: data } });
+            })
+            .catch(err => {
+                console.error("Erro ao detectar fissuras:", err);
+                alert("Erro ao enviar detecção.");
+            });
+    };
+
+
 
     // Função para determinar o título baseado na rota atual
     const getPageTitle = () => {
@@ -615,7 +648,6 @@ export default function NavHome() {
                     />
                     </div>
 
-                        {/* Os selects podem continuar com onChange, pois a seleção é uma ação única */}
                         <select value={contractorFilter} onChange={(e) => setContractorFilter(e.target.value)}>
                             <option value="">Todos Contratantes</option>
                             {contractors.map(c => <option key={c} value={c}>{c}</option>)}
@@ -634,13 +666,19 @@ export default function NavHome() {
                 )}
             </Infos>
 
-            <Botoes>
+<Botoes>
                 <button> <FaTrash /> </button>
+                
+                <button> <FaPaintBrush /> </button>
+                
                 <button className='send-button' onClick={openSendPopup}><span>Classificar</span> <IoSend /></button>
-
+                
+                <button className='send-button' onClick={() => setShowDetectPopup(true)}> <span>Detectar</span> <FaSearch /> </button>
+                
                 <button className='report-button' onClick={handleOpenReportPopup}>Gerar Relatório</button>
             </Botoes>
 
+            {/* Popup de Classificação */}
             {showPopup && (
                 <SendPopup
                     projects={projects}
@@ -659,8 +697,25 @@ export default function NavHome() {
                     onClose={() => setShowPopup(false)}
                 />
             )}
-            
-            {/* Renderização do Popup de Relatório */}
+
+            {/* Popup de Detecção */}
+            {showDetectPopup && (
+            <DetectPopup
+                    projects={projects}
+                    buildings={buildings}
+                    facades={facades}
+                    selectedProject={selectedProject}
+                    selectedBuilding={selectedBuilding}
+                    selectedFacade={selectedFacade}
+                    setSelectedProject={setSelectedProject}
+                    setSelectedBuilding={setSelectedBuilding}
+                    setSelectedFacade={setSelectedFacade}
+                    onSend={handleDetectImages}
+                    onClose={() => setShowDetectPopup(false)}
+                />
+            )}
+
+            {/* Popup de Relatório */}
             {showReportPopup && (
                 <ReportPopup
                     projects={reportableProjects}
@@ -668,9 +723,8 @@ export default function NavHome() {
                     setSelectedProject={setSelectedReportProject}
                     onDownload={handleDownloadReport}
                     onClose={() => setShowReportPopup(false)}
-            />
+                />
             )}
         </Nav>
     );
-
 }
