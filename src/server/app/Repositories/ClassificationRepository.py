@@ -6,18 +6,19 @@ from ultralytics import YOLO
 from app.Models.model_version import ModelVersion
 from app import db
 
+
 class ClassificationRepository:
     def __init__(self):
         # ALTERAÇÃO 1: Guardamos apenas o CAMINHO do modelo, não o modelo em si.
-        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../.."))
-        self.model_path = os.path.join(project_root, "src", "machineLearning", "melhores_modelos", "best21.pt")
-
-        
+        self.project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../.."))
+        self.model_path = None
+     
         # ALTERAÇÃO 2: O modelo começa como None. Ele ainda não foi carregado na memória.
         self.model = None
 
     def _load_model(self):
         """Método interno para carregar o modelo somente quando necessário."""
+        print("\n Caminho novo para modelo: ", self.model_path)
         # Se o modelo ainda não foi carregado, carregue-o.
         if self.model is None:
             print("--- Loading YOLO model for the first time ---")
@@ -64,15 +65,16 @@ class ClassificationRepository:
                     pass
 
         return results
+
     
     @staticmethod
-    def create_new_version(version: str, train_directory: str):
+    def create_new_version(version: str, train_directory: str, accuracy):
         try:
             modelo_real = ModelVersion.query.filter_by(real_model=True).first()
             if modelo_real:
                 modelo_real.real_model = False
 
-            new = ModelVersion(version=version, real_model=True, train_directory=train_directory)
+            new = ModelVersion(version=version, real_model=True, train_directory=train_directory, accuracy=accuracy)
             db.session.add(new)
             db.session.commit()
             return new, 201
@@ -80,3 +82,51 @@ class ClassificationRepository:
         except Exception as e:
             print(f"[ClassificationRepository] Algo deu errado ao consultar o banco de dados: {e}")
             return f"Algo deu errado ao consultar o banco de dados... {e}", 500
+        
+    @staticmethod
+    def read_version_name(name: str):
+        try:
+            version = ModelVersion.query.filter_by(version=name).all()
+            return version, 200
+        except Exception as e:
+            print(f"[ClassificationRepository] Algo deu errado ao procurar nomes de versões do modelo: {e}")
+            return f"[ClassificationRepository] Algo deu errado ao procurar nomes de versões do modelo: {e}", 500
+    
+    def read_version_path(self):
+        try:
+            version = ModelVersion.query.filter_by(real_model=True).first()
+            train_directory = str(version.train_directory).lstrip("/")
+            train_path_from_root = os.path.join(self.project_root, train_directory)
+            self.model_path = os.path.join(train_path_from_root, "weights/best.pt")
+            
+            print(f"[ClassificationRepository] Versão a classificar adquirida!")
+            return f"Versão a classificar adquirida!", 200
+        except Exception as e:
+            print(f"[ClassificationRepository] Algo deu errado ao procurar nomes de versões do modelo: {e}")
+            return f"[ClassificationRepository] Algo deu errado ao procurar nomes de versões do modelo: {e}", 500
+
+    
+    @staticmethod
+    def read_all_version():
+        try:
+            registros = ModelVersion.query.all()
+            return registros, 200
+        except Exception as e:
+            print(f"[ClassificationRepository] Algo deu errado ao procurar todas versões do modelo: {e}")
+            return f"[ClassificationRepository] Algo deu errado ao procurar todas do modelo: {e}", 500
+        
+    @staticmethod
+    def update_version_true(version_id):
+        try:
+            old_version = ModelVersion.query.filter_by(real_model=True).first()
+            new_version = ModelVersion.query.filter_by(id=version_id).first()
+
+            if old_version and new_version:
+                old_version.real_model = False
+                new_version.real_model = True
+                db.session.commit()
+                return new_version, 201
+        
+        except Exception as e:
+            print(f"[ClassificationRepository] Algo deu errado ao procurar as versões do modelo no banco: {e}")
+            return f"[ClassificationRepository] Algo deu errado ao procurar as versões do modelo no banco: {e}", 500

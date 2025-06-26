@@ -7,7 +7,7 @@ const Container = styled.section`
   width: 50%;
   padding: 2rem;
   background-color: ${props =>
-    props.$classificacao === 'termica' ? '#DDDDDD' : '#BDBDBD'};
+    props.$classificacao === 'termica' ? '#D3E2EF' : '#BCCBD8'};
   text-align: center;
 
   h3 {

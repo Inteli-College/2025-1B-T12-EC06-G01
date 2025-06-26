@@ -9,6 +9,7 @@ import Result from './pages/Result';
 import LoginRegister from './pages/LoginCadastro';
 import PrivateRoute from './components/PrivateRoute';
 import { AuthProvider } from './contexts/AuthContext';
+import Actions from './pages/Actions';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
               <Route path="/predio/:predioNome" element={<Predio />} />
               <Route path="/predio/:predioNome/:fachadaNome" element={<Fachada />} />
               <Route path="/result/:facadeId" element={<Result />} />
+              <Route path='/actions' element={<Actions />} />
             </Route>
           </Routes>
           </ProjectProvider>

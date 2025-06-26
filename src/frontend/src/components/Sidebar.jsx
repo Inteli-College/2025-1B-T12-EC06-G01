@@ -302,7 +302,12 @@ export default function Sidebar(props) {
   };
 
   const togglePopup = () => setShowPopup(!showPopup);
-  const handleClick = () => navigate("/projects");
+  const handleClickProjects = () => navigate("/projects");
+
+  const handleClickActions = () => {
+    navigate("/actions");
+  };
+
 
   return (
     <>
@@ -316,37 +321,20 @@ export default function Sidebar(props) {
         <IoIosAdd />
       </BntMaior>
 
-        {showPopup && (
-          <NovoProjetoPopup onClose={togglePopup} onSubmit={(data) => setProject(data)} />
-        )}
+      {showPopup && (
+        <NovoProjetoPopup onClose={togglePopup} onSubmit={(data) => setProject(data)} />
+      )}
 
-        <Section>
-          <Recente>
-            <FaFolder />
-            <a href='/'>Lorem ipsum dolor sit amet</a>
-          </Recente>
+      <hr style={{ width: '80%' }} />
 
-          <Recente>
-            <FaFolder />
-            <a href='/'>Lorem ipsum dolor sit amet</a>
-          </Recente>
-
-          <Recente>
-            <FaFolder />
-            <a href='/'>Lorem ipsum dolor sit amet</a>
-          </Recente>
-        </Section>
-
-        <Divider />
-
-        <Section>
+      <section style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.8rem' }}>
+        <BtnMenor onClick={handleClickProjects}>Projetos</BtnMenor>
+        <BtnMenor onClick={handleClickActions} >Ações</BtnMenor>
         <BtnMenor onClick={() => setShowHelp(true)}>
             <FaQuestionCircle />
             <span>Ajuda</span>
           </BtnMenor>
-          <BtnMenor onClick={handleClick}>Projetos</BtnMenor>
-          <BtnMenor>Dashboard</BtnMenor>
-        </Section>
+      </section>
 
       <Perfil>
         <FaRegUserCircle />

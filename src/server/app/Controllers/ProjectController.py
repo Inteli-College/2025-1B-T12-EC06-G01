@@ -117,5 +117,24 @@ class ProjectController:
         
         return {"error": projects_list}, code
         
+
+    def get_reportable_projects(self):
+            """
+            Busca apenas projetos que são 'relatáveis', ou seja,
+            que possuem imagens com fissuras classificadas.
+            """
+            projects_list, code = self.project_repository.get_projects_with_fissures()
             
+            if code == 200:
+                # Formata a resposta para ser um JSON limpo, contendo apenas id e nome.
+                result = [
+                    {
+                        "id": p.id,
+                        "name": p.name
+                    }
+                    for p in projects_list
+                ]
+                return result, 200
+            
+            return {"error": "Erro ao buscar projetos relatáveis"}, code
 
