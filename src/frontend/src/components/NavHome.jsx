@@ -524,7 +524,6 @@ export default function NavHome() {
             const response = await axios.get(`http://localhost:5000/projects/${selectedReportProject}/report/`, config);
     
             // Se a chamada for bem-sucedida, usa os dados recebidos para gerar o PDF
-            // (Assumindo que você tem uma função generatePDF(data) disponível)
             generatePDF(response.data);
     
             setShowReportPopup(false); // Fecha o popup
@@ -612,25 +611,39 @@ export default function NavHome() {
         }
     };
 
-    // Função para deletar imagens selecionadas
-    const handleDeleteSelectedImages = async () => {
-        if (selectedImages.length === 0) {
-            console.log('veio de NavHome');
-            alert('Selecione ao menos uma imagem para deletar.');
-            return;
-        }
-        try {
-            await axios.delete('http://localhost:5000/images/', {
-                data: { image_ids: selectedImages }
-            });
-            alert('Imagens deletadas com sucesso!');
-            setSelectedImages([]);
-            // Você pode emitir um evento ou usar outro contexto para atualizar a lista de imagens no ImgSection, se necessário
-        } catch (err) {
-            console.error('Erro ao deletar imagens:', err);
-            alert('Erro ao deletar imagens.');
-        }
-    };
+
+
+const handleDeleteSelectedImages = async () => {
+    if (selectedImages.length === 0) {
+        alert('Selecione ao menos uma imagem para deletar.');
+        return;
+    }
+    
+    try {
+        // Criamos um objeto de configuração para a chamada
+        const config = {
+            // Adicionamos o cabeçalho de autorização
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            
+            data: {
+                image_ids: selectedImages
+            }
+        };
+
+        // A chamada agora usa a URL correta e o objeto 'config'
+        await axios.delete('http://localhost:5000/images/', config);
+        
+        alert('Imagens deletadas com sucesso!');
+        setSelectedImages([]);
+
+        window.location.reload(); 
+    } catch (err) {
+        console.error('Erro ao deletar imagens:', err);
+        alert(err.response?.data?.message || 'Erro ao deletar imagens.');
+    }
+};
 
     const openSendPopup = () => {
         if (!currentProjectId) setSelectedProject('');
