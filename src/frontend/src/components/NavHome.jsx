@@ -26,7 +26,9 @@ const generatePDF = (data) => {
     doc.text(`Data de emissão: ${new Date(data.informacoes_gerais.data_emissao_relatorio).toLocaleDateString()}`, 14, 42);
     doc.text(`Modelo utilizado: ${data.informacoes_gerais.modelo_utilizado}`, 14, 48);
 
-    // Gera a primeira tabela (Resumo do Projeto)
+    // --- INÍCIO DA CORREÇÃO ---
+
+    // 1. Gera a primeira tabela (Resumo do Projeto)
     autoTable(doc, {
         startY: 55,
         head: [['Resumo do Projeto', 'Valor']],
@@ -38,10 +40,11 @@ const generatePDF = (data) => {
         ],
     });
 
-    // Define a posição 'y' de forma segura
+    // 2. Define a posição 'y' de forma segura
+    // Se a tabela anterior foi desenhada, usa a sua posição final. Senão, começa a partir de um valor padrão.
     let y = doc.lastAutoTable ? doc.lastAutoTable.finalY + 10 : 55;
 
-    // Itera sobre cada prédio
+    // 3. Itera sobre cada prédio, aplicando a mesma lógica segura
     data.detalhamento_por_predio.forEach((predio) => {
         if (y > 260) { doc.addPage(); y = 20; }
         doc.setFontSize(14);
@@ -61,7 +64,7 @@ const generatePDF = (data) => {
         
         y = doc.lastAutoTable ? doc.lastAutoTable.finalY + 5 : y;
 
-        // Itera sobre cada fachada
+        // 4. Itera sobre cada fachada, com a mesma lógica segura
         predio.fachadas_list?.forEach((fachada) => {
             if (y > 260) { doc.addPage(); y = 20; }
             doc.setFontSize(12);
@@ -74,6 +77,7 @@ const generatePDF = (data) => {
                 head: [['Métrica', 'Valor']],
                 body: [
                     ['Total de imagens', fachada.resumo_quantitativo_fachada.total_imagens],
+                    // ALTERADO: Adicionado '|| 0'
                     ['Fissuras térmicas', fachada.resumo_quantitativo_fachada.fissura_termica || 0],
                     ['Fissuras por retração', fachada.resumo_quantitativo_fachada.fissura_retracao || 0],
                 ]
@@ -177,25 +181,25 @@ const Infos = styled.div`
             font-size: var(--font-size-4xl);
         }
     }
-    
     .clear-filter-button {
-        padding: 0.2rem 0.4rem;
-        font-size: 12px;
-        font-weight: 500;
-        background-color: transparent;
-        color: #629EBC;
-        border: 1px solid #629EBC;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        margin-left: 1rem;
+    padding: 0.2rem 0.4rem;
+    font-size: 12px;
+    font-weight: 500;
+    background-color: transparent; /* Fundo transparente */
+    color: #629EBC;                /* Cor do texto igual à dos botões principais */
+    border: 1px solid #629EBC;      /* Borda com a cor principal */
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-left: 1rem;
 
-        &:hover {
-            background-color: #629EBC;
-            color: white;
-        }
+    &:hover {
+        background-color: #629EBC; /* Fundo preenche no hover */
+        color: white;             /* Texto fica branco no hover */
     }
+}
 `   
+    
 
 const Botoes = styled.div`
     display: flex;
@@ -266,17 +270,6 @@ const Botoes = styled.div`
         white-space: nowrap;
     }
 
-    /* Animação de tremor para a lixeira */
-    .trash-button {
-        animation: ${props => props.hasSelectedImages ? 'shake 0.5s infinite' : 'none'};
-    }
-
-    @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-2px); }
-        75% { transform: translateX(2px); }
-    }
-
     @media (max-width: 480px) {
         flex-direction: column;
         padding: var(--spacing-xs);
@@ -342,76 +335,15 @@ const Botoes = styled.div`
     }
 `
 
-// Popup de confirmação de exclusão
-const ConfirmPopup = styled.div`
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    background: rgba(0,0,0,0.5);
-    display: flex; 
-    justify-content: center; 
-    align-items: center;
-    z-index: 9999;
-
-    .popup-inner {
-        background: white;
-        padding: var(--spacing-lg);
-        border-radius: 15px;
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-md);
-        min-width: 300px;
-        max-width: 90vw;
-        text-align: center;
-    }
-
-    .popup-buttons {
-        display: flex;
-        justify-content: space-between;
-        gap: var(--spacing-sm);
-    }
-
-    .popup-buttons button {
-        flex: 1;
-        padding: var(--spacing-xs);
-        border-radius: 10px;
-        border: none;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-
-    .confirm-btn {
-        background-color: #dc3545;
-        color: white;
-    }
-
-    .confirm-btn:hover {
-        background-color: #c82333;
-    }
-
-    .cancel-btn {
-        background-color: #6c757d;
-        color: white;
-    }
-
-    .cancel-btn:hover {
-        background-color: #545b62;
-    }
-`
-
 export default function NavHome() {
-    const { token } = useAuth();
+    const { token } = useAuth(); // Pega o token do nosso contexto global
     const { project } = useProject();
     const [reportableProjects, setReportableProjects] = useState([]);
     const location = useLocation();
     const navigate = useNavigate();
     const { selectedImages, setSelectedImages } = useSelectedImages();
 
-    // Estado para o popup de confirmação
-    const [showConfirmDelete, setShowConfirmDelete] = useState(false);
-
-    const pathParts = location.pathname.split('/').filter(Boolean);
+    const pathParts = location.pathname.split('/').filter(Boolean); // remove strings vazias
 
     let currentProjectId = '';
     let currentBuildingId = '';
@@ -443,7 +375,7 @@ export default function NavHome() {
         startDateFilter, setStartDateFilter,
         endDateFilter, setEndDateFilter,
         clearFilters 
-    } = useProject();
+      } = useProject();
 
     const [showPopup, setShowPopup] = useState(false)
     const [showDetectPopup, setShowDetectPopup] = useState(false);
@@ -458,34 +390,39 @@ export default function NavHome() {
     const [selectedReportProject, setSelectedReportProject] = useState('')
 
     useEffect(() => {
+        // Só executa a função se o token existir.
         if (token) {
             const fetchProjects = async () => {
                 try {
+                    // A configuração do cabeçalho agora usa o token reativo do contexto.
                     const config = {
                         headers: { Authorization: `Bearer ${token}` }
                     };
 
+                    // Busca os projetos na API COM o token
                     const response = await axios.get('http://localhost:5000/projects/', config);
-                    setProjects(response.data);
+                    setProjects(response.data); // Popula o estado com os projetos
 
                 } catch (err) {
                     console.error("Erro ao buscar projetos:", err);
-                    setProjects([]);
+                    setProjects([]); // Limpa os projetos em caso de erro
                 }
             };
 
             fetchProjects();
         } else {
+            // Se não há token (ex: após logout), limpa a lista de projetos.
             setProjects([]);
         }
     }, [token]); 
 
     useEffect(() => {
         if (selectedProject) {
+            // Pega o token do localStorage
             const token = localStorage.getItem('jwt_token');
     
             const requestOptions = {
-                method: 'GET',
+                method: 'GET', // Embora GET seja o padrão, é bom ser explícito
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -537,7 +474,11 @@ export default function NavHome() {
         fetch(`http://localhost:5000/classify/facades/${selectedFacade}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`}, 
-            body: JSON.stringify({})
+            body: JSON.stringify({
+                // opcional: filtros de data aqui:
+                // start_date: "2025-06-01",
+                // end_date: "2025-06-13"
+            })
         })
             .then(res => {
                 if (!res.ok) throw new Error(`Erro HTTP ${res.status}`);
@@ -556,15 +497,16 @@ export default function NavHome() {
 
     const handleOpenReportPopup = async () => {
         try {
-            const config = { headers: { Authorization: `Bearer ${token}` } };
-            const response = await axios.get('http://localhost:5000/projects/reportable', config);
-            setReportableProjects(response.data);
-            setShowReportPopup(true);
+          const config = { headers: { Authorization: `Bearer ${token}` } };
+          // Chama a nova rota /projects/reportable
+          const response = await axios.get('http://localhost:5000/projects/reportable', config);
+          setReportableProjects(response.data); // Salva a lista filtrada no novo estado
+          setShowReportPopup(true); // Abre o popup
         } catch (error) {
-            console.error("Erro ao buscar projetos para relatório:", error);
-            alert(error.response?.data?.message || "Não foi possível carregar a lista de projetos.");
+          console.error("Erro ao buscar projetos para relatório:", error);
+          alert(error.response?.data?.message || "Não foi possível carregar a lista de projetos.");
         }
-    };
+      };
 
     const handleDownloadReport = async () => {
         if (!selectedReportProject) {
@@ -580,12 +522,16 @@ export default function NavHome() {
             };
     
             const response = await axios.get(`http://localhost:5000/projects/${selectedReportProject}/report/`, config);
+    
+            // Se a chamada for bem-sucedida, usa os dados recebidos para gerar o PDF
+            // (Assumindo que você tem uma função generatePDF(data) disponível)
             generatePDF(response.data);
     
-            setShowReportPopup(false);
-            setSelectedReportProject('');
+            setShowReportPopup(false); // Fecha o popup
+            setSelectedReportProject(''); // Limpa a seleção
         } catch (error) {
             console.error("Erro ao gerar relatório:", error);
+            // Exibe a mensagem de erro amigável do backend, se disponível
             alert(error.response?.data?.message || "Ocorreu um erro ao gerar o relatório.");
         }
     };
@@ -617,6 +563,8 @@ export default function NavHome() {
             .catch(err => console.error("Erro ao classificar:", err));
     };
     
+    // dentro de NavHome.jsx
+    // dentro de NavHome.jsx
     const handleDetectImages = () => {
         if (!selectedFacade) {
             alert("Selecione uma fachada antes de detectar.");
@@ -626,13 +574,14 @@ export default function NavHome() {
         fetch(`http://localhost:5000/detect/facades/${selectedFacade}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({})
+            body: JSON.stringify({ /* opcional: start_date, end_date */ })
         })
             .then(res => {
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 return res.json();
             })
             .then(data => {
+                // data = { url1: "data:image/jpeg;base64,...", url2: "...", … }
                 setShowDetectPopup(false);
                 navigate(`/detect/${selectedFacade}`, { state: { detected: data } });
             })
@@ -641,6 +590,8 @@ export default function NavHome() {
                 alert("Erro ao enviar detecção.");
             });
     };
+
+
 
     // Função para determinar o título baseado na rota atual
     const getPageTitle = () => {
@@ -661,32 +612,24 @@ export default function NavHome() {
         }
     };
 
-    // Função para abrir popup de confirmação
-    const handleDeleteClick = () => {
+    // Função para deletar imagens selecionadas
+    const handleDeleteSelectedImages = async () => {
         if (selectedImages.length === 0) {
+            console.log('veio de NavHome');
             alert('Selecione ao menos uma imagem para deletar.');
             return;
         }
-        setShowConfirmDelete(true);
-    };
-
-    // Função para confirmar exclusão
-    const confirmDelete = async () => {
         try {
             await axios.delete('http://localhost:5000/images/', {
                 data: { image_ids: selectedImages }
             });
             alert('Imagens deletadas com sucesso!');
             setSelectedImages([]);
-            setShowConfirmDelete(false);
-            // Recarregar a página para atualizar a lista
-            window.location.reload();
+            // Você pode emitir um evento ou usar outro contexto para atualizar a lista de imagens no ImgSection, se necessário
         } catch (err) {
             console.error('Erro ao deletar imagens:', err);
             alert('Erro ao deletar imagens.');
         }
-    };
-
     const openSendPopup = () => {
         if (!currentProjectId) setSelectedProject('');
         if (!currentBuildingId) setSelectedBuilding('');
@@ -703,25 +646,27 @@ export default function NavHome() {
                 {/* Renderização condicional dos filtros */}
                 {location.pathname === '/projects' && (
                     <div className='filtros'>
-                        <div className="filtro-item">
-                            <label htmlFor="start-date">A partir de:</label>
-                            <input 
-                                id="start-date"
-                                type='date'
-                                value={startDateFilter}
-                                onChange={(e) => setStartDateFilter(e.target.value)}
-                            />
-                        </div>
-                        
-                        <div className="filtro-item">
-                            <label htmlFor="end-date">Até:</label>
-                            <input 
-                                id="end-date"
-                                type='date'
-                                value={endDateFilter}
-                                onChange={(e) => setEndDateFilter(e.target.value)}
-                            />
-                        </div>
+                                
+                                {/* Input de Data de Início Corrigido */}
+                                <div className="filtro-item">
+                    <label htmlFor="start-date">A partir de:</label>
+                    <input 
+                        id="start-date"
+                        type='date'
+                        value={startDateFilter} // de volta para 'value'
+                        onChange={(e) => setStartDateFilter(e.target.value)} // de volta para 'onChange'
+                    />
+                    </div>
+                    
+                    <div className="filtro-item">
+                    <label htmlFor="end-date">Até:</label>
+                    <input 
+                        id="end-date"
+                        type='date'
+                        value={endDateFilter} // de volta para 'value'
+                        onChange={(e) => setEndDateFilter(e.target.value)} // de volta para 'onChange'
+                    />
+                    </div>
 
                         <select value={contractorFilter} onChange={(e) => setContractorFilter(e.target.value)}>
                             <option value="">Todos Contratantes</option>
@@ -736,12 +681,13 @@ export default function NavHome() {
                         <button onClick={clearFilters} className="clear-filter-button">
                             Limpar Filtros
                         </button>
+                        
                     </div>
                 )}
             </Infos>
 
-            <Botoes hasSelectedImages={selectedImages.length > 0}>
-                <button className="trash-button" onClick={handleDeleteClick}> <FaTrash /> </button>
+            <Botoes>
+                <button onClick={handleDeleteSelectedImages}> <FaTrash /> </button>
 
                 <button> <FaPaintBrush /> </button>
                 
@@ -751,20 +697,6 @@ export default function NavHome() {
                 
                 <button className='report-button' onClick={handleOpenReportPopup}>Gerar Relatório</button>
             </Botoes>
-
-            {/* Popup de confirmação de exclusão */}
-            {showConfirmDelete && (
-                <ConfirmPopup>
-                    <div className='popup-inner'>
-                        <h3>Confirmar Exclusão</h3>
-                        <p>Tem certeza que deseja excluir {selectedImages.length} imagem(ns) selecionada(s)?</p>
-                        <div className="popup-buttons">
-                            <button className="confirm-btn" onClick={confirmDelete}>Sim, Excluir</button>
-                            <button className="cancel-btn" onClick={() => setShowConfirmDelete(false)}>Cancelar</button>
-                        </div>
-                    </div>
-                </ConfirmPopup>
-            )}
 
             {/* Popup de Classificação */}
             {showPopup && (
@@ -788,7 +720,7 @@ export default function NavHome() {
 
             {/* Popup de Detecção */}
             {showDetectPopup && (
-                <DetectPopup
+            <DetectPopup
                     projects={projects}
                     buildings={buildings}
                     facades={facades}
@@ -815,5 +747,5 @@ export default function NavHome() {
             )}
         </Nav>
     );
-    
+    }
 }
