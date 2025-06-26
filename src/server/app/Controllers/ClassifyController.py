@@ -39,38 +39,9 @@ class ClassifyController:
 
             print(f"[DEBUG] Resultado retornado pela classificação:", results)
 
-            urls_termica = results.get("termica", [])
-            urls_retracao = results.get("retracao", [])
+            
 
-            termica_rows, code1 = self.image_repository.read_images_by_urls(urls_termica)
-            retracao_rows, code2 = self.image_repository.read_images_by_urls(urls_retracao)
-
-            termica = [
-                {
-                    "image_id": row.id,
-                    "url": row.raw_image,
-                    "veredict": row.veredict
-                }
-                for row in termica_rows
-            ]
-
-            retracao = [
-                {
-                    "image_id": row.id,
-                    "url": row.raw_image,
-                    "veredict": row.veredict
-                }
-                for row in retracao_rows
-            ]
-
-            response = {
-                "termica": termica,
-                "retracao": retracao
-            }
-
-            print(f"[DEBUG] Resposta final para frontend:", response)
-
-            return jsonify(response), 200
+            return jsonify(results), 200
 
         except ValueError as e:
             print(f"[ERROR] Erro de valor:", e)
