@@ -1,5 +1,5 @@
 // src/components/SendPopup.jsx
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 
 const PopupWrapper = styled.div`
@@ -58,22 +58,55 @@ export default function SendPopup({
   setSelectedProject,
   setSelectedBuilding,
   setSelectedFacade,
+  suggestedProject,
+  suggestedBuilding,
+  suggestedFacade,
   onSend,
   onClose
 }) {
+  
+  // useEffect que monitora também projects/buildings/facades
+  useEffect(() => {
+    console.log("Popup useEffect", { suggestedProject, suggestedBuilding, suggestedFacade, selectedProject, selectedBuilding, selectedFacade });
+
+    if (suggestedProject && !selectedProject) {
+      setSelectedProject(suggestedProject);
+    }
+    if (suggestedBuilding && !selectedBuilding && buildings.length > 0) {
+      setSelectedBuilding(suggestedBuilding);
+    }
+    if (suggestedFacade && !selectedFacade && facades.length > 0) {
+      setSelectedFacade(suggestedFacade);
+    }
+  }, [
+    suggestedProject, suggestedBuilding, suggestedFacade,
+    selectedProject, selectedBuilding, selectedFacade,
+    setSelectedProject, setSelectedBuilding, setSelectedFacade,
+    projects, buildings, facades
+  ]);
+
+  
+
   return (
     <PopupWrapper>
       <div className="popup-inner">
         <h2>Enviar Imagens para Classificação</h2>
 
-        <select onChange={(e) => setSelectedProject(parseInt(e.target.value))} value={selectedProject}>
+        <select 
+          onChange={(e) => setSelectedProject(parseInt(e.target.value))} 
+          value={selectedProject || ''}
+        >
           <option value=''>Selecione o projeto</option>
           {projects.map(p => (
             <option key={p.id} value={p.id}>{p.name}</option>
           ))}
         </select>
 
-        <select onChange={(e) => setSelectedBuilding(parseInt(e.target.value))} value={selectedBuilding} disabled={!selectedProject}>
+        <select 
+          onChange={(e) => setSelectedBuilding(parseInt(e.target.value))} 
+          value={selectedBuilding || ''} 
+          disabled={!selectedProject}
+        >
           <option value=''>Selecione o prédio</option>
           {buildings.map(b => (
             <option key={b.id} value={b.id}>{b.predio}</option>
@@ -82,15 +115,14 @@ export default function SendPopup({
 
         <select
           onChange={(e) => setSelectedFacade(parseInt(e.target.value))}
-          value={selectedFacade}
+          value={selectedFacade || ''}
           disabled={!selectedBuilding}
         >
           <option value=''>Selecione a fachada</option>
-          {facades.map((f) => (
+          {facades.map(f => (
             <option key={f.id} value={f.id}>{f.nome}</option>
           ))}
         </select>
-
 
         <div className="popup-buttons">
           <button onClick={onSend}>Enviar</button>

@@ -1,5 +1,6 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, g
 from app.Controllers.UserController import UserController
+from app.auth_decorator import token_required 
 
 # Cria um Blueprint para as rotas do usuário
 user_bp = Blueprint('user', __name__)
@@ -54,3 +55,18 @@ def login_user():
 def delete_user(user_id):
     response, status = user_controller.delete_user_by_id(user_id)
     return jsonify(response), status
+
+@user_bp.route('/me', methods=['GET'])
+@token_required # Protegemos a rota
+def get_current_user():
+    # O decorator @token_required já colocou o usuário em g.current_user
+    # Não precisamos de lógica no controller, podemos responder diretamente.
+    user = g.current_user
+    if not user:
+        return jsonify({"error": "Usuário não encontrado"}), 404
+    
+    return jsonify({
+        "id": user.id,
+        "name": user.name,
+        "email": user.email
+    }), 200

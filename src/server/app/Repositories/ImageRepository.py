@@ -103,19 +103,15 @@ class ImageRepository:
         try:
             image = Image.query.get(image_id)
 
-            if image.veredict:
-                return f"Veredito já dado nessa imagem...", 409
-
-            elif image:
+            if image:
                 image.veredict = veredict
                 db.session.commit()
-                return image, 204         
-
+                return image, 200
 
             else:
                 print("[ImageRepository] Nenhuma imagem encontrada...")
                 return f"Nenhuma imagem encontrada", 404
-        
+
         except Exception as e:
             print("[ImageRepository] Erro ao atualizar a coluna veredict no banco de dados...:")
             return f"Erro ao atualizar a coluna veredict no banco de dados...: {e}", 500
