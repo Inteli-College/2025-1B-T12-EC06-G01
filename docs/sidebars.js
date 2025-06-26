@@ -148,15 +148,15 @@ const sidebars = {
       ]
     },
     // Se houver uma Sprint 5, adicione-a também:
-    // {
-    //   type: 'category',
-    //   label: 'Sprint 5',
-    //   link: { type: 'generated-index' },
-    //   items: [
-    //     'sprint5/intro', // Conforme "Available document ids"
-    //     // Adicione outros documentos da Sprint 5 aqui
-    //   ],
-    // },
+    {
+    type: 'category',
+    label: 'Sprint 5',
+    link: { type: 'generated-index' },
+    items: [
+        'sprint5/requisitos',
+       
+       ],
+     },
     // O arquivo 'intro' que aparece sozinho na lista de "Available document ids"
     // pode ser um arquivo na raiz do seu diretório 'docs'.
     // Se quiser adicioná-lo à sidebar, pode ser assim:
