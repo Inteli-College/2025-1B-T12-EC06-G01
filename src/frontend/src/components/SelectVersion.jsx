@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { useAuth } from '../contexts/AuthContext';
 
 const Wrapper = styled.div`
   margin-top: 2rem;
@@ -35,17 +36,28 @@ const TableCell = styled.td`
 `;
 
 export default function SelectVersion() {
+  const { token } = useAuth();
   const [versoes, setVersoes] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState('');
   const [versaoSelecionada, setVersaoSelecionada] = useState(null);
 
   useEffect(() => {
+    if (!token) {
+      setCarregando(false);
+      return;
+  }
     const fetchVersoes = async () => {
       try {
-        const response = await fetch('http://localhost:5000/classify/version', {
+        const requestOptions = {
           method: 'POST',
-        });
+          headers: {
+            'Authorization': `Bearer ${token}`
+            // O 'Content-Type' não é necessário para um POST sem corpo
+          }
+        };
+
+        const response = await fetch('http://localhost:5000/classify/version', requestOptions);
 
         const contentType = response.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
@@ -77,7 +89,7 @@ export default function SelectVersion() {
     };
 
     fetchVersoes();
-  }, []);
+  }, [token]);
 
   function formatarData(path) {
     const match = path.match(/train_(\d{8})_(\d{6})/);
