@@ -689,9 +689,9 @@ export default function NavHome() {
             </Infos>
 
             <Botoes>
-                <button onClick={handleDeleteSelectedImages}> <FaTrash /> </button>
+                {/* <button onClick={handleDeleteSelectedImages}> <FaTrash /> </button>
 
-                <button> <FaPaintBrush /> </button>
+                <button> <FaPaintBrush /> </button> */}
                 
                 <button className='send-button' onClick={openSendPopup}><span>Classificar</span> <IoSend /></button>
                 
