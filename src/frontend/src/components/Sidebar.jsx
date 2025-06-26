@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { IoIosAdd } from "react-icons/io"
-import { FaRegUserCircle } from "react-icons/fa"
+import { FaRegUserCircle, FaFolder, FaQuestionCircle } from "react-icons/fa"
 import { IoExitOutline } from "react-icons/io5"
 import logo from '../logo.svg'
 import { useProject } from '../contexts/ProjectContext'
 import { useNavigate, Link } from 'react-router-dom';
 import NovoProjetoPopup from './NovoProjetoPopup'
+import HelpGuide from './HelpGuide'
 import { useAuth } from '../contexts/AuthContext';
 
 const Container = styled.div`
@@ -181,12 +182,17 @@ const BtnMenor = styled.button`
   border: 5px solid var(--secondary-color);
   color: #fff;
   font-size: var(--font-size-lg);
+  gap: var(--spacing-xs);
   
   transition: background-color 0.3s ease; 
 
   &:hover {
     background-color: var(--primary-hover); 
     cursor: pointer; 
+  }
+
+  svg {
+    font-size: var(--font-size-lg);
   }
 
   @media (max-width: 768px) {
@@ -284,6 +290,7 @@ const Section = styled.section`
 
 export default function Sidebar(props) {
   const [showPopup, setShowPopup] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
   const { project, setProject } = useProject();
 
   const { currentUser, logout, isLoadingAuth } = useAuth();
@@ -303,6 +310,7 @@ export default function Sidebar(props) {
 
 
   return (
+    <>
     <Container>
       <Link to="/projects" style={{ textAlign: 'center' }}>
         <img src={logo} width='30%' alt='ovo com rachadura' />
@@ -322,6 +330,10 @@ export default function Sidebar(props) {
       <section style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.8rem' }}>
         <BtnMenor onClick={handleClickProjects}>Projetos</BtnMenor>
         <BtnMenor onClick={handleClickActions} >Ações</BtnMenor>
+        <BtnMenor onClick={() => setShowHelp(true)}>
+            <FaQuestionCircle />
+            <span>Ajuda</span>
+          </BtnMenor>
       </section>
 
       <Perfil>
@@ -341,6 +353,8 @@ export default function Sidebar(props) {
         <button onClick={handleLogout}><IoExitOutline /></button>
       </Perfil>
     </Container>
+          <HelpGuide isOpen={showHelp} onClose={() => setShowHelp(false)} />
+        </>
   );
 }
 
