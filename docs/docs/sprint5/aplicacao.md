@@ -30,7 +30,7 @@ Esta entrega marca a versão final da interface ReactJS do sistema de análise d
 
 - **Refatoração para responsividade parcial**: Durante a Sprint final, o sistema recebeu ajustes visuais e estruturais para adaptar melhor a interface a dispositivos com resoluções menores, como tablets. Ainda não se trata de uma responsividade total para smartphones, mas os principais componentes foram testados e otimizados para garantir uma navegação fluida em telas médias.
 
-- **Remoção do botão de pincel na navbar**: por questão de priorização de entregas e tempo de implementação, o botão de edição visual (ícone de pincel) foi removido da versão final. No entanto, sua implementação parcial pode ser consultada na branch `feat/pincel`.
+- **Remoção do botão de pincel na navbar**: por questão de priorização de entregas e tempo de implementação, o botão de edição visual (ícone de pincel) foi removido da versão final. No entanto, sua implementação parcial pode ser consultada na branch `feat/paintBRUSH`.
 
 - **Renomeação de botões**: Com base nos feedbacks de testes com o parceiro, os botões foram ajustados para refletir melhor a hierarquia do sistema, como "Adicionar Prédio" e "Adicionar Fachada".
 
