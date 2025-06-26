@@ -144,23 +144,11 @@ const sidebars = {
       label: 'Sprint 5',
       link: { type: 'generated-index' },
       items: [
-        'sprint5/backend'
+        'sprint5/backend',
+        'sprint5/requisitos',
       ]
     },
-    // Se houver uma Sprint 5, adicione-a também:
-    {
-    type: 'category',
-    label: 'Sprint 5',
-    link: { type: 'generated-index' },
-    items: [
-        'sprint5/requisitos',
-       
-       ],
-     },
-    // O arquivo 'intro' que aparece sozinho na lista de "Available document ids"
-    // pode ser um arquivo na raiz do seu diretório 'docs'.
-    // Se quiser adicioná-lo à sidebar, pode ser assim:
-    // 'intro', // Se ele estiver em docs/intro.md'
+    
     'Guia de execução do sistema'
   ],
 };
