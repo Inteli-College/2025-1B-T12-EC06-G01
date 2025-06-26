@@ -747,4 +747,5 @@ export default function NavHome() {
             )}
         </Nav>
     );
+    }
 }
