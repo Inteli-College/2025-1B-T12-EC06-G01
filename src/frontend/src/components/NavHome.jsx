@@ -4,8 +4,8 @@ import { FaTrash, FaPaintBrush } from 'react-icons/fa'
 import { IoSend } from 'react-icons/io5'
 import { useProject } from '../contexts/ProjectContext'
 import SendPopup from '../components/SendPopup'
+import ImageEditorPopup from '../components/ImageEditorPopup'
 import { useLocation, useNavigate } from 'react-router-dom';
-
 
 const Nav = styled.div`
     margin-left: 18vw;
@@ -77,7 +77,11 @@ const Botoes = styled.div`
     }
 `
 
-export default function NavHome() {
+export default function NavHome({ 
+    selectedImage, 
+    onImageSelect, 
+    images = [] 
+}) {
     const { project } = useProject();
     const location = useLocation();
 
@@ -87,6 +91,7 @@ export default function NavHome() {
     const [longitudeFilter, setLongitudeFilter] = useState('')
 
     const [showPopup, setShowPopup] = useState(false)
+    const [showImageEditor, setShowImageEditor] = useState(false)
     const [projects, setProjects] = useState([])
     const [buildings, setBuildings] = useState([])
     const [facades, setFacades] = useState([])
@@ -151,29 +156,43 @@ export default function NavHome() {
     }, [selectedBuilding]);
 
     const handleSend = () => {
-    if (!selectedProject) {
-        alert("Selecione um projeto antes de enviar.");
-        return;
+        if (!selectedProject) {
+            alert("Selecione um projeto antes de enviar.");
+            return;
+        }
+
+        fetch('http://localhost:5000/classify/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                project_id: selectedProject,
+                building_id: selectedBuilding,
+                fachada: selectedFacade
+            })
+        })
+            .then(res => res.json())
+            .then(data => {
+                alert("Classificação enviada com sucesso!");
+                setShowPopup(false);
+                navigate('/resultado');
+            })
+            .catch(err => console.error("Erro ao classificar:", err));
     }
 
-    fetch('http://localhost:5000/classify/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            project_id: selectedProject,
-            building_id: selectedBuilding,
-            fachada: selectedFacade
-        })
-    })
-        .then(res => res.json())
-        .then(data => {
-            alert("Classificação enviada com sucesso!");
-            setShowPopup(false);
-            navigate('/resultado'); // Redirecionamento adicionado
-        })
-        .catch(err => console.error("Erro ao classificar:", err));
-}
+    const handleImageEditor = () => {
+        if (!selectedImage) {
+            alert("Selecione uma imagem primeiro para editá-la.");
+            return;
+        }
+        setShowImageEditor(true);
+    }
 
+    const handleImageSave = (editedImage) => {
+        if (onImageSelect) {
+            onImageSelect(editedImage);
+        }
+        console.log("Imagem editada salva:", editedImage);
+    }
 
     // Função para determinar o título baseado na rota atual
     const getPageTitle = () => {
@@ -184,10 +203,8 @@ export default function NavHome() {
         } else if (path.includes('/predios')) {
             return 'Escolha um prédio';
         } else if (path.includes('/predio/') && path.split('/').length === 5) {
-            // Rota: /project/:projectId/predio/:predioNome
             return 'Escolha uma fachada';
         } else if (path.includes('/predio/') && path.split('/').length === 6) {
-            // Rota: /project/:projectId/predio/:predioNome/:fachadaNome
             return 'Visualizando fachada';
         } else if (project.name === '') {
             return 'Adicione um projeto';
@@ -195,7 +212,6 @@ export default function NavHome() {
             return project.name;
         }
     };
-
 
     return (
         <Nav>
@@ -216,7 +232,7 @@ export default function NavHome() {
 
             <Botoes>
                 <button> <FaTrash /> </button>
-                <button> <FaPaintBrush /> </button>
+                <button onClick={handleImageEditor}> <FaPaintBrush /> </button>
                 <button className='send-button' onClick={() => setShowPopup(true)}> <span>Enviar</span> <IoSend /> </button>
             </Botoes>
 
@@ -233,6 +249,14 @@ export default function NavHome() {
                     setSelectedFacade={setSelectedFacade}
                     onSend={handleSend}
                     onClose={() => setShowPopup(false)}
+                />
+            )}
+
+            {showImageEditor && (
+                <ImageEditorPopup
+                    selectedImage={selectedImage}
+                    onClose={() => setShowImageEditor(false)}
+                    onSave={handleImageSave}
                 />
             )}
         </Nav>
