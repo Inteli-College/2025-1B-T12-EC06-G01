@@ -12,7 +12,7 @@ Após o ciclo completo de desenvolvimento, todos os requisitos previamente defin
 |--------|-----------|--------|-------------|
 | RF 01 | Upload de Imagens | ✅ Atendido | Funcionalidade implementada e validada no frontend. |
 | RF 02 | Classificação Automática | ✅ Atendido | Modelo de IA treinado e integrado com sucesso ao backend. |
-| RF 03 | Visualização de Imagens | ✅ Atendido | Imagens são exibidas na interface com botão de download incluso. |
+| RF 03 | Visualização de Imagens | ✅ Atendido | Imagens são exibidas na interface. |
 | RF 04 | Correção Manual da Classificação | ⚠️ Parcialmente atendido | Correção da classificação técnica é possível pelo frontend mas a possibilidade de edição não foi implementada. |
 | RF 05 | Processamento por Ordem de Captura | ❌ Não atendido | A ordenação com base no plano de voo não foi priorizada na versão atual. |
 | RF 06 | Armazenamento de Geolocalização | ❌ Não atendido | Informações de GPS não estavam disponíveis nas imagens fornecidas. |
