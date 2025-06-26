@@ -144,6 +144,8 @@ class ImageRepository:
         except Exception as e:
             print(f"[ImageRepository] Erro ao alterar nome de imagem: {e}")
             return f"Erro ao alterar nome de imagem: {e}", 404
+<<<<<<< feat/conexao-websocket
+=======
 
     def read_fissure_types():
         try: 
@@ -177,3 +179,4 @@ class ImageRepository:
         except Exception as e:
             print(f"[ImageRepository] Erro ao buscar imagens por URLs: {e}")
             return [], 500
+>>>>>>> help/merges

@@ -7,7 +7,7 @@ const Container = styled.section`
   width: 50%;
   padding: 2rem;
   background-color: ${props =>
-    props.$classificacao === 'termica' ? '#DDDDDD' : '#BDBDBD'};
+    props.$classificacao === 'termica' ? '#D3E2EF' : '#BCCBD8'};
   text-align: center;
 
   h3 {
@@ -22,6 +22,15 @@ const Images = styled.div`
   padding: 1rem;
 `
 
+<<<<<<< feat/conexao-websocket
+export default function ResultSection({ classificacao, imagens }) {
+  const imagensFiltradas = imagens.map((url, index) => ({
+    img_name: `${classificacao}_${index + 1}`,
+    url: url,
+  }))
+
+  console.log(`>>> [${classificacao}] imagens:`, imagens);
+=======
 export default function ResultSection({ classificacao, imagens, droppableId }) {
   const imagensFiltradas = imagens.map((item, index) => {
     if (typeof item === 'string') {
@@ -38,6 +47,7 @@ export default function ResultSection({ classificacao, imagens, droppableId }) {
       }
     }
   })
+>>>>>>> help/merges
 
   return (
     <Container $classificacao={classificacao}>

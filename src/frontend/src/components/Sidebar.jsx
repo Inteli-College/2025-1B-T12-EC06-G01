@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { IoIosAdd } from "react-icons/io"
-import { FaRegUserCircle, FaFolder } from "react-icons/fa"
+import { FaRegUserCircle } from "react-icons/fa"
 import { IoExitOutline } from "react-icons/io5"
 import logo from '../logo.svg'
 import { useProject } from '../contexts/ProjectContext'
@@ -295,7 +295,12 @@ export default function Sidebar(props) {
   };
 
   const togglePopup = () => setShowPopup(!showPopup);
-  const handleClick = () => navigate("/projects");
+  const handleClickProjects = () => navigate("/projects");
+
+  const handleClickActions = () => {
+    navigate("/actions");
+  };
+
 
   return (
     <Container>
@@ -312,29 +317,12 @@ export default function Sidebar(props) {
         <NovoProjetoPopup onClose={togglePopup} onSubmit={(data) => setProject(data)} />
       )}
 
-      <Section>
-        <Recente>
-          <FaFolder />
-          <a href='/'>Lorem ipsum dolor sit amet</a>
-        </Recente>
+      <hr style={{ width: '80%' }} />
 
-        <Recente>
-          <FaFolder />
-          <a href='/'>Lorem ipsum dolor sit amet</a>
-        </Recente>
-
-        <Recente>
-          <FaFolder />
-          <a href='/'>Lorem ipsum dolor sit amet</a>
-        </Recente>
-      </Section>
-
-      <Divider />
-
-      <Section>
-        <BtnMenor onClick={handleClick}>Projetos</BtnMenor>
-        <BtnMenor>Dashboard</BtnMenor>
-      </Section>
+      <section style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.8rem' }}>
+        <BtnMenor onClick={handleClickProjects}>Projetos</BtnMenor>
+        <BtnMenor onClick={handleClickActions} >Ações</BtnMenor>
+      </section>
 
       <Perfil>
         <FaRegUserCircle />
