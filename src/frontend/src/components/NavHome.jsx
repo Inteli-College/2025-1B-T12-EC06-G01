@@ -435,7 +435,7 @@ export default function NavHome() {
                 })
                 .catch(err => console.error("Erro ao buscar prédios:", err));
         }
-    }, [selectedProject]);
+    }, [selectedProject,]);
 
     useEffect(() => {
         if (selectedBuilding) {
@@ -747,5 +747,5 @@ export default function NavHome() {
             )}
         </Nav>
     );
-    }
+}
 }

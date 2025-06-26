@@ -15,27 +15,26 @@ import Actions from './pages/Actions';
 
 function App() {
   return (
-
     <Router>
       <AuthProvider>
         <ProjectProvider>
-         <SelectedImagesProvider>
-          <Routes>
-            <Route path="/" element={<LoginRegister />} /> 
-
-            <Route element={<PrivateRoute />}>
-              <Route path="/projects" element={<Projects />} />
-              <Route path="/project/:projectId/predios" element={<ProjectPredios />} />
-              <Route path="/project/:projectId/predio/:predioNome" element={<Predio />} />
-              <Route path="/project/:projectId/predio/:predioNome/:fachadaNome" element={<Fachada />} />
-              <Route path="/predio/:predioNome" element={<Predio />} />
-              <Route path="/predio/:predioNome/:fachadaNome" element={<Fachada />} />
-              <Route path="/result/:facadeId" element={<Result />} />
-              <Route path="/detect/:facadeId" element={<DetectResult />} />
-              <Route path='/actions' element={<Actions />} />
-            </Route>
-          </Routes>
-         </SelectedImagesProvider>
+          <SelectedImagesProvider>
+            <Routes>
+              <Route path="/" element={<LoginRegister />} /> 
+              
+              <Route element={<PrivateRoute />}>
+                <Route path="/projects" element={<Projects />} />
+                <Route path="/project/:projectId/predios" element={<ProjectPredios />} />
+                <Route path="/project/:projectId/predio/:predioNome" element={<Predio />} />
+                <Route path="/project/:projectId/predio/:predioNome/:fachadaNome" element={<Fachada />} />
+                <Route path="/predio/:predioNome" element={<Predio />} />
+                <Route path="/predio/:predioNome/:fachadaNome" element={<Fachada />} />
+                <Route path="/result/:facadeId" element={<Result />} />
+                <Route path="/detect/:facadeId" element={<DetectResult />} />
+                <Route path='/actions' element={<Actions />} />
+              </Route>
+            </Routes>
+          </SelectedImagesProvider>
         </ProjectProvider>
       </AuthProvider>
     </Router>
