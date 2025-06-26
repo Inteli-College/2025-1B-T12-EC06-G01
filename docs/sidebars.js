@@ -136,7 +136,6 @@ const sidebars = {
         'sprint4/projetos-e-recursos',
         'sprint4/relatorio',
 
-        // Adicione outros documentos da Sprint 4 aqui
       ],
     },
     {
@@ -146,15 +145,10 @@ const sidebars = {
       items: [
         'sprint5/backend',
         'sprint5/requisitos',
-<<<<<<< deteccao/docs
-        'sprint5/modelo-deteccao'
+        'sprint5/modelo-deteccao',
+        'sprint5/aplicacao',
       ]
     },
-=======
-      ]
-    },
-    
->>>>>>> develop
     'Guia de execução do sistema'
   ],
 };
