@@ -54,6 +54,7 @@ def create_app():
     from app.Routes.UserRoute import user_bp
     from app.Routes.ReportRoute import report_bp
     from app.Routes.ContractorRoute import contractor_bp
+    from app.Routes.DetectionRoute import detect_bp
 
     # Carregando os Models
     from app.Models.project import Project
@@ -77,6 +78,7 @@ def create_app():
     app.register_blueprint(building_bp)
     app.register_blueprint(report_bp)
     app.register_blueprint(contractor_bp)
+    app.register_blueprint(detect_bp)
     
     from app import websocket
 

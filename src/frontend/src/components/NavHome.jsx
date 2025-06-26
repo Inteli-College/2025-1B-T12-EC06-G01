@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { FaTrash, FaPaintBrush } from 'react-icons/fa'
+import { FaSearch } from 'react-icons/fa';
 import { IoSend } from 'react-icons/io5'
 import { useProject } from '../contexts/ProjectContext'
 import SendPopup from '../components/SendPopup'
+import DetectPopup from '../components/DetectPopup'
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+
 
 // Coloque este objeto dentro do seu componente NavHome.jsx, antes da declaração do return.
 const mockReportData = {
@@ -244,6 +247,7 @@ export default function NavHome() {
     const [longitudeFilter, setLongitudeFilter] = useState('')
 
     const [showPopup, setShowPopup] = useState(false)
+    const [showDetectPopup, setShowDetectPopup] = useState(false);
     const [showReportPopup, setShowReportPopup] = useState(false)
     const [projects, setProjects] = useState([])
     const [buildings, setBuildings] = useState([])
@@ -299,7 +303,7 @@ export default function NavHome() {
         }
     }, [selectedBuilding]);
 
-
+    // Função para enviar requisição de detecção
     const handleSendImages = () => {
         if (!selectedFacade) {
             alert("Selecione uma fachada antes de enviar.");
@@ -383,6 +387,36 @@ export default function NavHome() {
             })
             .catch(err => console.error("Erro ao classificar:", err));
     };
+    
+    // dentro de NavHome.jsx
+    // dentro de NavHome.jsx
+    const handleDetectImages = () => {
+        if (!selectedFacade) {
+            alert("Selecione uma fachada antes de detectar.");
+            return;
+        }
+
+        fetch(`http://localhost:5000/detect/facades/${selectedFacade}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ /* opcional: start_date, end_date */ })
+        })
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return res.json();
+            })
+            .then(data => {
+                // data = { url1: "data:image/jpeg;base64,...", url2: "...", … }
+                setShowDetectPopup(false);
+                navigate(`/detect/${selectedFacade}`, { state: { detected: data } });
+            })
+            .catch(err => {
+                console.error("Erro ao detectar fissuras:", err);
+                alert("Erro ao enviar detecção.");
+            });
+    };
+
+
 
     // Função para determinar o título baseado na rota atual
     const getPageTitle = () => {
@@ -427,6 +461,7 @@ export default function NavHome() {
                 <button> <FaTrash /> </button>
                 <button> <FaPaintBrush /> </button>
                 <button className='send-button' onClick={() => setShowPopup(true)}> <span>Enviar</span> <IoSend /> </button>
+                <button className='send-button' onClick={() => setShowDetectPopup(true)}> <span>Detectar</span> <FaSearch /> </button>
                 <button className='report-button' onClick={() => setShowReportPopup(true)}>Gerar Relatório</button>
             </Botoes>
 
@@ -520,6 +555,22 @@ export default function NavHome() {
                     onClose={() => setShowPopup(false)}
                 />
             )}
+            {showDetectPopup && (
+            <DetectPopup
+                    projects={projects}
+                    buildings={buildings}
+                    facades={facades}
+                    selectedProject={selectedProject}
+                    selectedBuilding={selectedBuilding}
+                    selectedFacade={selectedFacade}
+                    setSelectedProject={setSelectedProject}
+                    setSelectedBuilding={setSelectedBuilding}
+                    setSelectedFacade={setSelectedFacade}
+                    onSend={handleDetectImages}
+                    onClose={() => setShowDetectPopup(false)}
+                />
+            )}
+
         </Nav>
     );
 
