@@ -113,7 +113,7 @@ export default function Result() {
   }, [facadeId, token, navigate]); 
   
   const handleVoltar = () => {
-    navigate('/')
+    navigate('/projects')
   }
 
   const handleDragEnd = (result) => {

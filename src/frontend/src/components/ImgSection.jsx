@@ -6,10 +6,10 @@ import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 
 const Page = styled.div`
-  margin-left: 18vw;
+  margin-left: var(--sidebar-width, 280px);
 
   .btn-section {
-    padding: 2rem 2.5rem 0 2.5rem;
+    padding: var(--spacing-lg) var(--spacing-xl) 0 var(--spacing-xl);
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -18,34 +18,108 @@ const Page = styled.div`
 
   button {
     width: 20%;
-    height: 20px;
+    min-width: 150px;
+    min-height: 50px;
     border-radius: 10px;
-    background-color: #629EBC;
+    background-color: var(--primary-color);
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 3px solid #145E7A;
+    border: 3px solid var(--secondary-color);
     color: #fff;
-    font-size: 16px;
-    padding: 1rem;
-    
-    transition: background-color 0.3s ease;
+    font-size: var(--font-size-base);
+    padding: var(--spacing-sm);
+    transition: all 0.3s ease;
   } 
 
   button:hover {
-    background-color: #3D80A3; 
+    background-color: var(--primary-hover); 
     cursor: pointer; 
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 480px) {
+    margin-left: 0;
+    
+    .btn-section {
+      padding: var(--spacing-md);
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+    
+    button {
+      width: 100%;
+      min-width: auto;
+    }
+  }
+
+  @media (min-width: 481px) and (max-width: 768px) {
+    margin-left: 200px;
+    
+    .btn-section {
+      padding: var(--spacing-md);
+    }
+    
+    button {
+      width: 30%;
+      min-width: 120px;
+    }
+  }
+
+  @media (min-width: 1441px) {
+    margin-left: 320px;
+    
+    .btn-section {
+      padding: var(--spacing-xl) var(--spacing-xl) 0 var(--spacing-xl);
+    }
+    
+    button {
+      width: 15%;
+      min-width: 180px;
+      font-size: var(--font-size-lg);
+    }
   }
 `
 
 const Container = styled.div`
-    width: 77vw;
-    padding: 2.5rem;
-
+    margin: 0 2rem;
+    padding: var(--spacing-xl);
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     justify-items: center;
-    gap: 2rem;
+    gap: var(--spacing-lg);
+    max-width: 100%;
+
+    @media (max-width: 480px) {
+        margin: 0;
+        width: 100vw;
+        padding: var(--spacing-md);
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--spacing-md);
+    }
+
+    @media (min-width: 481px) and (max-width: 768px) {
+        margin: 0;
+        width: 100vw;
+        padding: var(--spacing-lg);
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+        margin: 0 2rem;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+
+    @media (min-width: 1025px) and (max-width: 1440px) {
+        margin: 0 2rem;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    @media (min-width: 1441px) {
+        margin: 0 2rem;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: var(--spacing-xl);
+    }
 `;
 
 const Popup = styled.div`
@@ -60,65 +134,78 @@ const Popup = styled.div`
 
   .popup-inner {
     background: white;
-    padding: 2rem;
+    padding: var(--spacing-lg);
     border-radius: 15px;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: var(--spacing-md);
     min-width: 400px;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
   }
       
   .file-section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: .5rem;
+    gap: var(--spacing-xs);
   }
 
-.file-section label {
-  background-color: #629EBC;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-}
+  .file-section label {
+    background-color: var(--primary-color);
+    color: white;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
 
-.file-section label:hover {
-  background-color: #3D80A3;
-}
+  .file-section label:hover {
+    background-color: var(--primary-hover);
+  }
 
+  .file-section input {
+    display: none;
+  }
 
-.file-section input {
-  display: none;
-}
-
-.file-section p {
-  font-size: 0.9rem;
-  color: #333;
-}
-
+  .file-section p {
+    font-size: var(--font-size-sm);
+    color: var(--text-color);
+  }
 
   .popup-buttons {
     display: flex;
     justify-content: space-between;
-    gap: 1rem;
+    gap: var(--spacing-sm);
   }
 
   .popup-buttons button {
     flex: 1;
-    padding: .5rem;
+    padding: var(--spacing-xs);
     border-radius: 10px;
     border: none;
-    background-color: #629EBC;
+    background-color: var(--primary-color);
     color: white;
     font-weight: bold;
     cursor: pointer;
+    transition: background-color 0.3s ease;
   }
 
   .popup-buttons button:hover {
-    background-color: #3D80A3;
+    background-color: var(--primary-hover);
+  }
+
+  @media (max-width: 480px) {
+    .popup-inner {
+      min-width: 90vw;
+      padding: var(--spacing-md);
+    }
+    
+    .popup-buttons {
+      flex-direction: column;
+    }
   }
 `
 
